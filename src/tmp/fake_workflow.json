@@ -1,0 +1,19 @@
+{
+ "tasks": [
+  {
+   "taskReferenceName": "task_greeting_0", 
+   "type": "HTTP", 
+   "name": "task_greeting", 
+   "inputParameters": {
+    "http_request": {
+     "uri": "http://192.168.199.105:8080/greet", 
+     "method": "GET"
+    }
+   }
+  }
+ ], 
+ "schemaVersion": 2, 
+ "version": 1, 
+ "name": "workflow_ts_00.yaml_5945332108", 
+ "description": ""
+}

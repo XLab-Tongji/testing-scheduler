@@ -1,0 +1,29 @@
+###################
+# time:
+# spec:
+# author:
+###################
+
+schema:
+  steps:
+    -
+      type: test
+      service: yardstick
+      call: REST
+      args: 
+        test_case: tc_01.yaml
+        input_args:
+          ping_count: 2
+          ping_ip: www.baidu.com
+
+    - 
+      type: test
+      service: bottleneck
+      call: REST
+      args:
+        test_case: tc_02.yaml
+        input_args:
+          ping_time: 10
+          ping_ip: www.163.com
+
+

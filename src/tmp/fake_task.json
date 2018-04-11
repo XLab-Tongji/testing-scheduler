@@ -1,0 +1,13 @@
+{
+ "group1": [
+  {
+   "name": "task_greeting", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }
+ ]
+}
