@@ -1,0 +1,43 @@
+{
+ "tasks": [
+  {
+   "taskReferenceName": "test_task_16499592566", 
+   "type": "HTTP", 
+   "name": "test_task_1", 
+   "inputParameters": {
+    "http_request": {
+     "body": {
+      "testcase": "opnfv/test_cases/tc001", 
+      "args": {
+       "cpu": 3
+      }
+     }, 
+     "uri": "http://192.168.122.105:8080/run_testcase123", 
+     "method": "GET"
+    }
+   }
+  }, 
+  {
+   "taskReferenceName": "test_task_28148561171", 
+   "type": "HTTP", 
+   "name": "test_task_2", 
+   "inputParameters": {
+    "http_request": {
+     "body": {
+      "testcase": "opnfv/test_cases/tc002", 
+      "args": {
+       "mem": 4
+      }
+     }, 
+     "uri": "http://192.168.122.105:8080/run_testcase123", 
+     "method": "POST"
+    }
+   }
+  }
+ ], 
+ "name": "workflow_ts_logic_00.yaml_7310965693", 
+ "outputParameters": {}, 
+ "version": 1, 
+ "schemaVersion": 2, 
+ "description": ""
+}

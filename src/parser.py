@@ -52,7 +52,7 @@ def parseStory(schema, storyName = 'story0'):
 	taskDictArr = []
 	for step in steps:
 		stepName = step['type'] + "_task_" + str(step['id'])
-		stepObj = testStepMgr.getStepObj(step['type'], step['id'], stepName, step['service'], step['action'], **step['params'])
+		stepObj = testStepMgr.getStepObj(step['type'], step['id'], stepName, step['service'], step['action'], **step['args'])
 		stepObjArr.append(stepObj)
 
 		taskFileObj = TaskFile()
@@ -71,7 +71,8 @@ def parseStory(schema, storyName = 'story0'):
 	
 	wfFileObj = WorkflowFile(storyName)
 	wfJson = wfFileObj.generateWFJson(flows, stepObjArr)
-	print wfJson
+	with open(STORE_WF_PATH, 'w') as f:
+		f.write(wfJson)
 
 
 # def sortById(dictX, dictY):

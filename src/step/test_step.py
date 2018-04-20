@@ -1,3 +1,4 @@
+import os
 class TestStep(object):
 	def __init__(self, type, id, name, service, action, **args):
 		self._type = type
@@ -6,8 +7,8 @@ class TestStep(object):
 			self._name = name
 		else:
 			self._name = self._type + "_task_" + str(self._id) 
-		self._service_name = service['name']
-		self._call_type = service['call']
+		self._serviceName = service['name']
+		self._callType = service['call']
 		self._action = action
 		self._args = args
 
@@ -18,10 +19,10 @@ class TestStep(object):
 		return self._name
 
 	def getServiceName(self):
-		return self._service_name
+		return self._serviceName
 
 	def getCallFunction(self):
-		return self._call_type
+		return self._callType
 
 	def getArgs(self):
 		return self._args
@@ -32,6 +33,9 @@ class TestStep(object):
 
 	def _argsParse(self):
 		pass
+
+	def _getCurrentDir(self):
+		return os.path.dirname(__file__)
 
 	def __str__(self):
 		return str(self.__dict__)
