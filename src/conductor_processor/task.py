@@ -1,7 +1,7 @@
 import json
 import os
-class TaskFileObject(object):
-	def __init__(self, taskName):
+class TaskFile(object):
+	def __init__(self, taskName = 'task_0'):
 		self._defaultConfFile = self._getFilePath("defaultTaskFile.json")
 		print self._defaultConfFile
 		with open(self._defaultConfFile) as defaultConf:

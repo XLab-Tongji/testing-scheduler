@@ -1,5 +1,5 @@
 import random
-class WorkflowObject(object):
+class WorkflowFile(object):
 	def __init__(self, name):
 		self._name = "workflow_" + name + "_" + "".join(random.choice(str("0123456789")) for i in range(10))
 		self._description = ''
@@ -39,11 +39,14 @@ class WorkflowTaskObject(object):
 			self._inputParam = {}
 
 			args = stepObj.getArgs()
-			uri = "http://" + str(args['ip']) + ':' + str(args['port']) + str(args['api'])
-			method = args['method']
+			uri = "http://%s:%s/%s" %(str(args['ip']), str(args['port']), str(args['api']))
+			method = args['method'] if args['method'] else "GET"
 			self._inputParam['http_request'] = {}
-			self._inputParam['http_request']['uri'] = uri
-			self._inputParam['http_request']['method'] = method
+			request_data = self._inputParam['http_request']
+			request_data['uri'] = uri
+			request_data['method'] = method
+			if args['req_body'] != None:
+				request_data['request_body'] = args['req_body']
 
 	def getDict(self):
 		return {
