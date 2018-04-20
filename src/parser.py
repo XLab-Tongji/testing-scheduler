@@ -70,7 +70,7 @@ def parseStory(schema, storyName = 'story0'):
 	#generate workflow by 'flow' and 'step'
 	
 	wfFileObj = WorkflowFile(storyName)
-	wfJson = wfFileObj.generateJson(flows, stepObjArr)
+	wfJson = wfFileObj.generateWFJson(flows, stepObjArr)
 	print wfJson
 
 
