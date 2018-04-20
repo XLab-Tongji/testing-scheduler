@@ -14,7 +14,8 @@ schema:
         name: yardstick
         call: REST
       action: run_testcase
-      params:
+      args:
+        method: GET
         testcase: tc001
         args:
           cpu: 3
@@ -26,7 +27,8 @@ schema:
         name: yardstick
         call: REST
       action: run_testcase
-      params:
+      args:
+        method: POST
         testcase: tc002
         args:
           mem: 4

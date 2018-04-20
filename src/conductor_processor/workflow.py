@@ -28,19 +28,19 @@ class WorkflowFile(object):
 		#notice: no flow is main exception
 		mainFlowOrders = mainFlow['orders']
 		for order in mainFlowOrders:
-			relateStepObj = stepObjArr[order['step'] - 1]
 			if order['type'] == "normal":
+				relateStepObj = stepObjArr[order['step'] - 1]
 				genTask = NormalTask(relateStepObj)
 			else:
-				genTask = SwitchTask(relateStepObj)
+				genTask = SwitchTask(order)
 			self._tasks.append(genTask.getDict())
 
 		return json.dumps(self.getDict(), indent=True)
 		
 class BaseWorkflowTask(object):
-	def __init__(self, stepObj):
-		self._name = stepObj.getName()
-		self._taskReferenceName = stepObj.getName() + getRandString(10)
+	def __init__(self, name):
+		self._name = name
+		self._taskReferenceName = self._name + getRandString(10)
 		self._type = ''
 		self._args = {}
 
@@ -61,15 +61,20 @@ class BaseWorkflowTask(object):
 
 class NormalTask(BaseWorkflowTask):
 	def __init__(self, stepObj):
-		super(NormalTask, self).__init__(stepObj)
+		super(NormalTask, self).__init__(stepObj.getName())
 		self._type = "HTTP"
 		self._args['inputParameters'] = stepObj.getArgs()
 
 class SwitchTask(BaseWorkflowTask):
-	def __init__(self, stepObj):
-		super(SwitchTask, self).__init__(stepObj)
+	def __init__(self, switchDict):
+		super(SwitchTask, self).__init__("switch")
 		self._type = "DECISION"
-		self._caseValueParam = "A"
+		self._caseValueParam = switchDict['value']
+		self._decisionCases = {}
+		for k,v in switchDict['cases'].items():
+			#recursive
+			pass
+
 
 	def getDict(self):
 		pass
