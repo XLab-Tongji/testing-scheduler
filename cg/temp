@@ -1,0 +1,63 @@
+{
+ "steps": [
+  {
+   "action": "run_testcase", 
+   "type": "test", 
+   "params": {
+    "testcase": "tc001", 
+    "args": {
+     "cpu": 3
+    }
+   }, 
+   "id": 1, 
+   "service": {
+    "call": "REST", 
+    "name": "yardstick"
+   }
+  }, 
+  {
+   "action": "run_testcase", 
+   "type": "test", 
+   "params": {
+    "testcase": "tc002", 
+    "args": {
+     "mem": 4
+    }
+   }, 
+   "id": 2, 
+   "service": {
+    "call": "REST", 
+    "name": "yardstick"
+   }
+  }
+ ], 
+ "flows": [
+  {
+   "name": "main", 
+   "orders": [
+    {
+     "step": 1, 
+     "type": "normal"
+    }, 
+    {
+     "cases": {
+      "A": [
+       {
+        "step": 1, 
+        "type": "normal"
+       }
+      ], 
+      "B": [
+       {
+        "step": 2, 
+        "type": "normal"
+       }
+      ]
+     }, 
+     "type": "switch", 
+     "value": "A"
+    }
+   ]
+  }
+ ]
+}

@@ -7,23 +7,53 @@
 schema:
   steps:
     -
-      type: test
-      service: yardstick
-      call: REST
+      step-id: 1
+      service: 
+        name: yardstick
+        call: REST
+      action: run_testcase
       args: 
         test_case: tc_01.yaml
         input_args:
-          ping_count: 2
-          ping_ip: www.baidu.com
+          arg1: aaa
+          arg2: bbb
+
+    -
+      step-id: 2
+      service: 
+        name: yardstick
+        call: REST
+      action: run_testcase
+      args: 
+        test_case: tc_01.yaml
+        input_args:
+          arg1: aaa
+          arg2: bbb
+
+  flow:
+
+    -
+      id: 01
+      pre: flow-start
+
+    -
+      id: 02
+      pre: 01
+
+    -
+      id: 03
+      pre: 01
+
+    -
+      id: 04
+      pre: 02 & 03
 
     - 
-      type: test
-      service: bottleneck
-      call: REST
-      args:
-        test_case: tc_02.yaml
-        input_args:
-          ping_time: 10
-          ping_ip: www.163.com
+      id: 05
+      pre: 02 | 03
+
+    - 
+      finish:
+        pre: 05
 
 

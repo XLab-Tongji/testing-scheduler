@@ -8,8 +8,10 @@ schema:
   steps:
     -
       type: monitor
-      service: ansible
-      call: REST
+      service: 
+        name: ansible
+        call: REST
+      action: run
       args:
         command: start
         target:

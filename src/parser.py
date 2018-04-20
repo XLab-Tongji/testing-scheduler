@@ -3,14 +3,14 @@ import click
 import os
 import yaml
 import json
-from stepObject.stepobject import StepObject
+from step_object.stepobject import StepObject
 from conductorFileObject.taskFileObject import TaskFileObject
 from conductorFileObject.workflowObject import WorkflowObject
 import sys
 sys.path.append("..")
 from conductorclient.run_new_workflow import WorkflowMgr
 
-serverAddr = "http://192.168.199.130:8080"
+serverAddr = "http://192.168.199.131:8080"
 storeTaskPath = "tmp/fake_task.json"
 storeWorkflowPath = "tmp/fake_workflow.json"
 
