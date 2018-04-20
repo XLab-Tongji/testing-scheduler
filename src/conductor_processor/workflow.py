@@ -9,18 +9,6 @@ class WorkflowFile(object):
 		self._tasks = []
 		self._outputParameters = {}
 
-	def generateFromSteps(self, stepObjArr):
-		i = 0
-		name = ''
-		for stepObj in stepObjArr:
-			wfTaskObj = WorkflowTaskObject(stepObj, i)
-			self._tasks.append(wfTaskObj.getDict())
-			name = wfTaskObj.getReferenceName()
-			i += 1
-		self._outputParameters['output'] = "${" + name + ".output}"
-
-		return self.getDict()
-
 	def getDict(self):
 		return {
 			"name": self._name,
@@ -39,14 +27,12 @@ class WorkflowFile(object):
 				break
 		#notice: no flow is main exception
 		mainFlowOrders = mainFlow['orders']
-
 		for order in mainFlowOrders:
 			relateStepObj = stepObjArr[order['step'] - 1]
 			if order['type'] == "normal":
 				genTask = NormalTask(relateStepObj)
 			else:
 				genTask = SwitchTask(relateStepObj)
-
 			self._tasks.append(genTask.getDict())
 
 		return json.dumps(self.getDict(), indent=True)
