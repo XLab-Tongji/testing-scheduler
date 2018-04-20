@@ -3,8 +3,8 @@ import click
 import os
 import yaml
 import json
-#from step.test_step import TestStep
-#from step.step_manager import TestStepManager
+from step.test_step import TestStep
+from step.step_manager import TestStepManager
 from conductor_processor.task import TaskFile
 from conductor_processor.workflow import WorkflowFile
 import sys
@@ -15,6 +15,10 @@ serverAddr = "http://192.168.199.131:8080"
 storeTaskPath = "tmp/fake_task.json"
 storeWorkflowPath = "tmp/fake_workflow.json"
 
+SERVER_ADDR = "http://192.168.199.131:8080"
+STORE_TASK_PATH = "tmp/fake_task_2.json"
+STORE_WF_PATH = "tmp/fake_workflow_2.json"
+
 @click.command()
 @click.option("--filepath", help="file path of test case")
 def parse(filepath):
@@ -22,7 +26,7 @@ def parse(filepath):
 	print '------------ start to parse the test story:%s ------------------'%fileName
 	with open(filepath) as f:
 		yaml_file = yaml.load(f)
-		print yaml_file
+		#print yaml_file
 		parseStory(yaml_file['schema'], fileName)
 
 	#runWorkFlow()
@@ -38,6 +42,45 @@ def parseStory(schema, storyName = 'story0'):
 	flows = schema['flows']
 	if flows == None:
 		return parseLog(False, reasion='flows is invalid.')
+	#print steps
+	#print type(steps)
+	## steps is a list, step is dict. no json here.
+	# steps = sorted(steps, sortById)
+	testStepMgr = TestStepManager()
+	
+	stepObjArr = []
+	taskDictArr = []
+	for step in steps:
+		stepName = step['type'] + "_task_" + str(step['id'])
+		stepObj = testStepMgr.getStepObj(step['type'], step['id'], stepName, step['service'], step['action'], **step['params'])
+		stepObjArr.append(stepObj)
+
+		taskFileObj = TaskFile()
+		taskDict = taskFileObj.generateFromStep(stepObj)
+		taskDictArr.append(taskDict)
+
+	with open(STORE_TASK_PATH, 'w') as f:
+		f.write(json.dumps({'task_group':taskDictArr}, indent=True))
+	# for step in stepObjArr:
+	# 	print step
+	# for taskObj in taskObjArr:
+	# 	print taskObj
+
+
+	#generate workflow by 'flow' and 'step'
+	
+	wfFileObj = WorkflowFile(storyName)
+	wfJson = wfFileObj.generateJson(flows, stepObjArr)
+	print wfJson
+
+
+# def sortById(dictX, dictY):
+# 	if dictX['id'] > dictY['id']:
+# 		return 1
+# 	elif dictX['id'] < dictY['id']:
+# 		return -1
+# 	else:
+# 		return 0
 
 def parseStory_bak(schema, storyName = 'story0'):
 	if schema == None:
