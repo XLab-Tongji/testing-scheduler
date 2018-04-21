@@ -12,3 +12,8 @@ greet:
       realname: answer
       format:
         ping: str
+
+    ten: 
+      realname: ten
+      format:
+        ping: str
