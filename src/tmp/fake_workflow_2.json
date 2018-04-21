@@ -1,7 +1,7 @@
 {
  "tasks": [
   {
-   "taskReferenceName": "test_task_19670110659", 
+   "taskReferenceName": "test_task_16826978260", 
    "type": "HTTP", 
    "name": "test_task_1", 
    "inputParameters": {
@@ -12,10 +12,11 @@
    }
   }, 
   {
-   "decisionCases": {
-    "A": [
+   "taskReferenceName": "parallel_07415570543", 
+   "forkTasks": [
+    [
      {
-      "taskReferenceName": "test_task_21586062929", 
+      "taskReferenceName": "test_task_25420417117", 
       "type": "HTTP", 
       "name": "test_task_2", 
       "inputParameters": {
@@ -27,17 +28,79 @@
         "method": "POST"
        }
       }
+     }, 
+     {
+      "taskReferenceName": "parallel_16754383157", 
+      "forkTasks": [
+       [
+        {
+         "taskReferenceName": "test_task_37603893654", 
+         "type": "HTTP", 
+         "name": "test_task_3", 
+         "inputParameters": {
+          "http_request": {
+           "body": {
+            "ping": "ping_from_Leo_2"
+           }, 
+           "uri": "http://192.168.199.105:8080/answer", 
+           "method": "POST"
+          }
+         }
+        }
+       ], 
+       [
+        {
+         "taskReferenceName": "test_task_44643906910", 
+         "type": "HTTP", 
+         "name": "test_task_4", 
+         "inputParameters": {
+          "http_request": {
+           "body": {
+            "ping": "ping_from_Leo_3"
+           }, 
+           "uri": "http://192.168.199.105:8080/answer", 
+           "method": "POST"
+          }
+         }
+        }, 
+        {
+         "taskReferenceName": "test_task_51854918296", 
+         "type": "HTTP", 
+         "name": "test_task_5", 
+         "inputParameters": {
+          "http_request": {
+           "body": {
+            "ping": "ping_from_Leo_4"
+           }, 
+           "uri": "http://192.168.199.105:8080/answer", 
+           "method": "POST"
+          }
+         }
+        }
+       ]
+      ], 
+      "type": "FORK_JOIN", 
+      "name": "parallel_1"
+     }, 
+     {
+      "taskReferenceName": "paralleljoin_12032580075", 
+      "type": "JOIN", 
+      "name": "paralleljoin_1", 
+      "joinOn": [
+       "test_task_37603893654", 
+       "test_task_51854918296"
+      ]
      }
     ], 
-    "B": [
+    [
      {
-      "taskReferenceName": "test_task_36822347729", 
+      "taskReferenceName": "test_task_63122037416", 
       "type": "HTTP", 
-      "name": "test_task_3", 
+      "name": "test_task_6", 
       "inputParameters": {
        "http_request": {
         "body": {
-         "ping": "ping_from_Leo_2"
+         "ping": "ping_from_Leo_5"
         }, 
         "uri": "http://192.168.199.105:8080/answer", 
         "method": "POST"
@@ -45,17 +108,21 @@
       }
      }
     ]
-   }, 
-   "name": "switch_0", 
-   "inputParameters": {
-    "value": "A"
-   }, 
-   "caseValueParam": "value", 
-   "taskReferenceName": "switch_02358395534", 
-   "type": "DECISION"
+   ], 
+   "type": "FORK_JOIN", 
+   "name": "parallel_0"
+  }, 
+  {
+   "taskReferenceName": "paralleljoin_06357581601", 
+   "type": "JOIN", 
+   "name": "paralleljoin_0", 
+   "joinOn": [
+    "paralleljoin_12032580075", 
+    "test_task_63122037416"
+   ]
   }
  ], 
- "name": "workflow_ts_logic_01.yaml_0219365372", 
+ "name": "workflow_ts_logic_10.yaml_4721503087", 
  "outputParameters": {}, 
  "version": 1, 
  "schemaVersion": 2, 

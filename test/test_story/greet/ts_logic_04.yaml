@@ -11,40 +11,40 @@ schema:
       id: 1
       type: test
       service:
-        name: yardstick
+        name: greet
         call: REST
-      action: run_testcase
+      action: start
       args:
         method: GET
-        testcase: tc001
+        command: greet
         args:
-          cpu: 3
+          name: Leo
 
     -
       id: 2
       type: test
       service:
-        name: yardstick
+        name: greet
         call: REST
-      action: run_testcase
+      action: start
       args:
         method: POST
-        testcase: tc002
+        command: answer
         args:
-          mem: 4
+          ping: ping_from_Leo
 
     -
       id: 3
       type: test
       service:
-        name: yardstick
+        name: greet
         call: REST
-      action: run_testcase
+      action: start
       args:
         method: POST
-        testcase: tc003
+        command: answer
         args:
-          mem: 4
+          ping: ping_from_Leo_2
 
   flows:
     -

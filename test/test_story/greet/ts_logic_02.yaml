@@ -1,6 +1,7 @@
 ################################################
 # date: 2018/4/20
 # spec: test step sort
+# abandon test case
 # author: x-lab.Leo
 ################################################
 
@@ -11,61 +12,40 @@ schema:
       id: 1
       type: test
       service:
-        name: yardstick
+        name: greet
         call: REST
-      action: run_testcase
-      params:
-        testcase: tc001
+      action: start
+      args:
+        method: GET
+        command: greet
         args:
-          cpu: 3
+          name: Leo
 
     -
       id: 2
       type: test
       service:
-        name: yardstick
+        name: greet
         call: REST
-      action: run_testcase
-      params:
-        testcase: tc002
+      action: start
+      args:
+        method: POST
+        command: answer
         args:
-          mem: 4
+          ping: ping_from_Leo
 
     -
       id: 3
       type: test
       service:
-        name: yardstick
+        name: greet
         call: REST
-      action: run_testcase
-      params:
-        testcase: tc002
+      action: start
+      args:
+        method: POST
+        command: answer
         args:
-          mem: 4
-
-    -
-      id: 4
-      type: test
-      service:
-        name: yardstick
-        call: REST
-      action: run_testcase
-      params:
-        testcase: tc002
-        args:
-          mem: 4
-    
-    -
-      id: 5
-      type: test
-      service:
-        name: yardstick
-        call: REST
-      action: run_testcase
-      params:
-        testcase: tc002
-        args:
-          mem: 4
+          ping: ping_from_Leo_2
 
 
   flows:
