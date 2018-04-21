@@ -119,46 +119,13 @@ class SwitchTask(BaseWorkflowTask):
 		selfTaskMetaList = super(SwitchTask, self).getTaskMetaList()
 		selfTaskMetaList.extend(self._childTaskMetaList)
 		return selfTaskMetaList
+
 class ParallelTask(BaseWorkflowTask):
+	seqNumber = 0
 	def __init__(self, stepObj):
 		super(ParallelTask, self).__init__(stepObj)
 		self._type = "FORK"
 
-
-
-
-
-
-
-class WorkflowTaskObjectBak(object):
-	def __init__(self, stepObj, no):	
-		self._name = "task_" + stepObj.getName()
-		self._taskReferenceName = self._name + "_" + str(no)
-		self._type = ''
-		if stepObj.getCallFunction() == "REST":
-			self._type = 'HTTP'
-			self._inputParam = {}
-
-			args = stepObj.getArgs()
-			uri = "http://%s:%s/%s" %(str(args['ip']), str(args['port']), str(args['api']))
-			method = args['method'] if args['method'] else "GET"
-			self._inputParam['http_request'] = {}
-			request_data = self._inputParam['http_request']
-			request_data['uri'] = uri
-			request_data['method'] = method
-			if args['req_body'] != None:
-				request_data['request_body'] = args['req_body']
-
-	def getDict(self):
-		return {
-			"name": self._name,
-			"taskReferenceName": self._taskReferenceName,
-			"inputParameters": self._inputParam,
-			"type": self._type
-		}
-
-	def getReferenceName(self):
-		return self._taskReferenceName
 
 def getRandString(length):
 	return "".join(random.choice(str("0123456789")) for i in range(length))
