@@ -1,6 +1,7 @@
 ################################################
 # date: 2018/4/20
-# spec: test conductor basic logic of switch
+# spec: test conductor basic logic of switch.
+# switch nested in switch.
 # author: x-lab.Leo
 ################################################
 
@@ -46,6 +47,19 @@ schema:
         args:
           mem: 4
 
+    -
+      id: 4
+      type: test
+      service:
+        name: yardstick
+        call: REST
+      action: run_testcase
+      args:
+        method: POST
+        testcase: tc003
+        args:
+          mem: 4
+
   flows:
     -
       name: main
@@ -57,11 +71,20 @@ schema:
           type: switch
           value: A
           cases:
-            A:
-              - 
-                type: normal
-                step: 2
-            B:  
+            A: 
               -
                 type: normal
-                step: 3
+                step: 2
+            B: 
+              -
+                type: switch
+                value: C
+                cases:
+                  C:
+                    -
+                      type: normal
+                      step: 3
+                  D:
+                    -
+                      type: normal
+                      step: 4

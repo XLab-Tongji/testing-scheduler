@@ -1,7 +1,7 @@
 {
  "tasks": [
   {
-   "taskReferenceName": "test_task_16546070417", 
+   "taskReferenceName": "test_task_17497451660", 
    "type": "HTTP", 
    "name": "test_task_1", 
    "inputParameters": {
@@ -22,7 +22,7 @@
    "decisionCases": {
     "A": [
      {
-      "taskReferenceName": "test_task_27654902632", 
+      "taskReferenceName": "test_task_27385897270", 
       "type": "HTTP", 
       "name": "test_task_2", 
       "inputParameters": {
@@ -41,30 +41,59 @@
     ], 
     "B": [
      {
-      "taskReferenceName": "test_task_39191361990", 
-      "type": "HTTP", 
-      "name": "test_task_3", 
-      "inputParameters": {
-       "http_request": {
-        "body": {
-         "testcase": "opnfv/test_cases/tc003", 
-         "args": {
-          "mem": 4
+      "caseValueParam": "C", 
+      "decisionCases": {
+       "C": [
+        {
+         "taskReferenceName": "test_task_38988830514", 
+         "type": "HTTP", 
+         "name": "test_task_3", 
+         "inputParameters": {
+          "http_request": {
+           "body": {
+            "testcase": "opnfv/test_cases/tc003", 
+            "args": {
+             "mem": 4
+            }
+           }, 
+           "uri": "http://192.168.122.105:8080/run_testcase123", 
+           "method": "POST"
+          }
          }
-        }, 
-        "uri": "http://192.168.122.105:8080/run_testcase123", 
-        "method": "POST"
-       }
-      }
+        }
+       ], 
+       "D": [
+        {
+         "taskReferenceName": "test_task_48050883596", 
+         "type": "HTTP", 
+         "name": "test_task_4", 
+         "inputParameters": {
+          "http_request": {
+           "body": {
+            "testcase": "opnfv/test_cases/tc003", 
+            "args": {
+             "mem": 4
+            }
+           }, 
+           "uri": "http://192.168.122.105:8080/run_testcase123", 
+           "method": "POST"
+          }
+         }
+        }
+       ]
+      }, 
+      "taskReferenceName": "switch_18446948709", 
+      "type": "DECISION", 
+      "name": "switch_1"
      }
     ]
    }, 
-   "taskReferenceName": "switch9757602434", 
+   "taskReferenceName": "switch_06937518687", 
    "type": "DECISION", 
-   "name": "switch"
+   "name": "switch_0"
   }
  ], 
- "name": "workflow_ts_logic_03.yaml_6064322785", 
+ "name": "workflow_ts_logic_05.yaml_4453473280", 
  "outputParameters": {}, 
  "version": 1, 
  "schemaVersion": 2, 

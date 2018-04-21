@@ -21,12 +21,9 @@ class WorkflowFile(object):
 		}
 
 	def generateMetaData(self, flowList, stepObjArr):
-		print "in workflowFIle-----------------------------"
-		
 		flowObj = Flow(flowList, stepObjArr)
 		self._tasks, taskMetaList = flowObj.parseMainFlow()
 
-		print "in workflowFIle end end end-----------------------------"
 		return self.getDict(), taskMetaList
 
 
@@ -46,27 +43,24 @@ class Flow(object):
 	def parseMainFlow(self):
 		return self.parseOrderList(self._mainFlow['orders'], self._stepObjArr)
 
-	@staticmethod
-	def parse(obj, stepObjArr):
-		if isinstance(obj, dict):
-			return Flow.parseFlow(obj, stepObjArr)
+	def parse(self, obj, stepObjArr):
+		if isinstance(obj, str):
+			return self.parseFlow(obj, stepObjArr)
 		else:
-			return Flow.parseOrderList(obj, stepObjArr)
+			return self.parseOrderList(obj, stepObjArr)
 
-	@staticmethod
-	def parseFlow(flowDict, stepObjArr):
-		orderList = flowDict['orders']
-		return Flow.parseOrderList(orderList, stepObjArr)
+	def parseFlow(self, flowName, stepObjArr):
+		orderList = self._subFlowDict[flowName]['orders']
+		return self.parseOrderList(orderList, stepObjArr)
 
-	@staticmethod
-	def parseOrderList(orderList, stepObjArr):
+	def parseOrderList(self, orderList, stepObjArr):
 		tasks = []
 		taskMetaAllList = []
 		for order in orderList:
 			if order['type'] == "normal":
-				genTask = NormalTask(order, stepObjArr)
+				genTask = NormalTask(order, stepObjArr, self)
 			elif order['type'] == "switch":
-				genTask = SwitchTask(order, stepObjArr)
+				genTask = SwitchTask(order, stepObjArr, self)
 
 			tasks.append(genTask.getDict())
 			taskMetaList = genTask.getTaskMetaList()
@@ -101,7 +95,7 @@ class BaseWorkflowTask(object):
 		return [taskFile.generateFromStep(self)]
 
 class NormalTask(BaseWorkflowTask):
-	def __init__(self, order, stepObjArr):
+	def __init__(self, order, stepObjArr, flowObj):
 		relatedStepObj = stepObjArr[order['step'] - 1]
 		super(NormalTask, self).__init__(relatedStepObj.getName())
 		self._type = "HTTP"
@@ -109,14 +103,16 @@ class NormalTask(BaseWorkflowTask):
 
 	
 class SwitchTask(BaseWorkflowTask):
-	def __init__(self, order, stepObjArr):
-		super(SwitchTask, self).__init__("switch")
+	seqNumber = 0
+	def __init__(self, order, stepObjArr, flowObj):
+		super(SwitchTask, self).__init__("switch_" + str(SwitchTask.seqNumber))
+		SwitchTask.seqNumber = SwitchTask.seqNumber + 1
 		self._type = "DECISION"
 		self._args['caseValueParam'] = order['value']
 		self._args['decisionCases'] = {}
 		self._childTaskMetaList = []
 		for case, caseOrders in order['cases'].items():
-			self._args['decisionCases'][case], taskMetaList = Flow.parse(caseOrders, stepObjArr)
+			self._args['decisionCases'][case], taskMetaList = flowObj.parse(caseOrders, stepObjArr)
 			if taskMetaList != None:
 				self._childTaskMetaList.extend(taskMetaList)
 	def getTaskMetaList(self):

@@ -10,7 +10,7 @@
    "timeOutPolicy": "TIME_OUT_WF"
   }, 
   {
-   "name": "switch", 
+   "name": "switch_0", 
    "timeOutSeconds": 1200, 
    "retryLogic": "FIXED", 
    "responseTimeOutSeconds": 3600, 
@@ -28,7 +28,25 @@
    "timeOutPolicy": "TIME_OUT_WF"
   }, 
   {
+   "name": "switch_1", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
    "name": "test_task_3", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "test_task_4", 
    "timeOutSeconds": 1200, 
    "retryLogic": "FIXED", 
    "responseTimeOutSeconds": 3600, 
