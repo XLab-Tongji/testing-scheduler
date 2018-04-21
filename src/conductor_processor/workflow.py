@@ -108,6 +108,7 @@ class NormalTask(BaseWorkflowTask):
 		super(NormalTask, self).__init__(relatedStepObj.getName())
 		self._type = "HTTP"
 		self._args['inputParameters'] = relatedStepObj.getArgs()
+		print "NormalTask:----------------------\n", relatedStepObj.getArgs()
 
 	
 class SwitchTask(BaseWorkflowTask):
@@ -116,7 +117,9 @@ class SwitchTask(BaseWorkflowTask):
 		super(SwitchTask, self).__init__("switch_" + str(SwitchTask.seqNumber))
 		SwitchTask.seqNumber = SwitchTask.seqNumber + 1
 		self._type = "DECISION"
-		self._args['caseValueParam'] = order['value']
+		caseValueParam = 'value'
+		self._args['inputParameters'] = {caseValueParam: order['value']}
+		self._args['caseValueParam'] = caseValueParam
 		self._args['decisionCases'] = {}
 		self._childTaskMetaList = []
 		for case, caseOrders in order['cases'].items():

@@ -42,3 +42,37 @@ class GeneralTestStep(TestStep):
 					tcBaseDir = conf['testcase_base_dir']
 					requestBody = requestParam['body']
 					requestBody['testcase'] = tcBaseDir + requestBody['testcase']
+
+				if requestParam['method'] == "GET":
+					requestParam.pop('body')
+
+
+
+	## this function is for testing, can be removed latter.
+	def start(self):
+		if self._callType == "REST":
+			if "http_request" in self._args:
+				requestParam = self._args['http_request']
+				envFilePath = os.path.join(self._getCurrentDir(), "..", "env", self._serviceName + ".yaml")
+				with open(envFilePath, 'r') as f:
+					conf = yaml.load(f)
+					conf = conf[self._serviceName]
+				requestBody = requestParam['body']
+				command = requestBody['command']
+				requestBody.pop('command')
+				apiPath = conf['apis'][command]['realname']
+				requestParam['uri'] = requestParam['uri'] + apiPath
+				requestBodyFormat = conf['apis'][command]['format']
+				requestBody = requestBody['args']
+				requestParam['body'] = requestBody
+				for k,v in requestBodyFormat.items():
+					if k in requestBody and isinstance(requestBody[k], eval(v)):
+						print "param %s:%s is ok--------------"%(k, requestBody[k])
+					else:
+						requestBody[k] = "default"
+
+				if requestParam['method'] == "GET":
+					requestParam.pop('body')
+				## should contain the logic of request_body data
+				## should contain the logic of request_body data
+				## should contain the logic of request_body data

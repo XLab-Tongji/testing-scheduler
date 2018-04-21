@@ -1,0 +1,14 @@
+---
+greet:
+  ip: 192.168.199.105
+  port: 8080
+  apis:
+    greet: 
+      realname: greet
+      format:
+        name: str
+
+    answer: 
+      realname: answer
+      format:
+        ping: str

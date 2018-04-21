@@ -1,149 +1,61 @@
 {
  "tasks": [
   {
-   "taskReferenceName": "test_task_17176857205", 
+   "taskReferenceName": "test_task_19670110659", 
    "type": "HTTP", 
    "name": "test_task_1", 
    "inputParameters": {
     "http_request": {
-     "body": {
-      "testcase": "opnfv/test_cases/tc001", 
-      "args": {
-       "cpu": 3
-      }
-     }, 
-     "uri": "http://192.168.122.105:8080/run_testcase123", 
+     "uri": "http://192.168.199.105:8080/greet", 
      "method": "GET"
     }
    }
   }, 
   {
-   "taskReferenceName": "parallel_00444214617", 
-   "forkTasks": [
-    [
+   "decisionCases": {
+    "A": [
      {
-      "taskReferenceName": "test_task_27749996099", 
+      "taskReferenceName": "test_task_21586062929", 
       "type": "HTTP", 
       "name": "test_task_2", 
       "inputParameters": {
        "http_request": {
         "body": {
-         "testcase": "opnfv/test_cases/tc002", 
-         "args": {
-          "mem": 4
-         }
+         "ping": "ping_from_Leo"
         }, 
-        "uri": "http://192.168.122.105:8080/run_testcase123", 
+        "uri": "http://192.168.199.105:8080/answer", 
         "method": "POST"
        }
       }
-     }, 
-     {
-      "taskReferenceName": "parallel_11146259417", 
-      "forkTasks": [
-       [
-        {
-         "taskReferenceName": "test_task_36456451842", 
-         "type": "HTTP", 
-         "name": "test_task_3", 
-         "inputParameters": {
-          "http_request": {
-           "body": {
-            "testcase": "opnfv/test_cases/tc003", 
-            "args": {
-             "mem": 4
-            }
-           }, 
-           "uri": "http://192.168.122.105:8080/run_testcase123", 
-           "method": "POST"
-          }
-         }
-        }
-       ], 
-       [
-        {
-         "taskReferenceName": "test_task_46672547676", 
-         "type": "HTTP", 
-         "name": "test_task_4", 
-         "inputParameters": {
-          "http_request": {
-           "body": {
-            "testcase": "opnfv/test_cases/tc003", 
-            "args": {
-             "mem": 4
-            }
-           }, 
-           "uri": "http://192.168.122.105:8080/run_testcase123", 
-           "method": "POST"
-          }
-         }
-        }, 
-        {
-         "taskReferenceName": "test_task_55169384018", 
-         "type": "HTTP", 
-         "name": "test_task_5", 
-         "inputParameters": {
-          "http_request": {
-           "body": {
-            "testcase": "opnfv/test_cases/tc003", 
-            "args": {
-             "mem": 4
-            }
-           }, 
-           "uri": "http://192.168.122.105:8080/run_testcase123", 
-           "method": "POST"
-          }
-         }
-        }
-       ]
-      ], 
-      "type": "FORK_JOIN", 
-      "name": "parallel_1"
-     }, 
-     {
-      "taskReferenceName": "paralleljoin_13738227375", 
-      "type": "JOIN", 
-      "name": "paralleljoin_1", 
-      "joinOn": [
-       "test_task_36456451842", 
-       "test_task_55169384018"
-      ]
      }
     ], 
-    [
+    "B": [
      {
-      "taskReferenceName": "test_task_69909900320", 
+      "taskReferenceName": "test_task_36822347729", 
       "type": "HTTP", 
-      "name": "test_task_6", 
+      "name": "test_task_3", 
       "inputParameters": {
        "http_request": {
         "body": {
-         "testcase": "opnfv/test_cases/tc003", 
-         "args": {
-          "mem": 4
-         }
+         "ping": "ping_from_Leo_2"
         }, 
-        "uri": "http://192.168.122.105:8080/run_testcase123", 
+        "uri": "http://192.168.199.105:8080/answer", 
         "method": "POST"
        }
       }
      }
     ]
-   ], 
-   "type": "FORK_JOIN", 
-   "name": "parallel_0"
-  }, 
-  {
-   "taskReferenceName": "paralleljoin_01277626622", 
-   "type": "JOIN", 
-   "name": "paralleljoin_0", 
-   "joinOn": [
-    "paralleljoin_13738227375", 
-    "test_task_69909900320"
-   ]
+   }, 
+   "name": "switch_0", 
+   "inputParameters": {
+    "value": "A"
+   }, 
+   "caseValueParam": "value", 
+   "taskReferenceName": "switch_02358395534", 
+   "type": "DECISION"
   }
  ], 
- "name": "workflow_ts_logic_10.yaml_4458931106", 
+ "name": "workflow_ts_logic_01.yaml_0219365372", 
  "outputParameters": {}, 
  "version": 1, 
  "schemaVersion": 2, 

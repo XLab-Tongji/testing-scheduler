@@ -10,7 +10,7 @@
    "timeOutPolicy": "TIME_OUT_WF"
   }, 
   {
-   "name": "parallel_0", 
+   "name": "switch_0", 
    "timeOutSeconds": 1200, 
    "retryLogic": "FIXED", 
    "responseTimeOutSeconds": 3600, 
@@ -28,61 +28,7 @@
    "timeOutPolicy": "TIME_OUT_WF"
   }, 
   {
-   "name": "parallel_1", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
    "name": "test_task_3", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
-   "name": "test_task_4", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
-   "name": "test_task_5", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
-   "name": "paralleljoin_1", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
-   "name": "test_task_6", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
-   "name": "paralleljoin_0", 
    "timeOutSeconds": 1200, 
    "retryLogic": "FIXED", 
    "responseTimeOutSeconds": 3600, 
