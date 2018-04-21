@@ -61,12 +61,20 @@ class Flow(object):
 				genTask = NormalTask(order, stepObjArr, self)
 			elif order['type'] == "switch":
 				genTask = SwitchTask(order, stepObjArr, self)
-
+			elif order['type'] == "parallel":
+				genTask = ParallelTask(order, stepObjArr, self)
 			tasks.append(genTask.getDict())
+
+			if order['type'] == "parallel":
+				joinTask = genTask.getJoinTask()
+				tasks.append(joinTask.getDict())
+
+			
 			taskMetaList = genTask.getTaskMetaList()
 			if taskMetaList != None:
 				taskMetaAllList.extend(taskMetaList)
 		return tasks, taskMetaAllList
+
 
 class BaseWorkflowTask(object):
 	def __init__(self, name):
@@ -122,10 +130,39 @@ class SwitchTask(BaseWorkflowTask):
 
 class ParallelTask(BaseWorkflowTask):
 	seqNumber = 0
-	def __init__(self, stepObj):
-		super(ParallelTask, self).__init__(stepObj)
-		self._type = "FORK"
+	def __init__(self, order, stepObjArr, flowObj):
+		InstSeqNumber = ParallelTask.seqNumber
+		super(ParallelTask, self).__init__("parallel_" + str(InstSeqNumber))
+		ParallelTask.seqNumber = ParallelTask.seqNumber + 1
+		self._type = "FORK_JOIN"
+		self._args['forkTasks'] = []
+		self._childTaskMetaList = []
+		lastTasksNameList = []
+		parallelList = order['parallel'].items()
+		parallelList.sort()
+		for key, orderList in parallelList:
+			print orderList
+			taskList, taskMetaList = flowObj.parse(orderList, stepObjArr)
+			self._args['forkTasks'].append(taskList)
+			lastTasksNameList.append(taskList[-1]['taskReferenceName'])
+			if taskMetaList != None:
+				self._childTaskMetaList.extend(taskMetaList)
+		self._joinTaskObj = ParallelJoinTask(InstSeqNumber, lastTasksNameList)
 
+	def getTaskMetaList(self):
+		selfTaskMetaList = super(ParallelTask, self).getTaskMetaList()
+		selfTaskMetaList.extend(self._childTaskMetaList)
+		selfTaskMetaList.extend(self._joinTaskObj.getTaskMetaList())
+		return selfTaskMetaList
+
+	def getJoinTask(self):
+		return self._joinTaskObj
+
+class ParallelJoinTask(BaseWorkflowTask):
+	def __init__(self, seqNumber, joinOnList):
+		super(ParallelJoinTask, self).__init__("paralleljoin_" + str(seqNumber))
+		self._type = "JOIN"
+		self._args['joinOn'] = joinOnList
 
 def getRandString(length):
 	return "".join(random.choice(str("0123456789")) for i in range(length))

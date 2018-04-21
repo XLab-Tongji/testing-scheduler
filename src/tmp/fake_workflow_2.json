@@ -1,7 +1,7 @@
 {
  "tasks": [
   {
-   "taskReferenceName": "test_task_17497451660", 
+   "taskReferenceName": "test_task_17176857205", 
    "type": "HTTP", 
    "name": "test_task_1", 
    "inputParameters": {
@@ -18,11 +18,11 @@
    }
   }, 
   {
-   "caseValueParam": "A", 
-   "decisionCases": {
-    "A": [
+   "taskReferenceName": "parallel_00444214617", 
+   "forkTasks": [
+    [
      {
-      "taskReferenceName": "test_task_27385897270", 
+      "taskReferenceName": "test_task_27749996099", 
       "type": "HTTP", 
       "name": "test_task_2", 
       "inputParameters": {
@@ -37,15 +37,13 @@
         "method": "POST"
        }
       }
-     }
-    ], 
-    "B": [
+     }, 
      {
-      "caseValueParam": "C", 
-      "decisionCases": {
-       "C": [
+      "taskReferenceName": "parallel_11146259417", 
+      "forkTasks": [
+       [
         {
-         "taskReferenceName": "test_task_38988830514", 
+         "taskReferenceName": "test_task_36456451842", 
          "type": "HTTP", 
          "name": "test_task_3", 
          "inputParameters": {
@@ -62,9 +60,9 @@
          }
         }
        ], 
-       "D": [
+       [
         {
-         "taskReferenceName": "test_task_48050883596", 
+         "taskReferenceName": "test_task_46672547676", 
          "type": "HTTP", 
          "name": "test_task_4", 
          "inputParameters": {
@@ -79,21 +77,73 @@
            "method": "POST"
           }
          }
+        }, 
+        {
+         "taskReferenceName": "test_task_55169384018", 
+         "type": "HTTP", 
+         "name": "test_task_5", 
+         "inputParameters": {
+          "http_request": {
+           "body": {
+            "testcase": "opnfv/test_cases/tc003", 
+            "args": {
+             "mem": 4
+            }
+           }, 
+           "uri": "http://192.168.122.105:8080/run_testcase123", 
+           "method": "POST"
+          }
+         }
         }
        ]
-      }, 
-      "taskReferenceName": "switch_18446948709", 
-      "type": "DECISION", 
-      "name": "switch_1"
+      ], 
+      "type": "FORK_JOIN", 
+      "name": "parallel_1"
+     }, 
+     {
+      "taskReferenceName": "paralleljoin_13738227375", 
+      "type": "JOIN", 
+      "name": "paralleljoin_1", 
+      "joinOn": [
+       "test_task_36456451842", 
+       "test_task_55169384018"
+      ]
+     }
+    ], 
+    [
+     {
+      "taskReferenceName": "test_task_69909900320", 
+      "type": "HTTP", 
+      "name": "test_task_6", 
+      "inputParameters": {
+       "http_request": {
+        "body": {
+         "testcase": "opnfv/test_cases/tc003", 
+         "args": {
+          "mem": 4
+         }
+        }, 
+        "uri": "http://192.168.122.105:8080/run_testcase123", 
+        "method": "POST"
+       }
+      }
      }
     ]
-   }, 
-   "taskReferenceName": "switch_06937518687", 
-   "type": "DECISION", 
-   "name": "switch_0"
+   ], 
+   "type": "FORK_JOIN", 
+   "name": "parallel_0"
+  }, 
+  {
+   "taskReferenceName": "paralleljoin_01277626622", 
+   "type": "JOIN", 
+   "name": "paralleljoin_0", 
+   "joinOn": [
+    "paralleljoin_13738227375", 
+    "test_task_69909900320"
+   ]
   }
  ], 
- "name": "workflow_ts_logic_05.yaml_4453473280", 
+ "name": "workflow_ts_logic_10.yaml_4458931106", 
  "outputParameters": {}, 
  "version": 1, 
  "schemaVersion": 2, 
