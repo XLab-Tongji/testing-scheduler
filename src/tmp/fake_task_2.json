@@ -1,7 +1,7 @@
 {
  "task_group": [
   {
-   "name": "task_test_task_1", 
+   "name": "test_task_1", 
    "timeOutSeconds": 1200, 
    "retryLogic": "FIXED", 
    "responseTimeOutSeconds": 3600, 
@@ -10,7 +10,25 @@
    "timeOutPolicy": "TIME_OUT_WF"
   }, 
   {
-   "name": "task_test_task_2", 
+   "name": "switch", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "test_task_2", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "test_task_3", 
    "timeOutSeconds": 1200, 
    "retryLogic": "FIXED", 
    "responseTimeOutSeconds": 3600, 

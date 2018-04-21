@@ -1,7 +1,7 @@
 {
  "tasks": [
   {
-   "taskReferenceName": "test_task_16499592566", 
+   "taskReferenceName": "test_task_16546070417", 
    "type": "HTTP", 
    "name": "test_task_1", 
    "inputParameters": {
@@ -18,24 +18,53 @@
    }
   }, 
   {
-   "taskReferenceName": "test_task_28148561171", 
-   "type": "HTTP", 
-   "name": "test_task_2", 
-   "inputParameters": {
-    "http_request": {
-     "body": {
-      "testcase": "opnfv/test_cases/tc002", 
-      "args": {
-       "mem": 4
+   "caseValueParam": "A", 
+   "decisionCases": {
+    "A": [
+     {
+      "taskReferenceName": "test_task_27654902632", 
+      "type": "HTTP", 
+      "name": "test_task_2", 
+      "inputParameters": {
+       "http_request": {
+        "body": {
+         "testcase": "opnfv/test_cases/tc002", 
+         "args": {
+          "mem": 4
+         }
+        }, 
+        "uri": "http://192.168.122.105:8080/run_testcase123", 
+        "method": "POST"
+       }
       }
-     }, 
-     "uri": "http://192.168.122.105:8080/run_testcase123", 
-     "method": "POST"
-    }
-   }
+     }
+    ], 
+    "B": [
+     {
+      "taskReferenceName": "test_task_39191361990", 
+      "type": "HTTP", 
+      "name": "test_task_3", 
+      "inputParameters": {
+       "http_request": {
+        "body": {
+         "testcase": "opnfv/test_cases/tc003", 
+         "args": {
+          "mem": 4
+         }
+        }, 
+        "uri": "http://192.168.122.105:8080/run_testcase123", 
+        "method": "POST"
+       }
+      }
+     }
+    ]
+   }, 
+   "taskReferenceName": "switch9757602434", 
+   "type": "DECISION", 
+   "name": "switch"
   }
  ], 
- "name": "workflow_ts_logic_00.yaml_7310965693", 
+ "name": "workflow_ts_logic_03.yaml_6064322785", 
  "outputParameters": {}, 
  "version": 1, 
  "schemaVersion": 2, 

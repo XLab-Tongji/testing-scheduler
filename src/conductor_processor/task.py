@@ -9,7 +9,7 @@ class TaskFile(object):
 		self._jsonObj['name'] = taskName
 
 	def generateFromStep(self, stepObject):
-		self._jsonObj['name'] = "task_" + stepObject.getName()
+		self._jsonObj['name'] = stepObject.getName()
 		print "taskFile:", self._jsonObj['name']
 		return self._jsonObj
 

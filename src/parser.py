@@ -59,8 +59,6 @@ def parseStory(schema, storyName = 'story0'):
 		taskDict = taskFileObj.generateFromStep(stepObj)
 		taskDictArr.append(taskDict)
 
-	with open(STORE_TASK_PATH, 'w') as f:
-		f.write(json.dumps({'task_group':taskDictArr}, indent=True))
 	# for step in stepObjArr:
 	# 	print step
 	# for taskObj in taskObjArr:
@@ -70,9 +68,12 @@ def parseStory(schema, storyName = 'story0'):
 	#generate workflow by 'flow' and 'step'
 	
 	wfFileObj = WorkflowFile(storyName)
-	wfJson = wfFileObj.generateWFJson(flows, stepObjArr)
+	workflowDict, taskMetaList = wfFileObj.generateMetaData(flows, stepObjArr)
+
+	with open(STORE_TASK_PATH, 'w') as f:
+		f.write(json.dumps({'task_group':taskMetaList}, indent=True))
 	with open(STORE_WF_PATH, 'w') as f:
-		f.write(wfJson)
+		f.write(json.dumps(workflowDict, indent=True))
 
 
 # def sortById(dictX, dictY):
