@@ -3,10 +3,7 @@ class TestStep(object):
 	def __init__(self, type, id, name, service, action, **args):
 		self._type = type
 		self._id = id
-		if name != None and name != '':
-			self._name = name
-		else:
-			self._name = self._type + "_task_" + str(self._id) 
+		self._name = name
 		self._serviceName = service['name']
 		self._callType = service['call']
 		self._action = action

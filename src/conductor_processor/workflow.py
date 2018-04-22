@@ -3,7 +3,7 @@ import json
 from task import TaskFile
 class WorkflowFile(object):
 	def __init__(self, name):
-		self._name = "workflow_" + name + "_" + "".join(random.choice(str("0123456789")) for i in range(10))
+		self._name = "workflow_" + name + "(%s)"%getRandString(10)
 		self._description = ''
 		self._version = 1
 		self._schemaVersion = 2
@@ -79,7 +79,7 @@ class Flow(object):
 class BaseWorkflowTask(object):
 	def __init__(self, name):
 		self._name = name
-		self._taskReferenceName = self._name + getRandString(10)
+		self._taskReferenceName = self._name + "(%s)"%getRandString(10)
 		self._type = ''
 		self._args = {}
 

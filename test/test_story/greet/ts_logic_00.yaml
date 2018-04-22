@@ -9,6 +9,7 @@ schema:
   steps:
     -
       id: 1
+      name: workload-1
       type: test
       service:
         name: greet
@@ -22,6 +23,7 @@ schema:
 
     -
       id: 2
+      name: monitor-1
       type: test
       service:
         name: greet

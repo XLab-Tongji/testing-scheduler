@@ -24,7 +24,7 @@ def parse(filepath):
 		yaml_file = yaml.load(f)
 		parseStory(yaml_file['schema'], fileName)
 
-	runWorkFlow()
+	#runWorkFlow()
 
 	print '------------------- execute end --------------------------------'
 
@@ -43,11 +43,11 @@ def parseStory(schema, storyName = 'story0'):
 	
 	stepObjArr = []
 	for step in steps:
-		stepName = step['type'] + "_task_" + str(step['id'])
-		stepObj = testStepMgr.getStepObj(step['type'], step['id'], stepName, step['service'], step['action'], **step['args'])
+		stepObj = testStepMgr.getStepObj(step['type'], step['id'], step['name'], step['service'], step['action'], **step['args'])
 		stepObjArr.append(stepObj)
 
 	#generate workflow by 'flow' and 'step'
+	storyName = os.path.splitext(storyName)[0]
 	wfFileObj = WorkflowFile(storyName)
 	workflowDict, taskMetaList = wfFileObj.generateMetaData(flows, stepObjArr)
 
