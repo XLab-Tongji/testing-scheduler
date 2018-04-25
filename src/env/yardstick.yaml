@@ -1,8 +1,8 @@
 ---
 yardstick:
-  ip: 192.168.122.105
-  port: 8080
-  testcase_base_dir: opnfv/test_cases/ 
+  ip: 10.60.38.173
+  port: 5000
+  testcase_base_dir: ./
   apis:
-    run_testcase: run_testcase123
+    run_testcase: yardstick/testcases/release/action
     run_testsuite: run_testsuite234

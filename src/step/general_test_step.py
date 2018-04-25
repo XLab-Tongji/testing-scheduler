@@ -41,7 +41,9 @@ class GeneralTestStep(TestStep):
 					requestParam['uri'] = requestParam['uri'] + apiPath
 					tcBaseDir = conf['testcase_base_dir']
 					requestBody = requestParam['body']
-					requestBody['testcase'] = tcBaseDir + requestBody['testcase']
+
+					requestBody['action'] = "run_test_case"
+					requestBody['args']['testcase'] = tcBaseDir + requestBody['args']['testcase']
 
 				if requestParam['method'] == "GET":
 					requestParam.pop('body')

@@ -23,7 +23,11 @@ class WorkflowFile(object):
 	def generateMetaData(self, flowList, stepObjArr):
 		flowObj = Flow(flowList, stepObjArr)
 		self._tasks, taskMetaList = flowObj.parseMainFlow()
-
+		normalTasks = flowObj.getNormalTaskList()
+		for normalTask in normalTasks:
+			taskName = normalTask['name']
+			referenceName = normalTask['taskReferenceName']
+			self._outputParameters["%s(%s)"%(taskName, referenceName)] = "${%s.output.response.body}"%referenceName
 		return self.getDict(), taskMetaList
 
 
@@ -33,6 +37,7 @@ class Flow(object):
 		self._mainFlow = {}
 		self._subFlowDict = {}
 		self._stepObjArr = stepObjArr
+		self._normalTasks = []
 		for flow in flowList:
 			if flow['name'] == "main":
 				self._mainFlow = flow
@@ -59,6 +64,7 @@ class Flow(object):
 		for order in orderList:
 			if order['type'] == "normal":
 				genTask = NormalTask(order, stepObjArr, self)
+				self._normalTasks.append(genTask.getDict())
 			elif order['type'] == "switch":
 				genTask = SwitchTask(order, stepObjArr, self)
 			elif order['type'] == "parallel":
@@ -75,6 +81,8 @@ class Flow(object):
 				taskMetaAllList.extend(taskMetaList)
 		return tasks, taskMetaAllList
 
+	def getNormalTaskList(self):
+		return self._normalTasks
 
 class BaseWorkflowTask(object):
 	def __init__(self, name):
