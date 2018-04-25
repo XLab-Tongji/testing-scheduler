@@ -11,7 +11,7 @@ import sys
 sys.path.append("..")
 from conductorclient.run_new_workflow import WorkflowMgr
 
-SERVER_ADDR = "http://192.168.199.131:8080"
+CONDUCTOR_SERVER_ADDR = "http://192.168.199.131:8080"
 STORE_TASK_PATH = "tmp/fake_task_2.json"
 STORE_WF_PATH = "tmp/fake_workflow_2.json"
 
@@ -24,7 +24,7 @@ def parse(filepath):
 		yaml_file = yaml.load(f)
 		parseStory(yaml_file['schema'], fileName)
 
-	#runWorkFlow()
+	runWorkFlow()
 
 	print '------------------- execute end --------------------------------'
 
@@ -57,7 +57,7 @@ def parseStory(schema, storyName = 'story0'):
 		f.write(json.dumps(workflowDict, indent=True))
 
 def runWorkFlow():
-	wfMgr = WorkflowMgr(SERVER_ADDR)
+	wfMgr = WorkflowMgr(CONDUCTOR_SERVER_ADDR)
 	wfMgr.setTaskDefFromFile(STORE_TASK_PATH)
 	wfMgr.setWorkflowFromFile(STORE_WF_PATH)
 	inputParam = {'input': 'fake'}

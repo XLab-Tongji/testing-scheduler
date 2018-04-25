@@ -1,7 +1,7 @@
 {
  "task_group": [
   {
-   "name": "workload-1", 
+   "name": "inject-cpu-workload", 
    "timeOutSeconds": 1200, 
    "retryLogic": "FIXED", 
    "responseTimeOutSeconds": 3600, 
@@ -10,7 +10,79 @@
    "timeOutPolicy": "TIME_OUT_WF"
   }, 
   {
-   "name": "monitor-1", 
+   "name": "parallel_0", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "monitor-cpu-utility", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "parallel_1", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "inject-cpu-workload", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "monitor-cpu-utility", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "inject-cpu-workload", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "paralleljoin_1", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "monitor-cpu-utility", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "paralleljoin_0", 
    "timeOutSeconds": 1200, 
    "retryLogic": "FIXED", 
    "responseTimeOutSeconds": 3600, 

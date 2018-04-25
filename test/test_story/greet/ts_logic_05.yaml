@@ -10,6 +10,7 @@ schema:
   steps:
     -
       id: 1
+      name: inject-cpu-workload
       type: test
       service:
         name: greet
@@ -23,6 +24,7 @@ schema:
 
     -
       id: 2
+      name: monitor-cpu-utility
       type: test
       service:
         name: greet
@@ -36,6 +38,7 @@ schema:
 
     -
       id: 3
+      name: inject-cpu-workload
       type: test
       service:
         name: greet
@@ -49,6 +52,7 @@ schema:
 
     -
       id: 4
+      name: monitor-cpu-utility
       type: test
       service:
         name: greet

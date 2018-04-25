@@ -1,9 +1,9 @@
 {
  "tasks": [
   {
-   "taskReferenceName": "workload-1(2041829815)", 
+   "taskReferenceName": "task_3124877469", 
    "type": "HTTP", 
-   "name": "workload-1", 
+   "name": "inject-cpu-workload", 
    "inputParameters": {
     "http_request": {
      "uri": "http://192.168.199.105:8080/greet", 
@@ -12,21 +12,114 @@
    }
   }, 
   {
-   "taskReferenceName": "monitor-1(8538864126)", 
-   "type": "HTTP", 
-   "name": "monitor-1", 
-   "inputParameters": {
-    "http_request": {
-     "body": {
-      "ping": "ping_from_Leo"
+   "taskReferenceName": "parallel_0_task_2022433743", 
+   "forkTasks": [
+    [
+     {
+      "taskReferenceName": "task_5648968532", 
+      "type": "HTTP", 
+      "name": "monitor-cpu-utility", 
+      "inputParameters": {
+       "http_request": {
+        "body": {
+         "ping": "ping_from_Leo"
+        }, 
+        "uri": "http://192.168.199.105:8080/answer", 
+        "method": "POST"
+       }
+      }
      }, 
-     "uri": "http://192.168.199.105:8080/answer", 
-     "method": "POST"
-    }
-   }
+     {
+      "taskReferenceName": "parallel_1_task_3355908016", 
+      "forkTasks": [
+       [
+        {
+         "taskReferenceName": "task_1602322440", 
+         "type": "HTTP", 
+         "name": "inject-cpu-workload", 
+         "inputParameters": {
+          "http_request": {
+           "uri": "http://192.168.199.105:8080/ten", 
+           "method": "GET"
+          }
+         }
+        }
+       ], 
+       [
+        {
+         "taskReferenceName": "task_3271780745", 
+         "type": "HTTP", 
+         "name": "monitor-cpu-utility", 
+         "inputParameters": {
+          "http_request": {
+           "body": {
+            "ping": "ping_from_Leo_3"
+           }, 
+           "uri": "http://192.168.199.105:8080/answer", 
+           "method": "POST"
+          }
+         }
+        }, 
+        {
+         "taskReferenceName": "task_4083904139", 
+         "type": "HTTP", 
+         "name": "inject-cpu-workload", 
+         "inputParameters": {
+          "http_request": {
+           "body": {
+            "ping": "ping_from_Leo_4"
+           }, 
+           "uri": "http://192.168.199.105:8080/answer", 
+           "method": "POST"
+          }
+         }
+        }
+       ]
+      ], 
+      "type": "FORK_JOIN", 
+      "name": "parallel_1"
+     }, 
+     {
+      "taskReferenceName": "paralleljoin_1_task_2050996932", 
+      "type": "JOIN", 
+      "name": "paralleljoin_1", 
+      "joinOn": [
+       "task_1602322440", 
+       "task_4083904139"
+      ]
+     }
+    ], 
+    [
+     {
+      "taskReferenceName": "task_5130559104", 
+      "type": "HTTP", 
+      "name": "monitor-cpu-utility", 
+      "inputParameters": {
+       "http_request": {
+        "body": {
+         "ping": "ping_from_Leo_5"
+        }, 
+        "uri": "http://192.168.199.105:8080/answer", 
+        "method": "POST"
+       }
+      }
+     }
+    ]
+   ], 
+   "type": "FORK_JOIN", 
+   "name": "parallel_0"
+  }, 
+  {
+   "taskReferenceName": "paralleljoin_0_task_4730172247", 
+   "type": "JOIN", 
+   "name": "paralleljoin_0", 
+   "joinOn": [
+    "paralleljoin_1_task_2050996932", 
+    "task_5130559104"
+   ]
   }
  ], 
- "name": "workflow_ts_logic_00(9290435802)", 
+ "name": "workflow_ts_logic_11(8487142532)", 
  "outputParameters": {}, 
  "version": 1, 
  "schemaVersion": 2, 

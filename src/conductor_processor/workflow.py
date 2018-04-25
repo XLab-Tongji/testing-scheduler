@@ -79,7 +79,7 @@ class Flow(object):
 class BaseWorkflowTask(object):
 	def __init__(self, name):
 		self._name = name
-		self._taskReferenceName = self._name + "(%s)"%getRandString(10)
+		self._taskReferenceName = self._name + "_task_%s"%getRandString(10)
 		self._type = ''
 		self._args = {}
 
@@ -106,6 +106,7 @@ class NormalTask(BaseWorkflowTask):
 	def __init__(self, order, stepObjArr, flowObj):
 		relatedStepObj = stepObjArr[order['step'] - 1]
 		super(NormalTask, self).__init__(relatedStepObj.getName())
+		self._taskReferenceName = "task_%s"%getRandString(10)
 		self._type = "HTTP"
 		self._args['inputParameters'] = relatedStepObj.getArgs()
 		print "NormalTask:----------------------\n", relatedStepObj.getArgs()

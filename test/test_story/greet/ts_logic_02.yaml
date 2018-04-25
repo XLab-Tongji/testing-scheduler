@@ -11,6 +11,7 @@ schema:
     -
       id: 1
       type: test
+      name: inject-cpu-workload
       service:
         name: greet
         call: REST
@@ -24,6 +25,7 @@ schema:
     -
       id: 2
       type: test
+      name: monitor-cpu-utility
       service:
         name: greet
         call: REST
@@ -37,6 +39,7 @@ schema:
     -
       id: 3
       type: test
+      name: inject-cpu-workload
       service:
         name: greet
         call: REST
