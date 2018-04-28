@@ -1,26 +1,65 @@
 {
  "tasks": [
   {
-   "taskReferenceName": "task_6510253764", 
+   "taskReferenceName": "task_2114163226", 
    "type": "HTTP", 
-   "name": "test-tc-019", 
+   "name": "inject-cpu-workload", 
    "inputParameters": {
     "http_request": {
-     "body": {
-      "action": "run_test_case", 
-      "args": {
-       "testcase": "./opnfv_yardstick_tc019"
-      }
-     }, 
-     "uri": "http://10.60.38.173:5000/yardstick/testcases/release/action", 
-     "method": "POST"
+     "uri": "http://192.168.199.105:8080/greet", 
+     "method": "GET"
     }
    }
+  }, 
+  {
+   "decisionCases": {
+    "A": [
+     {
+      "taskReferenceName": "task_9916317424", 
+      "type": "HTTP", 
+      "name": "monitor-cpu-utility", 
+      "inputParameters": {
+       "http_request": {
+        "body": {
+         "ping": "ping_from_Leo"
+        }, 
+        "uri": "http://192.168.199.105:8080/answer", 
+        "method": "POST"
+       }
+      }
+     }
+    ], 
+    "B": [
+     {
+      "taskReferenceName": "task_7980332659", 
+      "type": "HTTP", 
+      "name": "collect-experiment-result", 
+      "inputParameters": {
+       "http_request": {
+        "body": {
+         "ping": "ping_from_Leo_2"
+        }, 
+        "uri": "http://192.168.199.105:8080/answer", 
+        "method": "POST"
+       }
+      }
+     }
+    ]
+   }, 
+   "name": "switch_0", 
+   "inputParameters": {
+    "value": "A"
+   }, 
+   "caseValueParam": "value", 
+   "taskReferenceName": "switch_0_task_4969807701", 
+   "type": "DECISION"
   }
  ], 
- "name": "workflow_ts_yardstick_01(0511774199)", 
+ "name": "workflow_ts_logic_01(4056034269)", 
  "outputParameters": {
-  "test-tc-019(task_6510253764)": "${task_6510253764.output.response.body}"
+  "collect-experiment-result(task_7980332659)": "${task_7980332659.output.response.body}", 
+  "monitor-cpu-utility(task_9916317424)": "${task_9916317424.output.response.body}", 
+  "inject-cpu-workload(task_2114163226)": "${task_2114163226.output.response.body}"
  }, 
  "version": 1, 
  "schemaVersion": 2, 

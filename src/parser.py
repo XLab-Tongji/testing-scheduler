@@ -17,6 +17,9 @@ STORE_WF_PATH = "tmp/fake_workflow_2.json"
 
 @click.command()
 @click.option("--filepath", help="file path of test case")
+def cmdParse(filepath):
+	parse(filepath)
+
 def parse(filepath):
 	filePrefix, fileName = os.path.split(filepath)
 	print '------------ start to parse the test story:%s ------------------'%fileName
@@ -68,4 +71,4 @@ def parseLog(flag, **msg):
 
 
 if __name__ == "__main__":
-	parse() 
+	cmdParse() 

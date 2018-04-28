@@ -1,7 +1,34 @@
 {
  "task_group": [
   {
-   "name": "test-tc-019", 
+   "name": "inject-cpu-workload", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "switch_0", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "monitor-cpu-utility", 
+   "timeOutSeconds": 1200, 
+   "retryLogic": "FIXED", 
+   "responseTimeOutSeconds": 3600, 
+   "retryDelaySeconds": 600, 
+   "retryCount": 3, 
+   "timeOutPolicy": "TIME_OUT_WF"
+  }, 
+  {
+   "name": "collect-experiment-result", 
    "timeOutSeconds": 1200, 
    "retryLogic": "FIXED", 
    "responseTimeOutSeconds": 3600, 
