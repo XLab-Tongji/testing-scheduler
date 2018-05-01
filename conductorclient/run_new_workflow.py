@@ -2,7 +2,7 @@ from conductor import conductor
 import json
 
 class WorkflowMgr(object):
-	def __init__(self, serverAddr = "http://192.168.199.130:8080"):
+	def __init__(self, serverAddr = "http://192.168.199.131:8080"):
 		self._serverAddr = serverAddr
 		self._metaDataClient = conductor.MetadataClient(self._serverAddr + '/api')
 		self._workflowClient = conductor.WorkflowClient(self._serverAddr + '/api')
@@ -28,12 +28,14 @@ class WorkflowMgr(object):
 		self._workflowDefined = True
 
 	def startWorkflow(self, param={}):
+		workflowId = ''
 		if not self._tasksDefined:
 			print "error: please define the task at first\n"
 		elif not self._workflowDefined:
 			print "error: please define the workflow at first\n"
 		else:
-			self._workflowClient.startWorkflow(self._workflowName, param)
+			workflowId = self._workflowClient.startWorkflow(self._workflowName, param)
+		return workflowId
 	
 	def setTaskDefFromFile(self, taskFilePath):
 		with open(taskFilePath, 'r') as f:
@@ -44,7 +46,7 @@ class WorkflowMgr(object):
 
 ## test demo
 def main():
-	serverAddr = "http://192.168.199.130:8080"
+	serverAddr = "http://192.168.199.131:8080"
 	wfMgr = WorkflowMgr(serverAddr)
 	wfMgr.setTaskDefFromFile('mock_tasks.json')
 	wfMgr.setWorkflowFromFile('mock_workflow.json')

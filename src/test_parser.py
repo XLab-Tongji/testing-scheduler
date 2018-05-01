@@ -8,12 +8,12 @@ from step.step_manager import TestStepManager
 from conductor_processor.task import TaskFile
 from conductor_processor.workflow import WorkflowFile
 import sys
-sys.path.append("..")
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from conductorclient.run_new_workflow import WorkflowMgr
-
-CONDUCTOR_SERVER_ADDR = "http://192.168.199.131:8080"
-STORE_TASK_PATH = "tmp/fake_task_2.json"
-STORE_WF_PATH = "tmp/fake_workflow_2.json"
+BASE_DIR = os.path.dirname(__file__)
+CONDUCTOR_SERVER_ADDR = "http://10.60.38.181:5201"
+STORE_TASK_PATH = BASE_DIR + "/tmp/fake_task_2.json"
+STORE_WF_PATH = BASE_DIR + "/tmp/fake_workflow_2.json"
 
 @click.command()
 @click.option("--filepath", help="file path of test case")
@@ -27,9 +27,11 @@ def parse(filepath):
 		yaml_file = yaml.load(f)
 		parseStory(yaml_file['schema'], fileName)
 
-	runWorkFlow()
+	workflowId = runWorkFlow()
 
 	print '------------------- execute end --------------------------------'
+
+	return workflowId
 
 def parseStory(schema, storyName = 'story0'):
 	if schema == None:
@@ -64,11 +66,14 @@ def runWorkFlow():
 	wfMgr.setTaskDefFromFile(STORE_TASK_PATH)
 	wfMgr.setWorkflowFromFile(STORE_WF_PATH)
 	inputParam = {'input': 'fake'}
-	wfMgr.startWorkflow(inputParam)
+	workflowId = wfMgr.startWorkflow(inputParam)
+	return workflowId
 
 def parseLog(flag, **msg):
 	return {'result': flag, 'message': msg}
 
+def helloe():
+	return "hello"
 
 if __name__ == "__main__":
 	cmdParse() 

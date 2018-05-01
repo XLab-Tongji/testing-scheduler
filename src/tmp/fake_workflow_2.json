@@ -1,21 +1,22 @@
 {
  "tasks": [
   {
-   "taskReferenceName": "task_2114163226", 
+   "taskReferenceName": "task_7693812057", 
    "type": "HTTP", 
    "name": "inject-cpu-workload", 
    "inputParameters": {
     "http_request": {
-     "uri": "http://192.168.199.105:8080/greet", 
+     "uri": "http://10.60.38.181:5202/greet", 
      "method": "GET"
     }
    }
   }, 
   {
-   "decisionCases": {
-    "A": [
+   "taskReferenceName": "parallel_2_task_1356921792", 
+   "forkTasks": [
+    [
      {
-      "taskReferenceName": "task_9916317424", 
+      "taskReferenceName": "task_3308363879", 
       "type": "HTTP", 
       "name": "monitor-cpu-utility", 
       "inputParameters": {
@@ -23,43 +24,109 @@
         "body": {
          "ping": "ping_from_Leo"
         }, 
-        "uri": "http://192.168.199.105:8080/answer", 
+        "uri": "http://10.60.38.181:5202/answer", 
         "method": "POST"
        }
       }
+     }, 
+     {
+      "taskReferenceName": "parallel_3_task_2579357552", 
+      "forkTasks": [
+       [
+        {
+         "taskReferenceName": "task_0195035642", 
+         "type": "HTTP", 
+         "name": "inject-cpu-workload", 
+         "inputParameters": {
+          "http_request": {
+           "uri": "http://10.60.38.181:5202/ten", 
+           "method": "GET"
+          }
+         }
+        }
+       ], 
+       [
+        {
+         "taskReferenceName": "task_4220735508", 
+         "type": "HTTP", 
+         "name": "monitor-cpu-utility", 
+         "inputParameters": {
+          "http_request": {
+           "body": {
+            "ping": "ping_from_Leo_3"
+           }, 
+           "uri": "http://10.60.38.181:5202/answer", 
+           "method": "POST"
+          }
+         }
+        }, 
+        {
+         "taskReferenceName": "task_4128401270", 
+         "type": "HTTP", 
+         "name": "inject-cpu-workload", 
+         "inputParameters": {
+          "http_request": {
+           "body": {
+            "ping": "ping_from_Leo_4"
+           }, 
+           "uri": "http://10.60.38.181:5202/answer", 
+           "method": "POST"
+          }
+         }
+        }
+       ]
+      ], 
+      "type": "FORK_JOIN", 
+      "name": "parallel_3"
+     }, 
+     {
+      "taskReferenceName": "paralleljoin_3_task_5757854393", 
+      "type": "JOIN", 
+      "name": "paralleljoin_3", 
+      "joinOn": [
+       "task_0195035642", 
+       "task_4128401270"
+      ]
      }
     ], 
-    "B": [
+    [
      {
-      "taskReferenceName": "task_7980332659", 
+      "taskReferenceName": "task_4474676954", 
       "type": "HTTP", 
-      "name": "collect-experiment-result", 
+      "name": "monitor-cpu-utility", 
       "inputParameters": {
        "http_request": {
         "body": {
-         "ping": "ping_from_Leo_2"
+         "ping": "ping_from_Leo_5"
         }, 
-        "uri": "http://192.168.199.105:8080/answer", 
+        "uri": "http://10.60.38.181:5202/answer", 
         "method": "POST"
        }
       }
      }
     ]
-   }, 
-   "name": "switch_0", 
-   "inputParameters": {
-    "value": "A"
-   }, 
-   "caseValueParam": "value", 
-   "taskReferenceName": "switch_0_task_4969807701", 
-   "type": "DECISION"
+   ], 
+   "type": "FORK_JOIN", 
+   "name": "parallel_2"
+  }, 
+  {
+   "taskReferenceName": "paralleljoin_2_task_4179656034", 
+   "type": "JOIN", 
+   "name": "paralleljoin_2", 
+   "joinOn": [
+    "paralleljoin_3_task_5757854393", 
+    "task_4474676954"
+   ]
   }
  ], 
- "name": "workflow_ts_logic_01(4056034269)", 
+ "name": "workflow_ts_logic_11(2050803802)", 
  "outputParameters": {
-  "collect-experiment-result(task_7980332659)": "${task_7980332659.output.response.body}", 
-  "monitor-cpu-utility(task_9916317424)": "${task_9916317424.output.response.body}", 
-  "inject-cpu-workload(task_2114163226)": "${task_2114163226.output.response.body}"
+  "monitor-cpu-utility(task_4220735508)": "${task_4220735508.output.response.body}", 
+  "monitor-cpu-utility(task_4474676954)": "${task_4474676954.output.response.body}", 
+  "inject-cpu-workload(task_4128401270)": "${task_4128401270.output.response.body}", 
+  "monitor-cpu-utility(task_3308363879)": "${task_3308363879.output.response.body}", 
+  "inject-cpu-workload(task_0195035642)": "${task_0195035642.output.response.body}", 
+  "inject-cpu-workload(task_7693812057)": "${task_7693812057.output.response.body}"
  }, 
  "version": 1, 
  "schemaVersion": 2, 

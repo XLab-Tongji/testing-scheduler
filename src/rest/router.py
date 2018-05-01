@@ -1,10 +1,16 @@
 from flask import Flask
+from flask import jsonify
+from flask import request
+from flask_cors import CORS
 import os
 import json
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+import test_parser
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/")
 def hello():
@@ -19,9 +25,20 @@ def getTCDir(service_name):
 		fileList = os.listdir(storyDir)
 		data = {"code": "200", "result": {"files": fileList}}
 	else:
-		data = {"code": "500", "result": "error"}
+		data = {"code": "500", "error": "no such stories!"}
 	
-	return json.dumps(data)
+	return jsonify(data)
+
+@app.route("/run-test/story", methods=['POST'])
+def runTestStory():
+	stories = json.loads(request.form['stories'])
+	service_name = request.form['service']
+	baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_story")
+	for story in stories:
+		storyDir = os.path.join(baseTestDir, service_name, story)
+		app.logger.debug("storyDir:%s"%storyDir)
+		workflowId = test_parser.parse(storyDir)
+	return jsonify({"code": 200, "result": {"workflowId": workflowId}})
 
 
 if __name__ == "__main__":
