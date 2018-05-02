@@ -48,7 +48,7 @@ def getStoryContent():
 	service_name = request.args['service']
 	baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_story")
 	storyFileDir = os.path.join(baseTestDir, service_name, story_name)
-	storyFileDir = os.path.join(BASE_DIR, "..", "tmp", "fake_workflow_2.json")
+	storyFileDir = os.path.join(BASE_DIR, "..", "tmp", "fake_workflow.json")
 	with open(storyFileDir, "r") as f:
 		storyContent = f.read()
 	result = {"code": 200, "result": {"service": service_name, "story": story_name, "content": storyContent}}

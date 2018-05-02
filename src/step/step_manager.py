@@ -1,6 +1,6 @@
+from step.test_step import TestStep
 import os
 import sys
-from step.test_step import TestStep
 class TestStepManager(object):
 	def __init__(self):
 		currentDirPath = os.path.dirname(os.path.abspath(__file__))
@@ -15,14 +15,12 @@ class TestStepManager(object):
 
 	def getStepObj(self, type, id, name, service, action, **args):
 		for subclass in TestStep.__subclasses__():
-			#print "__step_type__:%s"%subclass.__step_type__
 			if type == subclass.__step_type__:
 				return subclass(id, name, service, action, **args)
 
 if __name__ == "__main__":
 	tsMgr = TestStepManager()
-	args = {'command': 'start', 'method': 'POST', 'target': {'ip': '192.168.199.130',
-          'port': '8080'}, 'domain': 'make_a_phonecall', 'amount': '100', 'duration': '60'}
-	stepObj = tsMgr.getStepObj('workload', 'test_cpu', 'ansible', 'REST', **args)
+	args = {'command': 'greet', 'method': 'POST', 'args': {'name': 'leo'}}
+	stepObj = tsMgr.getStepObj('test', 1, 'test_cpu', {'name':'greet', 'call':'REST'}, 'start', **args)
 	print stepObj
 	print stepObj.__class__.__mro__
