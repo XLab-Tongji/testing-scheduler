@@ -10,79 +10,7 @@
    "timeOutPolicy": "TIME_OUT_WF"
   }, 
   {
-   "name": "parallel_2", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
    "name": "monitor-cpu-utility", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
-   "name": "parallel_3", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
-   "name": "inject-cpu-workload", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
-   "name": "monitor-cpu-utility", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
-   "name": "inject-cpu-workload", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
-   "name": "paralleljoin_3", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
-   "name": "monitor-cpu-utility", 
-   "timeOutSeconds": 1200, 
-   "retryLogic": "FIXED", 
-   "responseTimeOutSeconds": 3600, 
-   "retryDelaySeconds": 600, 
-   "retryCount": 3, 
-   "timeOutPolicy": "TIME_OUT_WF"
-  }, 
-  {
-   "name": "paralleljoin_2", 
    "timeOutSeconds": 1200, 
    "retryLogic": "FIXED", 
    "responseTimeOutSeconds": 3600, 
