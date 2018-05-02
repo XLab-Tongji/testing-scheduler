@@ -1,5 +1,6 @@
 import random
 import json
+import collections
 from task import TaskFile
 class WorkflowFile(object):
 	def __init__(self, name):
@@ -11,14 +12,15 @@ class WorkflowFile(object):
 		self._outputParameters = {}
 
 	def getDict(self):
-		return {
-			"name": self._name,
-			"description": self._description,
-			"version": self._version,
-			"schemaVersion": self._schemaVersion,
-			"tasks": self._tasks,
-			"outputParameters": self._outputParameters
-		}
+		d = collections.OrderedDict()
+		d['name'] = self._name
+		d['description'] = self._description
+		d['version'] = self._version
+		d['schemaVersion'] = self._schemaVersion
+		d['tasks'] = self._tasks
+		d['outputParameters'] = self._outputParameters
+		
+		return d
 
 	def generateMetaData(self, flowList, stepObjArr):
 		flowObj = Flow(flowList, stepObjArr)
