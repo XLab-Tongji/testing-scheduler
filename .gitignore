@@ -1,3 +1,4 @@
 #PYTHON PYC FILE
 *.pyc
-tmp/*
+tmp/fake_tasks.json
+tmp/fake_workflow.json
