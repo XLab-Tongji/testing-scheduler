@@ -66,17 +66,21 @@ class Flow(object):
 		for order in orderList:
 			if order['type'] == "normal":
 				genTask = NormalTask(order, stepObjArr, self)
-				self._normalTasks.append(genTask.getDict())
+				self._normalTasks.append(genTask)
 			elif order['type'] == "switch":
 				genTask = SwitchTask(order, stepObjArr, self)
 			elif order['type'] == "parallel":
 				genTask = ParallelTask(order, stepObjArr, self)
+			elif order['type'] == "loop":
+				genTask = LoopTask(order, stepObjArr, self)
 			tasks.append(genTask.getDict())
 
 			if order['type'] == "parallel":
 				joinTask = genTask.getJoinTask()
 				tasks.append(joinTask.getDict())
-
+			elif order['type'] == "loop":
+				loopFinishTask = genTask.getLoopFinishTask()
+				tasks.append(loopFinishTask.getDict())
 			
 			taskMetaList = genTask.getTaskMetaList()
 			if taskMetaList != None:
@@ -84,7 +88,16 @@ class Flow(object):
 		return tasks, taskMetaAllList
 
 	def getNormalTaskList(self):
-		return self._normalTasks
+		normalTasksDict = []
+		for normalTask in self._normalTasks:
+			normalTasksDict.append(normalTask.getDict())
+		return normalTasksDict
+
+	def getNormalTask(self, stepId):
+		for normalTask in self._normalTasks:
+			if normalTask.getStepId() == stepId:
+				return normalTask
+		return None
 
 class BaseWorkflowTask(object):
 	def __init__(self, name):
@@ -108,6 +121,9 @@ class BaseWorkflowTask(object):
 	def getName(self):
 		return self._name
 
+	def getReferenceName(self):
+		return self._taskReferenceName
+
 	def getTaskMetaList(self):
 		taskFile = TaskFile()
 		return [taskFile.generateFromStep(self)]
@@ -117,19 +133,28 @@ class NormalTask(BaseWorkflowTask):
 		relatedStepObj = stepObjArr[order['step'] - 1]
 		super(NormalTask, self).__init__(relatedStepObj.getName())
 		self._taskReferenceName = "task_%s"%getRandString(10)
+		self._stepId = relatedStepObj.getId()
 		self._type = "HTTP"
 		self._args['inputParameters'] = relatedStepObj.getArgs()
 		print "NormalTask:----------------------\n", relatedStepObj.getArgs()
 
+	def getStepId(self):
+		return self._stepId
 	
 class SwitchTask(BaseWorkflowTask):
 	seqNumber = 0
 	def __init__(self, order, stepObjArr, flowObj):
 		super(SwitchTask, self).__init__("switch_" + str(SwitchTask.seqNumber))
 		SwitchTask.seqNumber = SwitchTask.seqNumber + 1
+		if 'name' in order:
+			self._name = order['name']
 		self._type = "DECISION"
 		caseValueParam = 'value'
-		self._args['inputParameters'] = {caseValueParam: order['value']}
+		stepId, outputParam = order['value'].split(".")
+		stepId = int(stepId)
+		normalTask = flowObj.getNormalTask(stepId)
+		caseValue = "${%s.output.response.body.%s}"%(normalTask.getReferenceName(), outputParam)
+		self._args['inputParameters'] = {caseValueParam: caseValue}
 		self._args['caseValueParam'] = caseValueParam
 		self._args['decisionCases'] = {}
 		self._childTaskMetaList = []
@@ -148,6 +173,8 @@ class ParallelTask(BaseWorkflowTask):
 		InstSeqNumber = ParallelTask.seqNumber
 		super(ParallelTask, self).__init__("parallel_" + str(InstSeqNumber))
 		ParallelTask.seqNumber = ParallelTask.seqNumber + 1
+		if 'name' in order:
+			self._name = order['name']
 		self._type = "FORK_JOIN"
 		self._args['forkTasks'] = []
 		self._childTaskMetaList = []
@@ -177,6 +204,77 @@ class ParallelJoinTask(BaseWorkflowTask):
 		super(ParallelJoinTask, self).__init__("paralleljoin_" + str(seqNumber))
 		self._type = "JOIN"
 		self._args['joinOn'] = joinOnList
+
+class LoopTask(BaseWorkflowTask):
+	seqNumber = 0
+	LOOP_SERVICE_URL = "http://192.168.199.105:6000/loop"
+	def __init__(self, order, stepObjArr, flowObj):
+		InstSeqNumber = LoopTask.seqNumber
+
+		super(LoopTask, self).__init__("loop_" + str(InstSeqNumber))
+		if 'name' in order:
+			self._name = order['name']
+
+		self._taskReferenceName = self._name + "_" + getRandString(3)
+		LoopTask.seqNumber = LoopTask.seqNumber + 1
+		self._childTaskMetaList = []
+
+		self._type = "HTTP"
+		self._args['inputParameters'] = {"http_request": {}}
+		httpRequest = self._args['inputParameters']['http_request']
+		httpRequest['uri'] = LoopTask.LOOP_SERVICE_URL
+		httpRequest['method'] = "POST"
+		httpRequest['body'] = {}
+		requestBody = httpRequest['body']
+
+		##parse loopTasks
+		loopTasks = order['body']
+		taskList, taskMetaList = flowObj.parse(loopTasks, stepObjArr)
+		for task in taskList:
+			task['taskReferenceName'] = task['name'] + "_" + getRandString(3)
+		requestBody['loopTasks'] = taskList
+		if taskMetaList != None:
+			self._childTaskMetaList.extend(taskMetaList)
+		##parse checkTask
+		checkTask = order['check']
+		cTaskList, cTaskMetaList = flowObj.parse(checkTask, stepObjArr)
+		for task in cTaskList:
+			task['taskReferenceName'] = task['name'] + "_" + getRandString(3)
+
+		requestBody['loopCheckTask'] = cTaskList[0]
+		if cTaskMetaList != None:
+			self._childTaskMetaList.extend(cTaskMetaList)
+		##append workflowId, taskRefName
+		requestBody['workflowId'] = "${workflow.workflowId}"
+		requestBody['taskRefName'] = self._taskReferenceName
+		##parse loopChange
+		loopChanges = order['change']
+		for (taskName, changeDetail) in loopChanges.items():
+			for task in taskList:
+				if task['name'] == taskName:
+					taskRefName = task['taskReferenceName']
+					loopChanges[taskRefName] = loopChanges.pop(taskName)
+		requestBody['loopChange'] = loopChanges
+
+		# loop finish task
+		self._finishTaskObj = LoopFinishTask(self._taskReferenceName)
+		requestBody['finishTaskRefName'] = self._finishTaskObj.getReferenceName()
+
+
+	def getTaskMetaList(self):
+		selfTaskMetaList = super(LoopTask, self).getTaskMetaList()
+		selfTaskMetaList.extend(self._childTaskMetaList)
+		selfTaskMetaList.extend(self._finishTaskObj.getTaskMetaList())
+		return selfTaskMetaList
+
+	def getLoopFinishTask(self):
+		return self._finishTaskObj
+
+class LoopFinishTask(BaseWorkflowTask):
+	def __init__(self, loopTaskRefName):
+		super(LoopFinishTask, self).__init__("loop_finish_(%s)"%loopTaskRefName)
+		self._taskReferenceName = self._name
+		self._type = "SIMPLE"
 
 def getRandString(length):
 	return "".join(random.choice(str("0123456789")) for i in range(length))

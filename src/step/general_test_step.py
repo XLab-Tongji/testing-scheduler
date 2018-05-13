@@ -64,10 +64,23 @@ class GeneralTestStep(TestStep):
 				requestBody.pop('command')
 				apiPath = conf['apis'][command]['realname']
 				requestParam['uri'] = requestParam['uri'] + apiPath
+				
+				if "args" in requestBody:
+					requestBody = requestBody['args']
+					requestParam['body'] = requestBody
+				
+				if "format" not in conf['apis'][command]:
+					if "args" not in requestBody:
+						requestParam.pop("body")
+					return
+
 				requestBodyFormat = conf['apis'][command]['format']
-				requestBody = requestBody['args']
-				requestParam['body'] = requestBody
+
+				print "requestBody"
+				print requestBody
 				for k,v in requestBodyFormat.items():
+					print k, v
+					print k in requestBody
 					if k in requestBody and isinstance(requestBody[k], eval(v)):
 						print "param %s:%s is ok--------------"%(k, requestBody[k])
 					else:

@@ -17,3 +17,8 @@ greet:
       realname: ten
       format:
         ping: str
+
+    switch:
+      realname: switch
+      format:
+        name: str

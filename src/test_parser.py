@@ -45,6 +45,16 @@ def parseStory(schema, storyName = 'story0'):
 	# steps = sorted(steps, sortById)
 	testStepMgr = TestStepManager()
 	
+	env_conf = {}
+	#
+	if 'env' in schema:
+		envDir = schema['env']['dir']
+		print "envDir is:%s"%envDir
+		envDict = yaml.load(os.path.join(BASE_DIR, "..", envDir))
+		testStepMgr.setEnv(envDict)
+	#
+
+
 	stepObjArr = []
 	for step in steps:
 		stepObj = testStepMgr.getStepObj(step['type'], step['id'], step['name'], step['service'], step['action'], **step['args'])
