@@ -57,7 +57,9 @@ def parseStory(schema, storyName = 'story0'):
 
 	stepObjArr = []
 	for step in steps:
-		stepObj = testStepMgr.getStepObj(step['type'], step['id'], step['name'], step['service'], step['action'], **step['args'])
+		if 'args' not in step:
+			step['args'] = {}
+		stepObj = testStepMgr.getStepObj(step['type'], step['id'], step['name'], step['service'], step['action'], step['args'])
 		stepObjArr.append(stepObj)
 
 	#generate workflow by 'flow' and 'step'
@@ -80,9 +82,6 @@ def runWorkFlow():
 
 def parseLog(flag, **msg):
 	return {'result': flag, 'message': msg}
-
-def helloe():
-	return "hello"
 
 if __name__ == "__main__":
 	cmdParse() 

@@ -13,14 +13,14 @@ class TestStepManager(object):
 			fileName not in excludeFiles:
 			   	__import__(os.path.splitext(fileName)[0])
 
-	def getStepObj(self, type, id, name, service, action, **args):
+	def getStepObj(self, type, id, name, service, action, args):
 		for subclass in TestStep.__subclasses__():
 			if type == subclass.__step_type__:
-				return subclass(id, name, service, action, **args)
+				return subclass(id, name, service, action, args)
 
 if __name__ == "__main__":
 	tsMgr = TestStepManager()
 	args = {'command': 'greet', 'method': 'POST', 'args': {'name': 'leo'}}
-	stepObj = tsMgr.getStepObj('test', 1, 'test_cpu', {'name':'greet', 'call':'REST'}, 'start', **args)
+	stepObj = tsMgr.getStepObj('test', 1, 'test_cpu', {'name':'greet', 'call':'REST'}, 'start', args)
 	print stepObj
 	print stepObj.__class__.__mro__

@@ -4,8 +4,8 @@ from step.test_step import TestStep
 class WorkloadStep(TestStep):
 	__step_type__ = 'workload'
 
-	def __init__(self, id, name, service, action, **args):
-		super(WorkloadStep, self).__init__(self.__step_type__, id, name, service, action, **args)
+	def __init__(self, id, name, service, action, args):
+		super(WorkloadStep, self).__init__(self.__step_type__, id, name, service, action, args)
 		self._argsParse()
 		self._action()
 

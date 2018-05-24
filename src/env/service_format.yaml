@@ -1,0 +1,32 @@
+---
+service_format:
+  ip: xxx
+  port: xxxx
+  apis:
+    # basic format
+    api_frontend_view:
+      method: POST
+      uri: abc/ddd
+      params:
+        username:
+            help: user name
+        host:
+            help: the host to be tested
+            params:
+              ip:
+                help: host's ip
+              port:
+                help: host's port
+
+    api_frontend_view_get:
+      method: GET
+      uri: abc/ddd
+      params:
+        username:
+            help: user name
+        host:
+            help: the host to be tested
+
+    api_frontend_view_userlist:
+      method: GET
+      uri: abc/userlist

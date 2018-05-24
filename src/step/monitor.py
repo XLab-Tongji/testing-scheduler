@@ -6,8 +6,8 @@ from step.test_step import TestStep
 class MonitorStep(TestStep):
 	__step_type__ = 'monitor'
 
-	def __init__(self, name, service, action, **args):
-		super(MonitorStep, self).__init__(name, service, action, **args)
+	def __init__(self, name, service, action, args):
+		super(MonitorStep, self).__init__(name, service, action, args)
 		self._argsParse()
 		self.action()
 

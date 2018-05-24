@@ -4,21 +4,28 @@ greet:
   port: 5202
   apis:
     greet: 
-      realname: greet
-      format:
-        name: str
+      method: GET
+      uri: greet
+      params:
+        name:
+          help: user name
 
     answer: 
-      realname: answer
-      format:
-        ping: str
+      method: POST
+      uri: answer
+      params:
+        ping:
+          help: param ping
 
     ten: 
-      realname: ten
-      format:
-        ping: str
+      method: GET
+      uri: ten
+
 
     switch:
-      realname: switch
-      format:
-        name: str
+      method: GET
+      uri: switch
+
+    switch_2:
+      method: GET
+      uri: switch_2

@@ -1,11 +1,11 @@
 import os
 class TestStep(object):
-	def __init__(self, type, id, name, service, action, **args):
+	def __init__(self, type, id, name, service, action, args):
 		self._type = type
 		self._id = id
 		self._name = name
 		self._serviceName = service['name']
-		self._callType = service['call']
+		self._serviceInterface = service['interface']
 		self._action = action
 		self._args = args
 

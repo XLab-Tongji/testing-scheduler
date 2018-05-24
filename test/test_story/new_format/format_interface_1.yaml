@@ -1,0 +1,32 @@
+################################################
+# date: 2018/4/20
+# spec: basic simplified format of interface 
+# param
+# author: x-lab.Leo
+################################################
+
+---
+schema:
+  steps:
+    -
+      id: 1
+      name: call_a_service
+      type: test
+      action: start
+      service:
+        name: service_format
+        interface: api_frontend_view
+      args:
+        username: leo
+        host:
+          ip: 192.168.122.105
+          port: 8082
+        
+
+  flows:
+    -
+      name: main
+      orders:
+        -
+          type: normal
+          step: 1

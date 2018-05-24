@@ -1,6 +1,6 @@
 ################################################
 # date: 2018/4/20
-# spec: test conductor basic logic
+# spec: basic simplified format 
 # author: x-lab.Leo
 ################################################
 
@@ -9,25 +9,28 @@ schema:
   steps:
     -
       id: 1
-      name: make_a_greet
       type: test
       service:
-        name: greet
-        interface: greet
-      action: start
+        name: yardstick
+        interface: run_testcase
+      action: run_testcase
       args:
-        name: leo
+        testcase: tc001
+      in:
+        - tc_name
+      out:
+        - result
+        
 
     -
       id: 2
-      name: response_the_greet
       type: test
       service:
-        name: greet
-        interface: answer
-      action: start
+        name: yardstick
+        interface: run_testcase
+      action: run_testcase
       args:
-        ping: ping_from_leo
+        testcase: tc002
 
   flows:
     -

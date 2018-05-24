@@ -9,68 +9,56 @@ schema:
   steps:
     -
       id: 1
+      name: make_a_greet
       type: test
       service:
-        name: yardstick
-        call: REST
-      action: run_testcase
+        name: greet
+        interface: greet
+      action: start
       args:
-        method: GET
-        testcase: tc001
-        args:
-          cpu: 3
-
+        name: leo_@
     -
       id: 2
+      name: choose_greet_type
       type: test
       service:
-        name: yardstick
-        call: REST
-      action: run_testcase
-      args:
-        method: POST
-        testcase: tc002
-        args:
-          mem: 4
+        name: greet
+        interface: switch
+      action: start
 
     -
       id: 3
+      name: response_the_greet
       type: test
       service:
-        name: yardstick
-        call: REST
-      action: run_testcase
+        name: greet
+        interface: answer
+      action: start
       args:
-        method: POST
-        testcase: tc003
-        args:
-          mem: 4
+        ping: ping_from_leo
 
     -
       id: 4
+      name: make_a_greet
       type: test
       service:
-        name: yardstick
-        call: REST
-      action: run_testcase
+        name: greet
+        interface: greet
+      action: start
       args:
-        method: POST
-        testcase: tc003
-        args:
-          mem: 4
+        name: leo_@
 
     -
       id: 5
+      name: make_a_greet_2
       type: test
       service:
-        name: yardstick
-        call: REST
-      action: run_testcase
+        name: greet
+        interface: greet
+      action: start
       args:
-        method: POST
-        testcase: tc003
-        args:
-          mem: 4
+        name: leo_@
+
 
   flows:
     -
@@ -88,7 +76,7 @@ schema:
                 step: 2
               -
                 type: switch
-                value: A
+                value: 2.result
                 cases:
                   A:
                     -
