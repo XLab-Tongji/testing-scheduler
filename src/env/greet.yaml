@@ -25,7 +25,13 @@ greet:
     switch:
       method: GET
       uri: switch
+      return:
+        -
+          result
 
     switch_2:
       method: GET
       uri: switch_2
+      return:
+        -
+          result

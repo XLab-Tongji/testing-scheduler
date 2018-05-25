@@ -43,17 +43,17 @@ def parseStory(schema, storyName = 'story0'):
 		return parseLog(False, reasion='flows is invalid.')
 	## steps is a list, step is dict. no json here.
 	# steps = sorted(steps, sortById)
-	testStepMgr = TestStepManager()
-	
-	env_conf = {}
-	#
-	if 'env' in schema:
-		envDir = schema['env']['dir']
-		print "envDir is:%s"%envDir
-		envDict = yaml.load(os.path.join(BASE_DIR, "..", envDir))
-		testStepMgr.setEnv(envDict)
-	#
 
+	# load SUT context
+	contextDict = {}
+	if 'context' in schema:
+		contextDir = schema['context']['dir']
+		print "contextDir is:%s"%contextDir
+		contextDir = os.path.join(BASE_DIR, "..", contextDir)
+		with open(contextDir, "r") as f:
+			contextDict = yaml.load(f)
+	#
+	testStepMgr = TestStepManager(contextDict)
 
 	stepObjArr = []
 	for step in steps:

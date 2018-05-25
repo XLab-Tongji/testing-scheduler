@@ -2,7 +2,9 @@ from step.test_step import TestStep
 import os
 import sys
 class TestStepManager(object):
-	def __init__(self):
+	def __init__(self, context):
+		self._context = context
+
 		currentDirPath = os.path.dirname(os.path.abspath(__file__))
 		sys.path.append(currentDirPath)
 
@@ -16,7 +18,7 @@ class TestStepManager(object):
 	def getStepObj(self, type, id, name, service, action, args):
 		for subclass in TestStep.__subclasses__():
 			if type == subclass.__step_type__:
-				return subclass(id, name, service, action, args)
+				return subclass(id, name, service, action, args, self._context)
 
 if __name__ == "__main__":
 	tsMgr = TestStepManager()

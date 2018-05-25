@@ -4,8 +4,8 @@ import yaml
 class GeneralTestStep(TestStep):
 	__step_type__ = "test"
 
-	def __init__(self, id, name, service, action, args):
-		super(GeneralTestStep, self).__init__(self.__step_type__, id, name, service, action, args)
+	def __init__(self, id, name, service, action, args, context):
+		super(GeneralTestStep, self).__init__(self.__step_type__, id, name, service, action, args, context)
 		self._argsParse()
 		self.action()
 
@@ -13,6 +13,9 @@ class GeneralTestStep(TestStep):
 		self._serviceParse()
 
 	def _serviceParse(self):
+		## replace some arguments with context value.
+		self._contextTransform(self._args)
+		
 		requestParam = {}
 		envFilePath = os.path.join(self._getCurrentDir(), "..", "env", self._serviceName + ".yaml")
 		with open(envFilePath, 'r') as f:
@@ -34,7 +37,17 @@ class GeneralTestStep(TestStep):
 		self._args = {}
 		self._args['http_request'] = requestParam
 
-
+	def _contextTransform(self, argsDict):
+		for (k, v) in argsDict.items():
+			if isinstance(v, str) and len(v) > 4 and v[0:4] == "cxt.":
+				v = v[4:]
+				layers = v.split(".")
+				contextData = self._context
+				for layer in layers:
+					contextData = contextData[layer]
+				argsDict[k] = contextData
+			elif isinstance(v, dict):
+				self._contextTransform(v)
 
 	def run_testcase(self):
 		### fimd_service_conf, set proper command in data to transfer
