@@ -7,6 +7,22 @@
     <link type="text/css" rel="stylesheet" href="./css/wf-graph.css">
     <link type="text/css" rel="stylesheet" href="./css/style.css">
     <link type="text/css" rel="stylesheet" href="./css/bootstrap.min.css">
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+    <script>
+      var storys;
+      window.onload=function () {
+        $.ajax({
+          url:"http://10.60.38.181:5202/testsuite/list",
+          method:"GET",
+          data:{},
+          success:function (data) {
+            if(data['code'] == 200) {
+              storys = data['result'];
+            }
+          }
+        })
+      };
+    </script>
   </head>
   <body class="top-navigation white-bg">
   <div id="wrapper">
@@ -14,10 +30,10 @@
       <div class="row border-bottom blue-bg my-page-header">
         <p id="title">OPNFV Bottlenecks Portal</p>
         <ul id="intr_table" class="nav navbar-nav">
-          <li><button type="button" class="btn btn-w-m btn-link btn-lg">Test Suites</button></li>
-          <li><button type="button" class="btn btn-w-m btn-link btn-lg">Test Results</button></li>
-          <li><button type="button" class="btn btn-w-m btn-link btn-lg">Reports</button></li>
-          <li><button type="button" class="btn btn-w-m btn-link btn-lg">Enviroments</button></li>
+          <li><button type="button" class="btn btn-w-m btn-link btn-lg" style="color: white">Test Suites</button></li>
+          <li><button type="button" class="btn btn-w-m btn-link btn-lg" style="color: white">Test Results</button></li>
+          <li><button type="button" class="btn btn-w-m btn-link btn-lg" style="color: white">Reports</button></li>
+          <li><button type="button" class="btn btn-w-m btn-link btn-lg" style="color: white">Enviroments</button></li>
         </ul>
       </div>
       <div id="app"></div>

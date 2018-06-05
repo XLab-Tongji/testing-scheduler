@@ -97,10 +97,25 @@ schema:
         <div id="workflow-graph-section" class="row">
           <div id="executing" class="col-md-2" style="height:600px; margin-right: -20px;">
             <table class="table" style="margin-top: 30px;">
-              <tr>
-                <td>1</td>
-                <td>opnfv_yardstick_tc002.yaml</td>
-                <td><p class="text-success">running</p></td>
+              <tr style="border-top-width: 1px;border-top-style: solid;">
+                <td style="padding-right: 8px">1</td>
+                <td style="padding-right: 8px">opnfv_bottleneck_ts001.yaml</td>
+                <td style="padding-right: 8px"><p class="text-success">pass</p></td>
+              </tr>
+              <tr style="border-top-width: 1px;border-top-style: solid;">
+                <td>2</td>
+                <td>opnfv_bottleneck_ts002.yaml</td>
+                <td><p class="text-success">pass</p></td>
+              </tr >
+              <tr style="border-top-width: 1px;border-top-style: solid;">
+                <td>3</td>
+                <td>opnfv_bottleneck_ts003.yaml</td>
+                <td><p class="text-success">pass</p></td>
+              </tr>
+              <tr style="border-top-width: 1px;border-top-style: solid;">
+                <td>4</td>
+                <td>opnfv_bottleneck_ts004.yaml</td>
+                <td><p class="text-warning">running</p></td>
               </tr>
             </table>
           </div>
