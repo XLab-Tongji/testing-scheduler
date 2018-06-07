@@ -134,44 +134,6 @@
   </div>
 </template>
 <script>
- /* var storys= [
-    {
-      "id": 1,
-      "testsuite": "new_format"
-    },
-    {
-      "id": 2,
-      "testsuite": "demo"
-    },
-    {
-      "id": 3,
-      "testsuite": "greet"
-    },
-    {
-      "id": 4,
-      "testsuite": "yardstick"
-    },
-    {
-      "id": 5,
-      "testsuite": "model"
-    },
-    {
-      "id": 6,
-      "testsuite": "clearwater"
-    },
-    {
-      "id": 7,
-      "testsuite": "logic"
-    },
-    {
-      "id": 8,
-      "testsuite": "logic_2"
-    },
-    {
-      "id": 9,
-      "testsuite": "ansible"
-    }
-  ];*/
 // var storys;
 //  window.onload=function () {
 //    $.ajax({
@@ -192,7 +154,7 @@ export default {
   data () {
     return {
       newstory : '',
-      storys,
+      storys : '',
       service_selected : '',
       selected: []
     }

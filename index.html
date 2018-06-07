@@ -3,39 +3,18 @@
   <head>
     <meta charset="utf-8">
     <title>testproject</title>
+    <link type="text/css" rel="stylesheet" href="./css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="./css/style.css">
+    <link type="text/css" rel="stylesheet" href="./css/animate.css">
     <link type="text/css" rel="stylesheet" href="./css/TheStyle.css">
     <link type="text/css" rel="stylesheet" href="./css/wf-graph.css">
-    <link type="text/css" rel="stylesheet" href="./css/style.css">
-    <link type="text/css" rel="stylesheet" href="./css/bootstrap.min.css">
-    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
-    <script>
-      var storys;
-      window.onload=function () {
-        $.ajax({
-          url:"http://10.60.38.181:5202/testsuite/list",
-          method:"GET",
-          data:{},
-          success:function (data) {
-            if(data['code'] == 200) {
-              storys = data['result'];
-            }
-          }
-        })
-      };
-    </script>
+    <!-- <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script> -->
+    <!-- <script src="./scri/jquery-3.3.1.js"></script>
+    <script src="./scri/bootstrap.min.js"></script> -->
   </head>
   <body class="top-navigation white-bg">
   <div id="wrapper">
     <div id="page-wrapper" class="white-bg">
-      <div class="row border-bottom blue-bg my-page-header">
-        <p id="title">OPNFV Bottlenecks Portal</p>
-        <ul id="intr_table" class="nav navbar-nav">
-          <li><button type="button" class="btn btn-w-m btn-link btn-lg" style="color: white">Test Suites</button></li>
-          <li><button type="button" class="btn btn-w-m btn-link btn-lg" style="color: white">Test Results</button></li>
-          <li><button type="button" class="btn btn-w-m btn-link btn-lg" style="color: white">Reports</button></li>
-          <li><button type="button" class="btn btn-w-m btn-link btn-lg" style="color: white">Enviroments</button></li>
-        </ul>
-      </div>
       <div id="app"></div>
     </div>
   </div>

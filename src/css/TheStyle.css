@@ -18,7 +18,20 @@ header{
     font-size: 20px;
     margin-right: 20px;
 }
-
+#intr_table li a{
+    color: white!important;
+    font-weight: normal;
+}
+#intr_table li a:visited{
+    background-color: #1c84c6;
+}
+#intr_table li a:hover{
+    background-color: #1c84c6;
+    text-decoration: underline;
+}
+#intr_table li a:active{
+    background-color: #1c84c6;
+}
 .title-section {
     margin-bottom: 10px;
 }

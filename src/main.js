@@ -3,11 +3,13 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import './css/TheStyle.css'
-import './css/wf-graph.css'
+import './css/bootstrap.min.css'
 import './css/style.css'
 import './css/animate.css'
-import './css/bootstrap.min.css'
+import './css/TheStyle.css'
+import './css/wf-graph.css'
+import './scri/jquery-3.3.1.js'
+import './scri/bootstrap.min.js'
 
 Vue.config.productionTip = false
 
