@@ -71,14 +71,6 @@
       </div>
     </div>
 
-    <div class="row">
-      <div id="iframeContainer"></div>
-      <div id="workflowId" style="display:none">
-          <input name="workflowId" type="hidden" />
-          <input name="function" type="hidden" value="graphLoad"/>
-          <button id="graphloadbtn" type="button" onclick="graphLoad()"></button>
-      </div>
-    </div>
   </div>
 </template>
 <script>

@@ -13,7 +13,7 @@
       <div class="title-section">
         <p class="subTitle">Test Suites</p>
         <div class="my-button-group">
-          <input class="btn btn-info btn-sm my-button-sm" type="button" value="Run">
+          <input class="btn btn-info btn-sm my-button-sm" type="button" v-on:click="runTestsuites()" value="Run">
           <input class="btn btn-primary btn-sm my-button-sm" type="button" value="Create"  v-on:click="create">
 
           <input class="btn btn-danger btn-sm my-button-sm" type="button" value="Delete" v-on:click="deletestory">
@@ -77,63 +77,16 @@
               </tr>
             </table>
           </div>
-          <div>
-            <div id="file-section1" class="col-sm-offset-1 col-md-3" style="margin-left: 200px;">
-              <div id="workflow-content-div">
-                <div class="dark-gray-bg">WORKFLOW YML CONTENT</div>
-                <pre id="workflow-content">
-{
- "name": "workflow_ts_yardstick_01(3886887794)",
- "description": "",
- "version": 1,
- "schemaVersion": 2,
- "tasks": [
-  {
-   "taskReferenceName": "task_4605256601",
-   "type": "HTTP",
-   "name": "test-tc-019",
-   "inputParameters": {
-    "http_request": {
-     "body": {
-      "action": "run_test_case",
-      "args": {
-       "testcase": "./opnfv_yardstick_tc019"
-      }
-     },
-     "uri": "http://10.60.38.173:5000/yardstick/testcases/release/action",
-     "method": "POST"
-    }
-   }
-  }
- ],
- "outputParameters": {
-  "test-tc-019(task_4605256601)": "${task_4605256601.output.response.body}"
- }
-}
-                                    </pre>
-              </div>
-            </div>
 
-            <div class="col-sm-offset-1 col-md-3" id="graph-show-section" style="height:600px;">
-              <div class="my-hidden1" id="workflow-graph" style="margin-top: 10px;margin-left: 70px;">
-                <img src="image/graph.png" width="250px" height="300px">
-              </div>
-              <div class="spiner-example my-hidden" id="loading">
-                <div class="sk-spinner sk-spinner-three-bounce">
-                  <div class="sk-bounce1"></div>
-                  <div class="sk-bounce2"></div>
-                  <div class="sk-bounce3"></div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson'></wfresult>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-
+import {addClass, removeClass, isContainClass} from '../scri/my-util.js'
+import wfresult from './wfresult.vue'
 export default {
   name: 'page1',
   data () {
@@ -141,6 +94,10 @@ export default {
       newstory : '',
       storys : '',
       service_selected : '',
+      SERVER_ADDR: "http://localhost:5000/",
+      workflowId: '',
+      wfloading: false,
+      wfJson: '',
       selected: []
     }
   },
@@ -228,7 +185,43 @@ export default {
           }
         });
       }
+    },
+    runTestsuites: function() {
+      var self = this;
+      $.ajax({
+          url: self.SERVER_ADDR + "run-test/story",
+          method: "POST",
+          data: {
+              "service": "logic",
+              "stories": "ts_logic_00.yaml"
+          },
+          beforeSend: function(XHR) {
+              self.wfloading = true;
+          },
+          success: function(data) {
+              console.log("ajax run test story!");
+              self.wfloading = false;
+              self.workflowId = data['result']['workflowId'];
+          }
+      });
+
+      $.ajax({
+          url: self.SERVER_ADDR + "story-content",
+          method: "GET",
+          data: {
+              "service": "logic",
+              "story": "ts_logic_00.yaml"
+          },
+          success: function(data) {
+              if(data['code'] == 200) {
+                  self.wfJson = data['result']['content'];
+              }
+          }
+      });    
     }
+  },
+  components: {
+    wfresult
   }
 }
 
