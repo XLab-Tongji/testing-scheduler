@@ -19,7 +19,7 @@
       <div class="title-section">
         <p class="subTitle">Test Story Content</p>
         <div class="my-button-group">
-          <input class="btn btn-info btn-sm my-button-sm" type="button" value="Run">
+          <input class="btn btn-info btn-sm my-button-sm" type="button" v-on:click="runTestcase()" value="Run">
           <input class="btn btn-success btn-sm my-button-sm" type="button" value="Edit">
           <input class="btn btn-danger btn-sm my-button-sm" type="button" value="Delete">
         </div>
@@ -119,66 +119,34 @@ schema:
               </tr>
             </table>
           </div>
-          <div>
-            <div id="file-section1" class="col-sm-offset-1 col-md-3" style="margin-left: 200px;">
-              <div id="workflow-content-div">
-                <div class="dark-gray-bg">WORKFLOW YML CONTENT</div>
-                <pre id="workflow-content">
-{
- "name": "workflow_ts_yardstick_01(3886887794)",
- "description": "",
- "version": 1,
- "schemaVersion": 2,
- "tasks": [
-  {
-   "taskReferenceName": "task_4605256601",
-   "type": "HTTP",
-   "name": "test-tc-019",
-   "inputParameters": {
-    "http_request": {
-     "body": {
-      "action": "run_test_case",
-      "args": {
-       "testcase": "./opnfv_yardstick_tc019"
-      }
-     },
-     "uri": "http://10.60.38.173:5000/yardstick/testcases/release/action",
-     "method": "POST"
-    }
-   }
-  }
- ],
- "outputParameters": {
-  "test-tc-019(task_4605256601)": "${task_4605256601.output.response.body}"
- }
-}
-                                    </pre>
-              </div>
-            </div>
 
-            <div class="col-sm-offset-1 col-md-3" id="graph-show-section" style="height:600px;">
-              <div class="my-hidden1" id="workflow-graph" style="margin-top: 10px;margin-left: 70px;">
-                <img src="image/graph.png" width="250px" height="300px">
-              </div>
-              <div class="spiner-example my-hidden" id="loading">
-                <div class="sk-spinner sk-spinner-three-bounce">
-                  <div class="sk-bounce1"></div>
-                  <div class="sk-bounce2"></div>
-                  <div class="sk-bounce3"></div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson'></wfresult>
         </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div id="iframeContainer"></div>
+      <div id="workflowId" style="display:none">
+          <input name="workflowId" type="hidden" />
+          <input name="function" type="hidden" value="graphLoad"/>
+          <button id="graphloadbtn" type="button" onclick="graphLoad()"></button>
       </div>
     </div>
   </div>
 </template>
 <script>
+import {addClass, removeClass, isContainClass} from '../scri/my-util.js'
+import wfresult from './wfresult.vue'
+
 export default {
   name: 'page3',
   data () {
     return {
+      SERVER_ADDR: "http://localhost:5000/",
+      workflowId: '',
+      wfloading: false,
+      wfJson: '',
       stories: [],
       services: [
         'greet',
@@ -216,6 +184,60 @@ export default {
         this.selected = selected;
       }
     }
+  },
+  methods: {
+    runTestcase: function(){
+      var self = this;
+      $.ajax({
+          url: self.SERVER_ADDR + "run-test/story",
+          method: "POST",
+          data: {
+              "service": "logic",
+              "stories": "ts_logic_00.yaml"
+          },
+          beforeSend: function(XHR) {
+              self.wfloading = true;
+          },
+          success: function(data) {
+              console.log("ajax run test story!");
+              self.wfloading = false;
+              self.workflowId = data['result']['workflowId'];
+          }
+      });
+
+      $.ajax({
+          url: self.SERVER_ADDR + "story-content",
+          method: "GET",
+          data: {
+              "service": "logic",
+              "story": "ts_logic_00.yaml"
+          },
+          success: function(data) {
+              if(data['code'] == 200) {
+                  self.wfJson = data['result']['content'];
+              }
+          }
+      });
+    },
+    getOutput: function() {
+        console.log("get output active!");
+        var wfConfigDiv = document.getElementById("workflowId");
+        var inputArr = wfDiv.getElementsByTagName("input");
+        var idElem = inputArr[0];
+        var workflowId = idElem.getAttribute("value");
+        var url = "http://localhost:8600/workflow_server/workflow/" + workflowId + "?includeTasks=true";
+        $.ajax({
+            url: url,
+            method: "GET",
+            success: function(data) {
+                console.log("get output:");
+                console.log(data);
+            }
+        });
+    }
+  },
+  components: {
+    wfresult
   }
 }
 </script>

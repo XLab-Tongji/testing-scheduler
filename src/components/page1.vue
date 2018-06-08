@@ -134,21 +134,7 @@
   </div>
 </template>
 <script>
-// var storys;
-//  window.onload=function () {
-//    $.ajax({
-//      url:"http://10.60.38.181:5202/testsuite/list",
-//      method:"GET",
-//      data:{},
-//      success:function (data) {
-//        if(data['code'] == 200) {
-//           storys = data['result'];
-//           console.log("in ....");
-//           console.log(storys);
-//        }
-//      }
-//    })
-//  };
+
 export default {
   name: 'page1',
   data () {

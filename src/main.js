@@ -10,6 +10,8 @@ import './css/TheStyle.css'
 import './css/wf-graph.css'
 import './scri/jquery-3.3.1.js'
 import './scri/bootstrap.min.js'
+import './scri/my-util.js'
+
 
 Vue.config.productionTip = false
 
