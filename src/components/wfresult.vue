@@ -3,7 +3,7 @@
     <div id="file-section1" class="col-sm-offset-1 col-md-3" style="margin-left: 200px;">
       <div id="workflow-content-div">
         <div class="dark-gray-bg">WORKFLOW YML CONTENT</div>
-        <pre id="workflow-content" style="min-height: 600px;"></pre>
+        <pre id="workflow-content" style="height: 600px;"></pre>
       </div>
     </div>
           

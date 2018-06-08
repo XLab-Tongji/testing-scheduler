@@ -148,8 +148,8 @@ export default {
           url: self.SERVER_ADDR + "run-test/story",
           method: "POST",
           data: {
-              "service": "logic",
-              "stories": "ts_logic_00.yaml"
+              "service": this.$route.query.suiteName,
+              "stories": this.$route.query.caseName
           },
           beforeSend: function(XHR) {
               self.wfloading = true;
