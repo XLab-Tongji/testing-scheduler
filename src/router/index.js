@@ -10,16 +10,16 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'page1',
+      name: 'suite',
       component: page1
     },
     {
-      path: '/page2',
+      path: '/stories',
       name: 'page2',
       component: page2
     },
     {
-      path: '/page2/page3',
+      path: '/content',
       name: 'page3',
       component: page3
     },

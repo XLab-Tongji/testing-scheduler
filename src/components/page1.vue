@@ -14,7 +14,7 @@
         <p class="subTitle">Test Suites</p>
         <div class="my-button-group">
           <input class="btn btn-info btn-sm my-button-sm" type="button" value="Run">
-          <input class="btn btn-info btn-sm my-button-sm" type="button" value="Create"  v-on:click="create">
+          <input class="btn btn-primary btn-sm my-button-sm" type="button" value="Create"  v-on:click="create">
 
           <input class="btn btn-danger btn-sm my-button-sm" type="button" value="Delete" v-on:click="deletestory">
         </div>
@@ -28,16 +28,15 @@
         </thead>
         <tbody>
         <tr v-for="story in storys">
-          <td><input class="checkbox1" style="width:20px" type="checkbox" v-model="selected" :value="story.id"> </td>
-          <td class="smallbox" style="with:250px;"><router-link to="/page2" >{{story.testsuite}}</router-link></td>
+          <td><input class="checkbox1" style="width:20px" type="checkbox" v-model="selected" :value="story.testsuite"> </td>
+          <td class="smallbox" style="with:250px;"><router-link :to="{ path: '/stories', query: { name: story.testsuite }}" >{{story.testsuite}}</router-link></td>
 
         </tr>
         </tbody>
         <tfoot id="create-box" style="display: none">
         <tr>
-          <td class="checkbox1" style="width:20px"><input type="checkbox" v-model="selectAll"> </td>
+          <td class="checkbox1" style="width:20px"><input type="checkbox"> </td>
           <td class="smallbox" style="with:250px;"><input type="text" v-model="newstory" @keydown.enter="additem" ></td>
-          <td class="smallbox" style="with:100px;">-</td>
         </tr>
         </tfoot>
       </table>
@@ -169,7 +168,7 @@ export default {
 
         if (value) {
           this.storys.forEach(function (story) {
-            selected.push(story.id);
+            selected.push(story.testsuite);
           });
         }
         this.selected = selected;
@@ -180,32 +179,55 @@ export default {
     create: function () {
       var cbox = document.getElementById("create-box");
       cbox.style.display = "table-footer-group";
-      alert(storys[0].testsuit);
     },
     additem: function () {
-      const  storytext = this.newstory.trim()
-      if(storytext )
+      var self = this;
+      const  storytext = self.newstory.trim()
+      if(storytext)
       {
-        this.storys.push({
-          id: this.storys.length + 1 ,
-          storyname: storytext,
-          testname: 'new'
+        $.ajax({
+          url:"http://10.60.38.181:5202/testsuite/new",
+          method:"GET",
+          data:{
+            suiteName:storytext
+          },
+          success:function(data){
+            if(data['code'] == 200){
+              self.storys.push({
+                id: self.storys.length + 1 ,
+                testsuite: storytext,
+              })
+            }
+          }
         })
+
       }
+
       var cbox = document.getElementById("create-box");
       cbox.style.display = "none";
       this.newstory = '';
     },
     deletestory:function () {
 
-      for(var n in this.selected)
+      var self = this;
+      for(var n in self.selected)
       {
-        this.storys = this.storys.filter(story => {
-          return story.id !== this.selected[n]
-
-        })
+        alert(self.selected[n]);
+        $.ajax({
+          url:"http://10.60.38.181:5202/testsuite/delete",
+          method:"GET",
+          data:{
+            suiteName: self.selected[n]
+          },
+          success:function (data) {
+            if(data['code'] == 200){
+              self.storys = self.storys.filter(story => {
+                return story.testsuite !== self.selected[n];
+              })
+            }
+          }
+        });
       }
-
     }
   }
 }

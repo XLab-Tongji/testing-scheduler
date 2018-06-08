@@ -7,7 +7,7 @@
             <router-link to="/" >.</router-link>
           </li>
           <li>
-            <router-link to="/page2">opnfv_os-nosdn-nofeature-ha_daily</router-link>
+            <router-link :to="{ path: '/stories', query: { name: sname }}">{{this.$route.query.name}}</router-link>
           </li>
         </ol>
       </div>
@@ -17,8 +17,7 @@
         <p class="subTitle">Test Stories</p>
         <div class="my-button-group">
           <input class="btn btn-info btn-sm my-button-sm" type="button" value="Run">
-          <input class="btn btn-info btn-sm my-button-sm" type="button" value="Create"  v-on:click="create" >
-          <input class="btn btn-success btn-sm my-button-sm" type="button" value="Add" v-on:click="Theadd">
+          <input class="btn btn-primary btn-sm my-button-sm" type="button" value="Create"  v-on:click="create" >
           <input class="btn btn-danger btn-sm my-button-sm" type="button" value="Delete"  v-on:click="deleteyaml" >
         </div>
       </div>
@@ -27,31 +26,20 @@
         <tr>
           <td class="checkbox1" style="width:20px"><input type="checkbox" v-model="selectAll"> All</td>
           <td class="smallbox" style="with:250px;">TestSuite Name</td>
-          <td class="smallbox" style="with:100px;">Test Result</td>
         </tr>
         </thead>
         <tbody>
         <tr v-for="yaml in yamls">
-          <td><input class="checkbox1" style="width:20px" type="checkbox" v-model="selected" :value="yaml.id"> </td>
-          <td class="smallbox" style="with:250px;"><router-link to='/page2/page3'>{{yaml.storyname}}</router-link></td>
-          <td class="smallbox" style="with:100px;">{{yaml.testname}}</td>
+          <td><input class="checkbox1" style="width:20px" type="checkbox" v-model="selected" :value="yaml.testcase"> </td>
+          <td class="smallbox" style="with:250px;"><router-link :to="{ path: '/content', query: { suiteName: sname, caseName: yaml.testcase } }">{{yaml.testcase}}</router-link></td>
         </tr>
         </tbody>
         <tfoot id="create-box" style="display: none">
         <tr>
-          <td class="checkbox1" style="width:20px"><input type="checkbox" v-model="selectAll"> </td>
+          <td class="checkbox1" style="width:20px"><input type="checkbox"> </td>
           <td class="smallbox" style="with:250px;"><input type="text" v-model="newstory" @keydown.enter="additem" ></td>
-          <td class="smallbox" style="with:100px;">-</td>
         </tr>
         </tfoot>
-        <tfoot id="add-box" style="display: none">
-        <tr>
-          <td class="checkbox1" style="width:20px"><input type="checkbox" v-model="selectAll"> </td>
-          <td class="smallbox" style="with:250px;"><select v-model="addstory" @keydown.enter="addyaml"><option v-for="yamlfile in yamlfiles">{{yamlfile.storyname}}</option></select></td>
-          <td class="smallbox" style="with:100px;">-</td>
-        </tr>
-        </tfoot>
-
       </table>
     </div>
 
@@ -147,45 +135,34 @@
   </div>
 </template>
 <script>
-
+var yamls;
+var sname;
 export default {
 
   name: 'page1',
   data () {
     return {
-
-      services: [
-        'greet',
-        'yardstick',
-        'logic'
-      ],
-      yamls: [
-        {id: 1, storyname: 'opnfv_bottleneck_ts001.yaml', testname: 'failed'},
-        {id: 2, storyname: 'opnfv_bottleneck_ts002.yaml', testname: 'pass'},
-        {id: 3, storyname: 'opnfv_bottleneck_ts003.yaml', testname: 'runnig'},
-        {id: 4, storyname: 'opnfv_bottleneck_ts004.yaml', testname: 'failed'},
-        {id: 5, storyname: 'opnfv_bottleneck_ts005.yaml', testname: 'pass'},
-        {id: 6, storyname: 'opnfv_bottleneck_ts006.yaml', testname: 'running'},
-        {id: 7, storyname: 'opnfv_bottleneck_ts007.yaml', testname: 'running'},
-        {id: 8, storyname: 'opnfv_bottleneck_ts008.yaml', testname: 'running'},
-        {id: 9, storyname: 'opnfv_bottleneck_ts009.yaml', testname: 'running'}
-      ],
-      yamlfiles:[
-        {id: 11, storyname: 'opnfv_bottleneck_ts011.yaml', testname: 'failed'},
-        {id: 12, storyname: 'opnfv_bottleneck_ts012.yaml', testname: 'pass'},
-        {id: 13, storyname: 'opnfv_bottleneck_ts013.yaml', testname: 'runnig'},
-        {id: 14, storyname: 'opnfv_bottleneck_ts014.yaml', testname: 'failed'},
-        {id: 15, storyname: 'opnfv_bottleneck_ts015.yaml', testname: 'pass'},
-        {id: 16, storyname: 'opnfv_bottleneck_ts016.yaml', testname: 'running'},
-        {id: 17, storyname: 'opnfv_bottleneck_ts017.yaml', testname: 'running'},
-        {id: 18, storyname: 'opnfv_bottleneck_ts018.yaml', testname: 'running'},
-        {id: 19, storyname: 'opnfv_bottleneck_ts019.yaml', testname: 'running'}
-      ],
+      yamls,
+      sname: this.$route.query.name,
       newstory:'',
       addstory:'',
-      service_selected: '',
       selected: []
     }
+  },
+  created: function() {
+    var self = this;
+    $.ajax({
+      url:"http://10.60.38.181:5202/testsuite/content",
+      method:"GET",
+      data:{
+        suiteName:  this.$route.query.name
+      },
+      success:function (data) {
+        if(data['code'] == 200) {
+          self.yamls = data['result'];
+        }
+      }
+    });
   },
   computed: {
     selectAll: {
@@ -197,7 +174,7 @@ export default {
 
         if (value) {
           this.yamls.forEach(function (yaml) {
-            selected.push(yaml.id);
+            selected.push(yaml.testcase);
           });
         }
         this.selected = selected;
@@ -210,33 +187,60 @@ export default {
       cbox.style.display = "table-footer-group";
     },
     additem: function () {
-      const  storytext = this.newstory.trim()
+      var self = this;
+      const  storytext = self.newstory.trim()
       if(storytext )
       {
-        this.yamls.push({
-          id: this.yamls.length + 1 ,
-          storyname: storytext,
-          testname: 'new'
+        $.ajax({
+          url:"http://10.60.38.181:5202/testcase/new",
+          method:"GET",
+          data:{
+            suiteName: self.sname,
+            caseName: storytext
+          },
+          success:function (data) {
+            if(data['code'] == 200){
+              self.yamls.push({
+                id: self.yamls.length + 1 ,
+                testcase: storytext,
+              })
+            }
+          }
         })
+
       }
       var cbox = document.getElementById("create-box");
       cbox.style.display = "none";
       this.newstory = '';
     },
     deleteyaml:function () {
-
-      for(var n in this.selected)
+      var self = this;
+      for(var n in self.selected)
       {
-        this.yamls = this.yamls.filter(yaml => {
-          return yaml.id !== this.selected[n]
+        alert(self.sname);
+        alert(self.selected[n]);
+        $.ajax({
+          url:"http://10.60.38.181:5202/testcase/delete",
+          method:"GET",
+          data:{
+            suiteName: self.sname,
+            caseName: self.selected[n]
+          },
+          success:function (data) {
+            alert(data['code']);
+            if(data['code'] == 200)
+            {
+              self.yamls = self.yamls.filter(yaml => {
+                return yaml.testcase !== self.selected[n]
 
+              })
+            }
+
+          }
         })
+
       }
 
-    },
-    Theadd: function () {
-      var cbox = document.getElementById("add-box");
-      cbox.style.display = "table-footer-group";
     },
     addyaml:function () {
       const  yamltext = this.addstory.trim()
@@ -245,7 +249,6 @@ export default {
         this.yamls.push({
           id: this.yamls.length + 1 ,
           storyname: yamltext,
-          testname: 'new'
         })
       }
       var cbox = document.getElementById("add-box");

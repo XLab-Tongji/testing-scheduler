@@ -7,10 +7,10 @@
             <router-link to="/" >.</router-link>
           </li>
           <li>
-            <router-link to="/page2">opnfv_os-nosdn-nofeature-ha_daily</router-link>
+            <router-link :to="{ path: '/stories', query: { name: suitename }}" >{{this.$route.query.suiteName}}</router-link>
           </li>
           <li>
-            <router-link to="/page2/page3">opnfv_yardstick_tc002.yaml</router-link>
+            <router-link :to="{ path: '/content', query: { suiteName: suitename, caseName: casename } }">{{this.$route.query.caseName}}</router-link>
           </li>
         </ol>
       </div>
@@ -25,62 +25,8 @@
         </div>
       </div>
       <pre style="width: 1000px; height: 500px; margin-top: 20px;">
----
-schema:
-  steps:
-    -
-      id: 1
-      name: inject-cpu-workload
-      type: test
-      service:
-        name: yardtstick
-        call: REST
-      action: run_testcase
-      args:
-        method: POST
-        args:
-          testcase: opnfv_yardstick_tc019
-
-    -
-      id: 2
-      name: monitor-cpu-utility
-      type: test
-      service:
-        name: functest
-        call: REST
-      action: run_testcase
-      args:
-        method: POST
-        args:
-          testcase: functest_tc019
-    -
-      id: 3
-      name: inject-cpu-faultload
-      type: test
-      service:
-        name: yardtstick
-        call: REST
-      action: run_testcase
-      args:
-        method: POST
-        command: answer
-        args:
-          testcase: opnfv_yardstick_tc050
-
-  flows:
-    -
-      name: main
-      orders:
-        -
-          type: normal
-          step: 1
-        -
-          type: normal
-          step: 2
-        -
-          type: normal
-          step: 3
-                </pre>
+        {{content}}
+      </pre>
     </div>
 
     <hr />
@@ -138,11 +84,16 @@ schema:
 <script>
 import {addClass, removeClass, isContainClass} from '../scri/my-util.js'
 import wfresult from './wfresult.vue'
+  var content;
+  var suitename;
 
 export default {
   name: 'page3',
   data () {
     return {
+      content,
+      suitename:this.$route.query.suiteName,
+      casename:this.$route.query.caseName,
       SERVER_ADDR: "http://localhost:5000/",
       workflowId: '',
       wfloading: false,
@@ -153,20 +104,25 @@ export default {
         'yardstick',
         'logic'
       ],
-      tests: [
-        {id: 1, storyname: 'opnfv_bottleneck_ts001.yaml', testname: 'failed'},
-        {id: 2, storyname: 'opnfv_bottleneck_ts002.yaml', testname: 'pass'},
-        {id: 3, storyname: 'opnfv_bottleneck_ts003.yaml', testname: 'runnig'},
-        {id: 4, storyname: 'opnfv_bottleneck_ts004.yaml', testname: 'failed'},
-        {id: 5, storyname: 'opnfv_bottleneck_ts005.yaml', testname: 'pass'},
-        {id: 6, storyname: 'opnfv_bottleneck_ts006.yaml', testname: 'running'},
-        {id: 7, storyname: 'opnfv_bottleneck_ts007.yaml', testname: 'running'},
-        {id: 8, storyname: 'opnfv_bottleneck_ts008.yaml', testname: 'running'},
-        {id: 9, storyname: 'opnfv_bottleneck_ts009.yaml', testname: 'running'}
-      ],
       service_selected: '',
       selected: []
     }
+  },
+  created: function() {
+    var self = this;
+    $.ajax({
+      url:"http://10.60.38.181:5202/testcase/content",
+      method:"GET",
+      data:{
+        suiteName:  this.$route.query.suiteName,
+        caseName: this.$route.query.caseName
+      },
+      success:function (data) {
+        if(data['code'] == 200) {
+          self.content = data['result']['content'];
+        }
+      }
+    });
   },
   computed: {
     selectAll: {
