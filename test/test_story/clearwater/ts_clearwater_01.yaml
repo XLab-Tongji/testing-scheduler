@@ -11,33 +11,23 @@ schema:
       id: 1
       name: set-up-zabbix-agent
       type: test
-      action: setUp
+      action: start
       service:
-        name: monitor-service-A
-        call: REST
-      step-args:
-        command: prepare-agent
-        method: POST
-        serivce-args:
-          target: {{hosts}}
+        name: monitor-zabbix
+        interface: setup
+      args:
+        name: clearwater-all
 
     -
       id: 2
-      name: start-to-monitor
+      name: start-monitor
       type: test
       action: start
       service:
-        name: monitor-service-A
-        call: REST
-      step-args:
-        command: monitor-param-start
-        method: POST
-        serivce-args:
-          target: {{hosts}}
-          properties:
-            - cpu-health
-            - mem-usage
-            - io-rate
+        name: monitor-zabbix
+        interface: start
+      args:
+        name: start
 
     -
       id: 3
@@ -45,55 +35,41 @@ schema:
       type: test
       action: start
       service:
-        name: clearwater-workload-service
-        call: REST
-      step-args:
-        command: simulate-call
-        method: POST
-        service-args:
-          cassandra:
-            host: {{cassandra}}
-            user-number: 20000
-          sprout:
-            host: {{sprout}}
-            user-number: 20000
-            time: 100min
-            initial-reg-rate: 100
-            icscf-target: 10.42.56.48:5052
-            scscf-target: 10.42.56.48:5054 
+        name: ansible
+        interface: workload
+      args:
+        reg_user: 1000
+        call_user: 500
+        duration: 1
+        initial_reg_rate: 100
+        multiplier: 225
     
     -
       id: 4
-      name: inject-cpu-fault
+      name: inject-random-fault
       type: test
       action: start
       service:
-        name: fault-service-C
-        call: REST
-      step-args:
-        command: fault-inject
-        method: POST
-        serivce-args:
-          target: 
-            - {{ sprout }}
-          fault:
-            type: cpu-stress
-            time: 5min
+        name: ansible
+        interface: faultload
+      args:
+        reg_user: 1000
+        call_user: 500
+        duration: 1
+        initial_reg_rate: 100
+        multiplier: 225
+        fault_duration: 2
 
     -
       id: 5
-      name: collect-experiment-data
+      name: data-collection
       type: test
       action: start
       service:
-        name: data-collect-service-D
-        call: REST
-      step-args:
-        command: collect-data
-        method: POST
-        serivce-args:
-          from: {{ host1 }}
-          to: {{ host2 }}
+        name: grafana
+        interface: collect-data
+      args:
+        name: cassandra
 
 
   flows:

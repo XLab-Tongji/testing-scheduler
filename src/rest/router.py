@@ -31,9 +31,8 @@ def getTCDir(service_name):
 
 @app.route("/run-test/story", methods=['POST'])
 def runTestStory():
-	time.sleep(5)
-	stories = json.loads(request.form['stories'])
-	service_name = request.form['service']
+	stories = [request.values.get('stories')]
+	service_name = request.values.get('service')
 	baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_story")
 	for story in stories:
 		storyDir = os.path.join(baseTestDir, service_name, story)
@@ -57,4 +56,4 @@ def getStoryContent():
 
 if __name__ == "__main__":
 	app.debug = True
-	app.run()
+	app.run(host='0.0.0.0', port=5310, debug=True)
