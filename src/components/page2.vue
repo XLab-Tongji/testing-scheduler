@@ -1,89 +1,112 @@
 <template>
   <div class="wrapper wrapper-content">
     <div class="row" style="margin-bottom: 20px;">
-      <div>
-        <ol class="breadcrumb" style="padding-left: 20px">
+      <div class="col-md-8">
+        <ol class="breadcrumb" style="padding-left: 20px; font-size: 17px;">
           <li>
-            <router-link to="/" >.</router-link>
+            <router-link to="/" >root</router-link>
           </li>
           <li>
-            <router-link :to="{ path: '/stories', query: { name: sname }}">{{this.$route.query.name}}</router-link>
+            <router-link :to="{ path: '/stories', query: { name: sname }}"><b>{{this.$route.query.name}}</b></router-link>
           </li>
         </ol>
       </div>
     </div>
-    <div id="p2_content1" style="width:1000px" class="row">
-      <div class="title-section">
-        <p class="subTitle">Test Stories</p>
-        <div class="my-button-group">
-          <input class="btn btn-info btn-sm my-button-sm" type="button" v-on:click="runTestcases()" value="Run">
-          <input class="btn btn-primary btn-sm my-button-sm" type="button" value="Create"  v-on:click="create" >
-          <input class="btn btn-danger btn-sm my-button-sm" type="button" value="Delete"  v-on:click="deleteyaml" >
+    <div id="p2_content1" style="" class="row">
+        <div class="col-lg-8">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5 style="font-size:26px;margin-top: -3px;">Test Case</h5>
+                    <div class="ibox-tools">
+                    <button class="btn btn-info btn-sm my-button-sm" type="button" v-on:click="show()">show</button>
+                    <button class="btn btn-info btn-sm my-button-sm" type="button" v-on:click="runTestcases()">Run</button>
+                    <button class="btn btn-success btn-sm my-button-sm" type="button" v-on:click="create()">Create</button>
+                    <button class="btn btn-danger btn-sm my-button-sm" v-on:click="deleteyaml()" type="button">Delete</button>
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="fullscreen-link">
+                        <i class="fa fa-expand"></i>
+                    </a>
+                    </div>
+                </div>
+                <div class="ibox-content" style="text-align:center;">
+                <table class="my-table table table-bordered" cellspacing="0" cellpadding="0" style="text-align: center;">
+                    <thead>
+                        <tr>
+                              <td class="checkbox1" style="width:20px"><input type="checkbox" v-model="selectAll"> All</td>
+                              <td class="smallbox" style="with:250px;">TestSuite Name</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="yaml in yamls">
+                          <td><input class="checkbox1" style="width:20px" type="checkbox" v-model="selected" :value="yaml.testcase"> </td>
+                          <td class="smallbox" style="with:250px;"><router-link :to="{ path: '/content', query: { suiteName: sname, caseName: yaml.testcase } }">{{yaml.testcase}}</router-link></td>
+                        </tr>
+                    </tbody>
+                    <tfoot id="create-box" style="display: none">
+                        <tr>
+                            <td class="checkbox1" style="width:20px"><input type="checkbox"> </td>
+                            <td class="smallbox" style="with:250px;"><input type="text" v-model="newstory" @keydown.enter="additem" ></td>
+                        </tr>
+                    </tfoot>
+                  </table>                             
+                </div>
+            </div>
         </div>
-      </div>
-      <table class="my-table table table-bordered" cellspacing="0" cellpadding="0" style="text-align: center;">
-        <thead>
-        <tr>
-          <td class="checkbox1" style="width:20px"><input type="checkbox" v-model="selectAll"> All</td>
-          <td class="smallbox" style="with:250px;">TestSuite Name</td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="yaml in yamls">
-          <td><input class="checkbox1" style="width:20px" type="checkbox" v-model="selected" :value="yaml.testcase"> </td>
-          <td class="smallbox" style="with:250px;"><router-link :to="{ path: '/content', query: { suiteName: sname, caseName: yaml.testcase } }">{{yaml.testcase}}</router-link></td>
-        </tr>
-        </tbody>
-        <tfoot id="create-box" style="display: none">
-        <tr>
-          <td class="checkbox1" style="width:20px"><input type="checkbox"> </td>
-          <td class="smallbox" style="with:250px;"><input type="text" v-model="newstory" @keydown.enter="additem" ></td>
-        </tr>
-        </tfoot>
-      </table>
+
     </div>
 
     <hr />
 
     <div class="row">
-      <div id="content-workflow">
-        <div class="workflow-title-section">
-          <p class="subTitle margin-right-100">Workflow</p>
-          <input class="btn btn-info btn-sm my-button-sm" type="button" value="Save">
-          <input class="btn btn-primary btn-sm my-button-sm" type="button" value="Validate">
-          <input class="btn btn-danger btn-sm my-button-sm" type="button" value="Clear">
-        </div>
+      <div class="col-lg-12">
+          <div class="ibox">
+              <div class="ibox-title">
+                  <h5 style="font-size:26px;margin-top: -3px;">Workflow</h5>
+                  <div class="ibox-tools">
+                      <a class="collapse-link">
+                          <i class="fa fa-chevron-up"></i>
+                      </a>
+                      <a class="fullscreen-link">
+                          <i class="fa fa-expand"></i>
+                      </a>
+                  </div>
+              </div>
+              <div class="ibox-content" style="padding-top: 60px;">
+                <div id="executing" class="col-md-2" style="height:600px; margin-right: 200px;">
+                    <table class="table" style="margin-top: 30px;">
+                      <tr style="border-top-width: 1px;border-top-style: solid;">
+                        <td style="padding-right: 8px">1</td>
+                        <td style="padding-right: 8px">opnfv_bottleneck_ts001.yaml</td>
+                        <td style="padding-right: 8px"><p class="text-success">pass</p></td>
+                      </tr>
+                      <tr style="border-top-width: 1px;border-top-style: solid;">
+                        <td>2</td>
+                        <td>opnfv_bottleneck_ts002.yaml</td>
+                        <td><p class="text-success">pass</p></td>
+                      </tr >
+                      <tr style="border-top-width: 1px;border-top-style: solid;">
+                        <td>3</td>
+                        <td>opnfv_bottleneck_ts003.yaml</td>
+                        <td><p class="text-success">pass</p></td>
+                      </tr>
+                      <tr style="border-top-width: 1px;border-top-style: solid;">
+                        <td>4</td>
+                        <td>opnfv_bottleneck_ts004.yaml</td>
+                        <td><p class="text-warning">running</p></td>
+                      </tr>
+                    </table>
+                </div> 
 
-        <div id="workflow-graph-section" class="row">
-          <div id="executing" class="col-md-2" style="height:600px; margin-right: -20px;">
-            <table class="table" style="margin-top: 30px;">
-              <tr style="border-top-width: 1px;border-top-style: solid;">
-                <td style="padding-right: 8px">1</td>
-                <td style="padding-right: 8px">opnfv_bottleneck_ts001.yaml</td>
-                <td style="padding-right: 8px"><p class="text-success">pass</p></td>
-              </tr>
-              <tr style="border-top-width: 1px;border-top-style: solid;">
-                <td>2</td>
-                <td>opnfv_bottleneck_ts002.yaml</td>
-                <td><p class="text-success">pass</p></td>
-              </tr >
-              <tr style="border-top-width: 1px;border-top-style: solid;">
-                <td>3</td>
-                <td>opnfv_bottleneck_ts003.yaml</td>
-                <td><p class="text-success">pass</p></td>
-              </tr>
-              <tr style="border-top-width: 1px;border-top-style: solid;">
-                <td>4</td>
-                <td>opnfv_bottleneck_ts004.yaml</td>
-                <td><p class="text-warning">running</p></td>
-              </tr>
-            </table>
+                  <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson'></wfresult>
+              </div>
           </div>
-
-          <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson'></wfresult>
-        </div>
       </div>
+
     </div>
+
+
   </div>
 </template>
 <script>
@@ -213,6 +236,9 @@ export default {
       cbox.style.display = "none";
       this.addstory = '';
 
+    },
+    show: function() {
+        alert(this.selected.join(" "));
     },
     runTestcases: function() {
       var self = this;

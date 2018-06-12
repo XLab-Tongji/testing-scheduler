@@ -1,74 +1,84 @@
 <template>
-  <div class="wrapper wrapper-content">
+  <div class="wrapper wrapper-content animated fadeIn">
     <div class="row" style="margin-bottom: 20px;">
-      <div>
-        <ol class="breadcrumb" style="padding-left: 20px">
+      <div class="col-md-8">
+        <ol class="breadcrumb" style="padding-left: 20px; font-size: 17px;">
           <li>
-            <router-link to="/" >.</router-link>
+            <router-link to="/" >root</router-link>
           </li>
           <li>
             <router-link :to="{ path: '/stories', query: { name: suitename }}" >{{this.$route.query.suiteName}}</router-link>
           </li>
           <li>
-            <router-link :to="{ path: '/content', query: { suiteName: suitename, caseName: casename } }">{{this.$route.query.caseName}}</router-link>
+            <router-link :to="{ path: '/content', query: { suiteName: suitename, caseName: casename } }"><b>{{this.$route.query.caseName}}</b></router-link>
           </li>
         </ol>
       </div>
     </div>
-    <div id="p2_content1" style="width:1000px" class="row">
-      <div class="title-section">
-        <p class="subTitle">Test Story Content</p>
-        <div class="my-button-group">
-          <input class="btn btn-info btn-sm my-button-sm" type="button" v-on:click="runTestcase()" value="Run">
-          <input class="btn btn-success btn-sm my-button-sm" type="button" value="Edit">
-          <input class="btn btn-danger btn-sm my-button-sm" type="button" value="Delete">
+
+
+    <div id="p2_content1" style="" class="row">
+      <div class="col-lg-8">
+        <div class="ibox">
+            <div class="ibox-title">
+                <h5 style="font-size:26px;margin-top: -3px;">Test Case Content</h5>
+                <div v-show="contentLoading || contentSaving" class="sk-spinner sk-spinner-circle" style="float: left;margin-left: 10px;">
+                    <div class="sk-circle1 sk-circle"></div>
+                    <div class="sk-circle2 sk-circle"></div>
+                    <div class="sk-circle3 sk-circle"></div>
+                    <div class="sk-circle4 sk-circle"></div>
+                    <div class="sk-circle5 sk-circle"></div>
+                    <div class="sk-circle6 sk-circle"></div>
+                    <div class="sk-circle7 sk-circle"></div>
+                    <div class="sk-circle8 sk-circle"></div>
+                    <div class="sk-circle9 sk-circle"></div>
+                    <div class="sk-circle10 sk-circle"></div>
+                    <div class="sk-circle11 sk-circle"></div>
+                    <div class="sk-circle12 sk-circle"></div>
+                </div>
+                <div class="ibox-tools">
+                    <button class="btn btn-info btn-sm my-button-sm" type="button" v-on:click="runTestcase()">Run</button>
+                    <button class="btn btn-success btn-sm my-button-sm" type="button" v-on:click="setEditable()">Edit</button>
+                    <button v-show="isEditable" class="btn btn-warning btn-sm my-button-sm" v-on:click="saveTestcase()" type="button">Save</button>
+                    <button v-show="isEditable" class="btn btn-danger btn-sm my-button-sm" v-on:click="cancelEdit()" type="button">Cancel</button>
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="fullscreen-link">
+                        <i class="fa fa-expand"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content" style="text-align:center;">
+                <textarea class="white-pink" v-bind:readonly="!isEditable" v-model="content" id="tc_content" style="max-width:2400px; width: 90%;height: 100%;min-height: 500px; margin-top: 20px;font-size:18px;background-color:#f5f5f5;">
+                </textarea>
+            </div>
         </div>
       </div>
-      <pre style="width: 1000px; height: 500px; margin-top: 20px;">
-        {{content}}
-      </pre>
+      
     </div>
 
     <hr />
-
     <div class="row">
-      <div id="content-workflow">
-        <div class="workflow-title-section">
-          <p class="subTitle margin-right-100">Workflow</p>
-          <input class="btn btn-info btn-sm my-button-sm" type="button" value="Save">
-          <input class="btn btn-primary btn-sm my-button-sm" type="button" value="Validate">
-          <input class="btn btn-danger btn-sm my-button-sm" type="button" value="Clear">
-        </div>
-
-        <div id="workflow-graph-section" class="row">
-          <div id="executing" class="col-md-2" style="height:600px; margin-right: -20px;">
-            <table class="table" style="margin-top: 30px;">
-              <tr style="border-top-width: 1px;border-top-style: solid;">
-                <td style="padding-right: 8px">1</td>
-                <td style="padding-right: 8px">opnfv_bottleneck_ts001.yaml</td>
-                <td style="padding-right: 8px"><p class="text-success">pass</p></td>
-              </tr>
-              <tr style="border-top-width: 1px;border-top-style: solid;">
-                <td>2</td>
-                <td>opnfv_bottleneck_ts002.yaml</td>
-                <td><p class="text-success">pass</p></td>
-              </tr >
-              <tr style="border-top-width: 1px;border-top-style: solid;">
-                <td>3</td>
-                <td>opnfv_bottleneck_ts003.yaml</td>
-                <td><p class="text-success">pass</p></td>
-              </tr>
-              <tr style="border-top-width: 1px;border-top-style: solid;">
-                <td>4</td>
-                <td>opnfv_bottleneck_ts004.yaml</td>
-                <td><p class="text-warning">running</p></td>
-              </tr>
-            </table>
+      <div class="col-lg-12">
+          <div class="ibox">
+              <div class="ibox-title">
+                  <h5 style="font-size:26px;margin-top: -3px;">Workflow</h5>
+                  <div class="ibox-tools">
+                      <a class="collapse-link">
+                          <i class="fa fa-chevron-up"></i>
+                      </a>
+                      <a class="fullscreen-link">
+                          <i class="fa fa-expand"></i>
+                      </a>
+                  </div>
+              </div>
+              <div class="ibox-content" style="padding-top: 60px;">
+                  <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson'></wfresult>
+              </div>
           </div>
-
-          <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson'></wfresult>
-        </div>
       </div>
+
     </div>
 
   </div>
@@ -76,17 +86,35 @@
 <script>
 import {addClass, removeClass, isContainClass} from '../scri/my-util.js'
 import wfresult from './wfresult.vue'
+import toastr from '../scri/toastr.min.js'
   var content;
   var suitename;
-
+function showMessage(type, title, msg){
+  if(type == "success"){
+    toastr.success(msg,title);
+  }
+  else if(type == "info") {
+    toastr.info(msg, title);
+  }
+  else if(type == "error"){
+    toastr.error(msg,title);
+  }
+  else {
+    toastr.warning(msg, title);
+  }
+}
 export default {
   name: 'page3',
   data () {
     return {
       content,
+      bakContent: '',
+      isEditable: false,
+      contentLoading: false,
+      contentSaving: false,
       suitename:this.$route.query.suiteName,
       casename:this.$route.query.caseName,
-      SERVER_ADDR: "http://localhost:5000/",
+      SERVER_ADDR: "http://localhost:5310/",
       workflowId: '',
       wfloading: false,
       wfJson: '',
@@ -101,6 +129,7 @@ export default {
     }
   },
   created: function() {
+    
     var self = this;
     $.ajax({
       url:"http://10.60.38.181:5202/testcase/content",
@@ -109,10 +138,18 @@ export default {
         suiteName:  this.$route.query.suiteName,
         caseName: this.$route.query.caseName
       },
+      beforeSend: function(XHR) {
+          self.contentLoading = true;
+      },
       success:function (data) {
         if(data['code'] == 200) {
           self.content = data['result']['content'];
+          self.contentLoading = false;
         }
+      },
+      error: function (error) {
+        showMessage("failed", "content error", "fail to load testcase content!");
+        self.contentLoading = false;
       }
     });
   },
@@ -134,6 +171,40 @@ export default {
     }
   },
   methods: {
+    setEditable: function(){
+      this.isEditable = true;
+      this.bakContent = this.content;
+    },
+    cancelEdit: function(){
+      this.content = this.bakContent;
+      this.isEditable = false;
+    },
+    saveTestcase: function(){
+      console.log("save");
+      console.log(this.content);
+      var self = this;
+      $.ajax({
+          url: "http://10.60.38.181:5202/testcase/save",
+          method: "POST",
+          data: {
+              suiteName:  this.$route.query.suiteName,
+              caseName: this.$route.query.caseName,
+              content: this.content
+          },
+          beforeSend: function(XHR) {
+              self.contentSaving = true;
+          },
+          success: function(data) {
+              console.log("ajax save content!");
+              showMessage("success", "operation ok", "save content success!");
+              self.isEditable = false;
+              self.contentSaving = false;
+          },
+          error: function(error) {
+            showMessage("error", "operation error", "failed to save content!");
+          }
+      });
+    },
     runTestcase: function(){
       var self = this;
       $.ajax({
@@ -145,11 +216,17 @@ export default {
           },
           beforeSend: function(XHR) {
               self.wfloading = true;
+              showMessage("info", "run testcase", "start to run " + self.$route.query.caseName);
           },
           success: function(data) {
               console.log("ajax run test story!");
               self.wfloading = false;
               self.workflowId = data['result']['workflowId'];
+              showMessage("success", "run testcase", " " + self.$route.query.caseName + " finished!");
+          },
+          error: function(err) {
+              self.wfloading = false;
+              showMessage("error", "run testcase", "server error!");
           }
       });
 

@@ -1,14 +1,13 @@
 <template>
-<div>
-    <div id="file-section1" class="col-sm-offset-1 col-md-3" style="margin-left: 200px;">
+<div style="overflow:hidden;">
+    <div id="file-section1" class="col-md-4">
       <div id="workflow-content-div">
-        <div class="dark-gray-bg">WORKFLOW YML CONTENT</div>
-        <pre id="workflow-content" style="height: 600px;"></pre>
+        <div class="dark-gray-bg" style="padding-left: 10px;font-size: 17px;"> <span> WORKFLOW.JSON CONTENT</span></div>
+        <pre class="white-pink" id="workflow-content" style="height: 600px; background-color:#f5f5f5;"></pre>
       </div>
-    </div>
-          
-	<div class="col-sm-offset-1 col-md-4" id="graph-show-section" style="height:600px;">
-	  <div id="workflow-graph" style="margin-top: 10px;margin-left: 70px;">
+    </div>      
+	<div class="col-md-offset-2 col-md-4" id="graph-show-section" style="height:600px;">
+	  <div v-show="!wfloading" id="workflow-graph" style="margin-top: 10px;margin-left: 70px;">
 	  </div>
 	  <div v-show="wfloading" class="spiner-example" id="loading">
 	    <div class="sk-spinner sk-spinner-three-bounce">
@@ -41,8 +40,7 @@ export default {
 			initalPaintFlag : false,
 			RESPONSE_TIME_LIMIT : 6000,
 			responseTimeCounter : 0,
-			wfCompletedFlag : false,
-			wfget: false
+			wfCompletedFlag : false
 		}
 	},
 	computed: {
