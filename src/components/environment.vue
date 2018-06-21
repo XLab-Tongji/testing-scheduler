@@ -69,6 +69,8 @@
 </template>
 
 <script>
+    import Vue from 'vue'
+    const SERVICE_SERVER = "http://localhost:5310/";
     var baseInput = {
         props: ['name', 'value'],
         data: function() {
@@ -93,14 +95,13 @@
         },
         methods: {
             addNewParam: function() {
-                this.params.push({'name': '', 'description': ''});
+                this.params = Object.assign({}, this.params, {'null': {'help': ''}});
             },
             deleteParam: function(name) {
-                for(var i = 0;i < this.params.length; i++) {
-                    if(name == this.params[i]['name']) {
-                        this.params.splice(i, 1);
-                    }
-                }
+                console.log("delete Param: " + name);
+                console.log(this.params);
+                Vue.delete(this.params, name);
+                this.params = Object.assign({}, this.params);
             }
         },
         template: 
@@ -120,10 +121,10 @@
                             </tr> \
                         </thead> \
                         <tbody> \
-                            <tr v-for="param in params"> \
-                                <td><input type="text" class="form-control" style="border: 0px" v-model="param.name"></td> \
-                                <td><input type="text" class="form-control" style="border: 0px" v-model="param.description"></td> \
-                                <td><button type="button" class="btn btn-danger" v-on:click="deleteParam(param.name)">delete</button></td> \
+                            <tr v-for="(content, name, index) in params"> \
+                                <td><input type="text" class="form-control" style="border: 0px" v-model="name"></td> \
+                                <td><input type="text" class="form-control" style="border: 0px" ">{{ params[index] }}</td> \
+                                <td><button type="button" class="btn btn-danger" v-on:click="deleteParam(name)">{{index}}</button></td> \
                             </tr> \
                         </tbody> \
                      </table> \
@@ -203,7 +204,18 @@
                        var content = newVal.content;
                        this.ip =  content.ip;
                        this.port = content.port;
-                       this.apis = content.apis;
+                       this.apis = [];
+                       var tmpApi;
+                       for(var apiName in content.apis){
+                            console.log("content.apis");
+                            console.log(content.apis);
+                            tmpApi = JSON.parse(JSON.stringify(content.apis[apiName]));
+                            console.log("tmpApi");
+                            console.log(tmpApi);
+                            tmpApi['name'] = apiName;
+                            this.apis.push(tmpApi);
+                       }
+                       console.log(this.apis);
                     } else {
                         this.resetModalData();
                     }
@@ -237,16 +249,17 @@
             },
             saveEdition: function() {
                 console.log("save edit!!!");
+                var cApis = this.apiConvertToObject();
                 var self = this;
                 $.ajax({
-                    url: "http://localhost:8234/editService",
+                    url: SERVICE_SERVER + "editService",
                     method: "post",
                     data: {
                         "oldName": self.type.originName,
                         "newName": self.type.service,
                         "ip": this.ip,
                         "port": this.port,
-                        "apis": JSON.stringify(this.apis)
+                        "apis": JSON.stringify(cApis)
                     },
                     success: function(data) {
                         console.log("#############success edit");
@@ -260,15 +273,20 @@
             },
             saveCreation: function() {
                 console.log("save creation!!!");
+                var cApis = this.apiConvertToObject();
+                console.log("cApis");
+                console.log(cApis);
+                console.log("Jsonnify");
+                console.log(JSON.stringify(cApis));
                 var self = this;
                 $.ajax({
-                    url: "http://localhost:8234/createService",
+                    url: SERVICE_SERVER + "createService",
                     method: "post",
                     data: {
                         "name": self.type.service,
                         "ip": this.ip,
                         "port": this.port,
-                        "apis": JSON.stringify(this.apis)
+                        "apis": JSON.stringify(cApis)
                     },
                     success: function(data) {
                         console.log("#############success create");
@@ -286,6 +304,27 @@
                 for(i in this.apis) {
                     console.log(this.apis[i]);
                 }
+            },
+            apiConvertToObject: function() {
+               var apiObj = {};
+               var name;
+               var newApi;
+               console.log(this.apis);
+               for(var i in this.apis) {
+                    console.log("######################loop");
+                    console.log(this.apis[i]);
+                    name = this.apis[i]['name'];
+                    console.log("api json:-------------------------------");
+                    console.log(JSON.stringify(this.apis[i]));
+                    newApi = JSON.parse(JSON.stringify(this.apis[i]));
+                    console.log("new Api");
+                    console.log(newApi);
+                    delete(newApi['name']);
+                    apiObj[name] = newApi;
+                    console.log("apiObj:");
+                    console.log(apiObj);
+               }
+               return apiObj; 
             }
         },
         components: {
@@ -298,7 +337,6 @@
                                     <button type="button" class="close" data-dismiss="modal"> \
                                         <span aria-hidden="true">&times;</span><span class="sr-only">Close</span> \
                                     </button> \
-                                    <i class="fa fa-laptop modal-icon"></i> \
                                     <input  type="text" class="form-control modal-title service-title" v-model="type.service" placeholder="please input service name." style="border: 0"> \
                                     <small class="font-bold"></small> \
                                 </div> \
@@ -359,7 +397,7 @@
         created: function() {
             var self = this;
             $.ajax({
-                url: "http://localhost:8234/getAllService",
+                url: SERVICE_SERVER + "getAllServices",
                 method: "get",
                 success: function(data) {
                     if(data['code'] == 200) {
@@ -404,7 +442,7 @@
                 console.log(this.type);
                 var self = this;
                 $.ajax({
-                    url: "http://localhost:8234/getService",
+                    url: SERVICE_SERVER + "getService",
                     method: "get",
                     data: {
                         "serviceName": serviceName
@@ -422,7 +460,7 @@
             },
             deleteService: function(serviceName){
                 $.ajax({
-                    url: "http://localhost:8234/deleteService",
+                    url: SERVICE_SERVER + "deleteService",
                     method: "post",
                     data: {
                         "serviceName": serviceName

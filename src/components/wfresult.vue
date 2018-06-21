@@ -1,5 +1,5 @@
 <template>
-<div style="overflow:hidden;">
+<div style="min-height: 600px; overflow-x: hidden; overflow-y: auto;">
     <div id="file-section1" class="col-md-4">
       <div id="workflow-content-div">
         <div class="dark-gray-bg" style="padding-left: 10px;font-size: 17px;"> <span> WORKFLOW.JSON CONTENT</span></div>

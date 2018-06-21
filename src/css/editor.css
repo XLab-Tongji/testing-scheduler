@@ -1,0 +1,37 @@
+.row {
+    padding-bottom: 5px;
+    margin-left: 0 !important;
+}
+
+.ibox-content {
+    overflow: hidden;
+}
+
+h5{
+    margin-top: 10px !important;
+}
+.col-lg-6 {
+    float: none !important;
+}
+
+.col-md-5 {
+    margin-bottom: 10px !important;
+}
+
+.step {
+    border-color: #fff !important;
+}
+
+.headmsg {
+    position: relative;
+    float: left;
+    font-size: 14px;
+    margin-top: 3px;
+    margin-left: 20px;
+    margin-right: 40px;
+    width: 5%;
+}
+
+.form-group {
+    clear: both;
+}
