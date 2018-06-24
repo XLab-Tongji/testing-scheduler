@@ -5,6 +5,8 @@ import page2 from '@/components/page2'
 import page3 from '@/components/page3'
 import environment from '@/components/environment'
 import editor from '@/components/editor'
+import step from '@/components/step'
+import flow from '@/components/flow'
 Vue.use(Router)
 const Result = {template: "<div>please visit <a target='blank' href='http://lab205.jios.org:30002/dashboard/db/cluster?orgId=1'>grafana page.</a></div>"}
 export default new Router({
@@ -26,7 +28,7 @@ export default new Router({
     },
     {
       path: '/result',
-      component: Result
+      component: step
     },
     {
       path: '/report',
@@ -34,7 +36,7 @@ export default new Router({
     },
     {
       path: '/environment',
-      component: environment
+      component: flow
     }
   ]
 })

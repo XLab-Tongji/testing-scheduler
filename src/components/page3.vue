@@ -49,9 +49,12 @@
                     </a>
                 </div>
             </div>
-            <div class="ibox-content" style="text-align:center;">
+            <div class="ibox-content" style="overflow-y: scroll;">
+                <!-- 
                 <textarea class="white-pink" v-bind:readonly="!isEditable" v-model="content" id="tc_content" style="max-width:2400px; width: 90%;height: 100%;min-height: 500px; margin-top: 20px;font-size:18px;background-color:#f5f5f5;">
                 </textarea>
+                -->
+                <editor></editor>
             </div>
         </div>
       </div>
@@ -85,6 +88,7 @@
 </template>
 <script>
 import {addClass, removeClass, isContainClass} from '../scri/my-util.js'
+import editor from './editor.vue'
 import wfresult from './wfresult.vue'
 import toastr from '../scri/toastr.min.js'
   var content;
@@ -262,6 +266,7 @@ export default {
     }
   },
   components: {
+    editor,
     wfresult
   }
 }

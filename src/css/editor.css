@@ -7,9 +7,6 @@
     overflow: hidden;
 }
 
-h5{
-    margin-top: 10px !important;
-}
 .col-lg-6 {
     float: none !important;
 }
@@ -34,4 +31,17 @@ h5{
 
 .form-group {
     clear: both;
+}
+
+.border-ibox {
+    border-color:  lightgray;
+    border-style:  solid;
+    border-width: thin;
+}
+
+.ibox-title {
+    padding-bottom: 20px;
+}
+.ibox-title h5 {
+    font-size: 22px;
 }
