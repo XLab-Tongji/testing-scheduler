@@ -1,0 +1,59 @@
+###################
+# time:
+# spec:
+# author:
+###################
+
+schema:
+  steps:
+    -
+      step-id: 1
+      service: 
+        name: yardstick
+        call: REST
+      action: run_testcase
+      args: 
+        test_case: tc_01.yaml
+        input_args:
+          arg1: aaa
+          arg2: bbb
+
+    -
+      step-id: 2
+      service: 
+        name: yardstick
+        call: REST
+      action: run_testcase
+      args: 
+        test_case: tc_01.yaml
+        input_args:
+          arg1: aaa
+          arg2: bbb
+
+  flow:
+
+    -
+      id: 01
+      pre: flow-start
+
+    -
+      id: 02
+      pre: 01
+
+    -
+      id: 03
+      pre: 01
+
+    -
+      id: 04
+      pre: 02 & 03
+
+    - 
+      id: 05
+      pre: 02 | 03
+
+    - 
+      finish:
+        pre: 05
+
+

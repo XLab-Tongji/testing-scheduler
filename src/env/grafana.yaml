@@ -1,11 +1,9 @@
----
 grafana:
-  ip: 10.60.38.181
-  port: 5202
   apis:
-    collect-data: 
-      method: GET
-      uri: greet
+    collect-data:
       params:
         name:
           help: user name
+      uri: greet
+  ip: 10.60.38.181
+  port: 5202
