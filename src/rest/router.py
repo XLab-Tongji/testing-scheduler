@@ -30,7 +30,7 @@ def hello():
 def runTestStory():
 	stories = [request.values.get('stories')]
 	service_name = request.values.get('service')
-	baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_story")
+	baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_case")
 	for story in stories:
 		storyDir = os.path.join(baseTestDir, service_name, story)
 		app.logger.debug("storyDir:%s"%storyDir)
