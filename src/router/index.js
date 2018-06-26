@@ -36,7 +36,7 @@ export default new Router({
     },
     {
       path: '/environment',
-      component: flow
+      component: environment
     }
   ]
 })
