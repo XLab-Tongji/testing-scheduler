@@ -192,7 +192,8 @@ def getWebTestcase(originTcDict):
 	}
 	stepList = webTcDict['stepList']
 	subflowList = webTcDict['subflowList']
-
+	if originTcDict == None:
+		return webTcDict
 	originContent = originTcDict['schema']
 	originSteps = originContent['steps']
 	stepIndexDict = {}
