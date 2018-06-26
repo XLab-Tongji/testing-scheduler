@@ -18,7 +18,6 @@
                 <div class="ibox-title">
                     <h5 style="font-size:26px;margin-top: -3px;">Test Case</h5>
                     <div class="ibox-tools">
-                    <button class="btn btn-info btn-sm my-button-sm" type="button" v-on:click="show()">show</button>
                     <button class="btn btn-info btn-sm my-button-sm" type="button" v-on:click="runTestcases()">Run</button>
                     <button class="btn btn-success btn-sm my-button-sm" type="button" v-on:click="create()">Create</button>
                     <button class="btn btn-danger btn-sm my-button-sm" v-on:click="deleteyaml()" type="button">Delete</button>
@@ -123,7 +122,6 @@ export default {
       sname: this.$route.query.name,
       newstory:'',
       addstory:'',
-      SERVER_ADDR: "http://localhost:5000/",
       workflowId: '',
       wfloading: false,
       wfJson: '',
@@ -133,7 +131,7 @@ export default {
   created: function() {
     var self = this;
     $.ajax({
-      url:"http://10.60.38.181:5202/testsuite/content",
+      url: this.global.SERVER_ADDR + "testsuite/content",
       method:"GET",
       data:{
         suiteName:  this.$route.query.name
@@ -173,7 +171,7 @@ export default {
       if(storytext )
       {
         $.ajax({
-          url:"http://10.60.38.181:5202/testcase/new",
+          url: this.global.SERVER_ADDR + "testcase/new",
           method:"GET",
           data:{
             suiteName: self.sname,
@@ -201,7 +199,7 @@ export default {
         alert(self.sname);
         alert(self.selected[n]);
         $.ajax({
-          url:"http://10.60.38.181:5202/testcase/delete",
+          url: this.global.SERVER_ADDR + "testcase/delete",
           method:"GET",
           data:{
             suiteName: self.sname,
@@ -237,13 +235,10 @@ export default {
       this.addstory = '';
 
     },
-    show: function() {
-        alert(this.selected.join(" "));
-    },
     runTestcases: function() {
       var self = this;
       $.ajax({
-          url: self.SERVER_ADDR + "run-test/story",
+          url: this.global.SERVER_ADDR + "run-test/story",
           method: "POST",
           data: {
               "service": "logic",
@@ -260,7 +255,7 @@ export default {
       });
 
       $.ajax({
-          url: self.SERVER_ADDR + "story-content",
+          url: this.global.SERVER_ADDR + "story-content",
           method: "GET",
           data: {
               "service": "logic",

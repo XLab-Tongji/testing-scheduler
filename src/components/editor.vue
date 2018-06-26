@@ -5,7 +5,7 @@
     <br>
     <div class="row">
         <div class='col-md-10'>
-            <step v-on:stepList="getStepList"></step>
+            <step v-bind:stepList="stepList" v-on:stepList="getStepList"></step>
         </div>
     </div>
 
@@ -17,9 +17,9 @@
             <button style='margin-left:20px;' class="btn btn-success" type="button" id="new-flow" v-on:click='addSubflow'>&nbsp;&nbsp;<span class="bold">ADD FLOW</span></button>
         </div>
         <div class='col-md-10'>
-            <flow v-model='mainflowName' v-bind:stepsRefs='stepNameList' v-bind:flowsRefs='subflowNameList' v-on:orderList='updateOrderList($event, mainflowName)'></flow>
+            <flow v-model='mainflowName' v-bind:orderList='mainOrdersList' v-bind:stepsRefs='stepNameList' v-bind:flowsRefs='flowNameList' v-on:orderList='updateOrderList($event, mainflowName)'></flow>
             <div v-for='subflow in subflowList'>
-                <flow v-model='subflow.name' v-bind:stepsRefs='stepNameList' v-bind:flowsRefs='subflowNameList' v-on:orderList='updateOrderList($event, subflow.name)'></flow>
+                <flow v-model='subflow.name' v-bind:orderList='subflow.orderList' v-bind:stepsRefs='stepNameList' v-bind:flowsRefs='flowNameList' v-on:orderList='updateOrderList($event, subflow.name)'></flow>
             </div>
         </div>
     </div>
@@ -40,12 +40,13 @@ import flow from './flow.vue'
 
 export default {
     name: 'editor',
+    props: ['saveSignal', 'stepList', 'mainOrdersList', 'subflowList'],
+    model: {
+        prop: 'saveSignal',
+        event: 'saveResponse'
+    },
     data: function(){
         return {
-            runList: [],
-            stepList: [],
-            subflowList: [],
-            mainOrdersList: [],
             mainflowName: 'main'
         }
     },
@@ -58,18 +59,14 @@ export default {
             this.stepList = stepList;
         },
         addSubflow: function() {
-            this.subflowList.push({'name': '', 'orderList': ''});
+            this.subflowList.push({'name': '', 'orderList': []});
         },
         updateOrderList: function(orderList, flowName) {
-            console.log("updateOrderList");
-            console.log(orderList);
-            console.log(flowName);
-            console.log("updateOrderList end");
             if(flowName == 'main') {
                 this.mainOrdersList = orderList;
             } else {
-                for(var i = 0; i < this.subflowList; ++i) {
-                    if(this.subflowList[i].name = flowName) {
+                for(var i = 0; i < this.subflowList.length; ++i) {
+                    if(this.subflowList[i].name == flowName) {
                         this.subflowList[i].orderList = orderList;
                     }
                 }
@@ -77,19 +74,52 @@ export default {
         }
     },
     computed: {
+        flowNameList: function() {
+            var stepNameArr = [];
+            for(var i = 0; i < this.subflowList.length; i++) {
+                stepNameArr.push(this.subflowList[i].name);
+            }
+            console.log(stepNameArr);
+            return stepNameArr;
+        },
         stepNameList: function() {
             var stepNameArr = [];
             for(var i = 0; i < this.stepList.length; i++) {
                 stepNameArr.push(this.stepList[i].name);
             }
             return stepNameArr;
-        },
-        subflowNameList: function() {
-            var subflowNameArr = [];
-            for(var i = 0; i < this.subflowList.length; i++) {
-                subflowNameArr.push(this.subflowList[i].name);
+        }
+        
+    },
+    watch: {
+        saveSignal: function(newVal) {
+            if(newVal == true) {
+                console.log("editor newVal true");
+                var self = this;
+                $.ajax({
+                    url: this.global.SERVER_ADDR + "testcase/save",
+                    method: "POST",
+                    data: {
+                        suiteName:  this.$route.query.suiteName,
+                        caseName: this.$route.query.caseName,
+                        stepList: JSON.stringify(this.stepList),
+                        subflowList: JSON.stringify(this.subflowList),
+                        mainOrdersList: JSON.stringify(this.mainOrdersList)
+                    },
+                    success: function(data) {
+                        console.log("ajax save content!");
+                        if(data['code'] == 200) {
+                            self.$emit('saveResponse', true);
+                        } else {
+                            self.$emit('saveResponse', false);
+                        }
+                    },
+                    error: function(error) {
+                        console.log("ajax save content!");
+                        self.$emit('saveResponse', false);
+                    }
+                });
             }
-            return subflowNameArr;
         }
     }
 }

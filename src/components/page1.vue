@@ -114,7 +114,6 @@ export default {
       newstory : '',
       storys : '',
       service_selected : '',
-      SERVER_ADDR: "http://localhost:5000/",
       workflowId: '',
       wfloading: false,
       wfJson: '',
@@ -124,7 +123,7 @@ export default {
   created: function() {
     var self = this;
     $.ajax({
-      url:"http://10.60.38.181:5202/testsuite/list",
+      url: this.global.SERVER_ADDR + "testsuite/list",
       method:"GET",
       data:{},
       success:function (data) {
@@ -163,7 +162,7 @@ export default {
       if(storytext)
       {
         $.ajax({
-          url:"http://10.60.38.181:5202/testsuite/new",
+          url: this.global.SERVER_ADDR + "testsuite/new",
           method:"GET",
           data:{
             suiteName:storytext
@@ -191,7 +190,7 @@ export default {
       {
         alert(self.selected[n]);
         $.ajax({
-          url:"http://10.60.38.181:5202/testsuite/delete",
+          url: this.global.SERVER_ADDR + "testsuite/delete",
           method:"GET",
           data:{
             suiteName: self.selected[n]
@@ -209,7 +208,7 @@ export default {
     runTestsuites: function() {
       var self = this;
       $.ajax({
-          url: self.SERVER_ADDR + "run-test/story",
+          url: this.global.SERVER_ADDR + "run-test/story",
           method: "POST",
           data: {
               "service": "logic",
@@ -226,7 +225,7 @@ export default {
       });
 
       $.ajax({
-          url: self.SERVER_ADDR + "story-content",
+          url: this.global.SERVER_ADDR + "story-content",
           method: "GET",
           data: {
               "service": "logic",

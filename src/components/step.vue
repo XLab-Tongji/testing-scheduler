@@ -78,13 +78,16 @@
                 	</div>
                 	<div class="ibox-content">
                 		<div class="row">
-                			<label class="control-label">Service: {{ step.service }}</label>
+                			<label class="control-label"><span style='padding-right: 20px;'>Service:</span> {{ step.service }}</label>
                         </div>
                     	<div class="row">
-                          <label class="control-label">Action: {{ step.action }}</label>
+                          <label class="control-label"><span style='padding-right: 20px;'>Action:</span> {{ step.action }}</label>
                         </div>
                    		<div class="param row">
-                          <label class="control-label">Parameter: {{step.params.join('&nbsp;&nbsp;')}}</label>
+                          <label class="control-label">
+                              <span style='padding-right: 20px;'>Parameter:</span>
+                              <span v-for='param in step.params'>{{param.key}} = {{param.value}} ;&nbsp;&nbsp;&nbsp;</span> 
+                          </label>
                         </div>
 
                    	</div>
@@ -99,12 +102,12 @@
 
 export default {
 	name: 'step',
+    props: ['stepList'],
 	data: function() {
 		return {
 			dataService: [],
             dataAction: [],
-            dataParam: [],
-            stepList: []
+            dataParam: []
 		}
 	},
 	mounted: function() {
@@ -125,7 +128,7 @@ export default {
             console.log("get serviceList!");
             var self = this;
             $.ajax({
-                url: "http://10.60.38.181:5202/service/list",
+                url: this.global.SERVER_ADDR + "service/list",
                 method: "GET",
                 async:false,
                 success: function(data){
@@ -140,7 +143,7 @@ export default {
         getServiceContent: function(name){
             var self = this;
             $.ajax({
-                url: "http://10.60.38.181:5202/service/content",
+                url: this.global.SERVER_ADDR + "service/content",
                 method: "GET",
                 async:false,
                 data: {
@@ -194,7 +197,7 @@ export default {
                     return;
                 } 
                 var name = this.dataParam[i].name;
-                par.push(name+': '+temp);
+                par.push({key: name, value: temp});
             }
             this.stepList.push({name: na, service: ser, action: act, params: par});
             $("#name").val("");

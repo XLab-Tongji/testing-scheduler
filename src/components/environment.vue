@@ -70,7 +70,6 @@
 
 <script>
     import Vue from 'vue'
-    const SERVICE_SERVER = "http://localhost:5310/";
     var baseInput = {
         props: ['name', 'value'],
         data: function() {
@@ -252,7 +251,7 @@
                 var cApis = this.apiConvertToObject();
                 var self = this;
                 $.ajax({
-                    url: SERVICE_SERVER + "editService",
+                    url: this.global.SERVER_ADDR + "editService",
                     method: "post",
                     data: {
                         "oldName": self.type.originName,
@@ -280,7 +279,7 @@
                 console.log(JSON.stringify(cApis));
                 var self = this;
                 $.ajax({
-                    url: SERVICE_SERVER + "createService",
+                    url: this.global.SERVER_ADDR + "createService",
                     method: "post",
                     data: {
                         "name": self.type.service,
@@ -397,7 +396,7 @@
         created: function() {
             var self = this;
             $.ajax({
-                url: SERVICE_SERVER + "getAllServices",
+                url: this.global.SERVER_ADDR + "getAllServices",
                 method: "get",
                 success: function(data) {
                     if(data['code'] == 200) {
@@ -442,7 +441,7 @@
                 console.log(this.type);
                 var self = this;
                 $.ajax({
-                    url: SERVICE_SERVER + "getService",
+                    url: this.global.SERVER_ADDR + "getService",
                     method: "get",
                     data: {
                         "serviceName": serviceName
@@ -460,7 +459,7 @@
             },
             deleteService: function(serviceName){
                 $.ajax({
-                    url: SERVICE_SERVER + "deleteService",
+                    url: this.global.SERVER_ADDR + "deleteService",
                     method: "post",
                     data: {
                         "serviceName": serviceName

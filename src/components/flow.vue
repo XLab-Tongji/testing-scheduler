@@ -224,7 +224,7 @@
 <script>
 export default {
 	name: 'flow',
-	props: ['stepsRefs', 'flowsRefs', 'flowName'],
+	props: ['stepsRefs', 'flowsRefs', 'flowName', 'orderList'],
     model: {
         prop: 'flowName',
         event: 'editFlowName'
@@ -235,7 +235,6 @@ export default {
             switchValue: '',
 			switchCases: [{'value': '', 'orderType': '', 'orderValue': ''}],
             parallelBranches: [{'orderType': '', 'orderValue': ''}],
-			orderList: [],
             orderSelected: 1
 		}
 	},
@@ -347,8 +346,8 @@ export default {
         filtedFlowsRefs: function() {
             var subflowNameArr = [];
             for(var i = 0; i < this.flowsRefs.length; i++) {
-                if(this.flowsRefs[i] == this.flowName) {
-                    this.flowsRefs.splice(i, 1);
+                if(this.flowsRefs[i] != this.flowName) {
+                    subflowNameArr.push(this.flowsRefs[i]);
                 }
             }
             return subflowNameArr;

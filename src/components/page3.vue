@@ -49,12 +49,12 @@
                     </a>
                 </div>
             </div>
-            <div class="ibox-content" style="overflow-y: scroll;">
-                <!-- 
-                <textarea class="white-pink" v-bind:readonly="!isEditable" v-model="content" id="tc_content" style="max-width:2400px; width: 90%;height: 100%;min-height: 500px; margin-top: 20px;font-size:18px;background-color:#f5f5f5;">
-                </textarea>
-                -->
-                <editor></editor>
+            <div class="ibox-content" style="max-height: 600px; overflow-y: scroll;">
+                <div style='text-align:center;'>
+                  <textarea class="white-pink" v-show='!isEditable' v-model="content" id="tc_content" style="max-width:2400px; width: 90%;height: 100%;min-height: 500px; margin-top: 20px;font-size:18px;background-color:#f5f5f5;">
+                  </textarea>
+                </div>
+                <editor v-show='isEditable' v-bind:saveSignal='saveSignal' v-bind = 'editorContent' v-on:saveResponse='processSaveResponse'></editor>
             </div>
         </div>
       </div>
@@ -112,6 +112,7 @@ export default {
   data () {
     return {
       content,
+      editorContent: {'stepList': [], 'mainOrdersList': [], 'subflowList': []},
       bakContent: '',
       isEditable: false,
       contentLoading: false,
@@ -129,33 +130,12 @@ export default {
         'logic'
       ],
       service_selected: '',
-      selected: []
+      selected: [],
+      saveSignal: false
     }
   },
   created: function() {
-    
-    var self = this;
-    $.ajax({
-      url:"http://10.60.38.181:5202/testcase/content",
-      method:"GET",
-      data:{
-        suiteName:  this.$route.query.suiteName,
-        caseName: this.$route.query.caseName
-      },
-      beforeSend: function(XHR) {
-          self.contentLoading = true;
-      },
-      success:function (data) {
-        if(data['code'] == 200) {
-          self.content = data['result']['content'];
-          self.contentLoading = false;
-        }
-      },
-      error: function (error) {
-        showMessage("failed", "content error", "fail to load testcase content!");
-        self.contentLoading = false;
-      }
-    });
+      this.getTestcase();
   },
   computed: {
     selectAll: {
@@ -185,34 +165,13 @@ export default {
     },
     saveTestcase: function(){
       console.log("save");
-      console.log(this.content);
-      var self = this;
-      $.ajax({
-          url: "http://10.60.38.181:5202/testcase/save",
-          method: "POST",
-          data: {
-              suiteName:  this.$route.query.suiteName,
-              caseName: this.$route.query.caseName,
-              content: this.content
-          },
-          beforeSend: function(XHR) {
-              self.contentSaving = true;
-          },
-          success: function(data) {
-              console.log("ajax save content!");
-              showMessage("success", "operation ok", "save content success!");
-              self.isEditable = false;
-              self.contentSaving = false;
-          },
-          error: function(error) {
-            showMessage("error", "operation error", "failed to save content!");
-          }
-      });
+      this.saveSignal = true;
+      this.contentSaving = true;
     },
     runTestcase: function(){
       var self = this;
       $.ajax({
-          url: self.SERVER_ADDR + "run-test/story",
+          url: this.global.SERVER_ADDR + "run-test/story",
           method: "POST",
           data: {
               "service": this.$route.query.suiteName,
@@ -235,7 +194,7 @@ export default {
       });
 
       $.ajax({
-          url: self.SERVER_ADDR + "story-content",
+          url: this.global.SERVER_ADDR + "story-content",
           method: "GET",
           data: {
               "service": "logic",
@@ -248,13 +207,47 @@ export default {
           }
       });
     },
+    getTestcase: function(){
+        var self = this;
+        $.ajax({
+          url: this.global.SERVER_ADDR + "testcase/content",
+          method:"GET",
+          data:{
+            suiteName:  this.$route.query.suiteName,
+            caseName: this.$route.query.caseName
+          },
+          beforeSend: function(XHR) {
+              self.contentLoading = true;
+          },
+          success:function (data) {
+            if(data['code'] == 200) {
+              self.content = data['result']['content'];
+              self.contentLoading = false;
+              /*var eContent = data['result']['editorContent'];
+              self.editorContent['stepList'] = eContent['stepList'];
+              self.editorContent['mainOrdersList'] = eContent['mainOrdersList'];
+              self.editorContent['subflowList'] = eContent['subflowList'];
+              */
+              self.editorContent = data['result']['editorContent'];
+            }
+            else {
+              showMessage("failed", "content error", "fail to load testcase content!");
+              self.contentLoading = false;
+            }
+          },
+          error: function (error) {
+            showMessage("failed", "content error", "fail to load testcase content!");
+            self.contentLoading = false;
+          }
+        });
+    },
     getOutput: function() {
         console.log("get output active!");
         var wfConfigDiv = document.getElementById("workflowId");
         var inputArr = wfDiv.getElementsByTagName("input");
         var idElem = inputArr[0];
         var workflowId = idElem.getAttribute("value");
-        var url = "http://localhost:8600/workflow_server/workflow/" + workflowId + "?includeTasks=true";
+        var url = this.global.AGENT_ADDR + "workflow_server/workflow/" + workflowId + "?includeTasks=true";
         $.ajax({
             url: url,
             method: "GET",
@@ -263,6 +256,24 @@ export default {
                 console.log(data);
             }
         });
+    },
+    async processSaveResponse(result) {
+      if(result == true) {
+        // await this.sleep(5000);
+        this.saveSignal = false;
+        this.isEditable = false;
+        this.contentSaving = false;
+        showMessage("success", "operation ok", "save content success!");
+        this.getTestcase();
+      } else {
+        // await this.sleep(5000);
+        this.saveSignal = false;
+        this.contentSaving = false;
+        showMessage("error", "operation error", "failed to save content!");
+      }
+    },
+    sleep: function(d) {  
+        return new Promise((resolve) => setTimeout(resolve, d))  
     }
   },
   components: {

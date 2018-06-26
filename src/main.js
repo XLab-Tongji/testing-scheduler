@@ -16,11 +16,12 @@ import './scri/inspinia.js'
 import './scri/pace.min.js'
 import './scri/toastr.min.js'
 import Vue from 'vue'
+import global from './Global'
 import App from './App'
 import router from './router'
 
 Vue.config.productionTip = false
-
+Vue.prototype.global = global
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
