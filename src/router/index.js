@@ -28,11 +28,11 @@ export default new Router({
     },
     {
       path: '/result',
-      component: step
+      component: Result
     },
     {
       path: '/report',
-      component: editor
+      component: page1
     },
     {
       path: '/environment',
