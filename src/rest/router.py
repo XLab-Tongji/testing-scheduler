@@ -8,7 +8,6 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 import test_parser
 import time
-import conf
 import pyaml
 import yaml
 import traceback
