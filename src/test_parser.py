@@ -174,6 +174,8 @@ def parseOrderList(orderList, stepIndexDict, typeDict):
 	return replaceList
 
 def transParamString(val):
+	if type(val) != str:
+		return val
 	if '.' not in val:
 		if val.isdigit():
 			return int(val)
