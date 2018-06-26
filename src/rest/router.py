@@ -231,7 +231,62 @@ def saveTCContent():
   return jsonify({"code": 200, "result": "save success"})
 
 ###############
-### 3. SERVICE
+### 3.1 API FOR SERVICE
+############################################################
+@app.route("/service/list")
+def getAllServices():
+  res = []
+  notice = "if you see this, and cannot solve the problem by yourself, please contact me."
+  try:
+    for fileName in os.listdir(SERVICE_DIR):
+      serviceName = os.path.splitext(fileName)[0]
+      res.append(serviceName)
+  except BaseException, e:
+      return jsonify({"code": 500, "notcie": notice, "error": e.message, "detail error message": repr(e)})
+  return jsonify({"code": 200, "result": res})
+
+@app.route("/service/content")
+def getServiceContent():
+  res = {}
+  notice = "if you see this, and cannot solve the problem by yourself, please contact me."
+  try:
+    serviceName = request.values.get("serviceName")
+    for fileName in os.listdir(SERVICE_DIR):
+      if serviceName == os.path.splitext(fileName)[0]:
+        res["actions"] = []
+        filePath = os.path.join(SERVICE_DIR, fileName)
+        with open(filePath, "r") as f:
+          content = yaml.load(f)
+          apisDict = content[serviceName]['apis']
+          for (apiName,apiContent) in apisDict.items():
+            apiJson = {}
+            apiJson["name"] = apiName
+            if "params" in apiContent:
+                params = apiContent["params"]
+                apiJson["params"] = paramTransform(params)
+            res["actions"].append(apiJson)
+  except BaseException, e:
+    app.logger.debug(traceback.format_exc())
+    return jsonify({"code": 500, "notice": notice, "error": e.message, "detail error message": repr(e)})
+  if res == {}:
+    return jsonify({"code": 300, "error": "no such service!"})
+
+  return jsonify({"code": 200, "result": res})
+
+def paramTransform(paramDict):
+  res = []
+  for (key, value) in paramDict.items():
+    paramJson = {}
+    paramJson["name"] = key
+    paramJson["description"] = value["help"]
+    if "params" in value:
+       paramJson["params"] = paramTransform(value["params"])
+    res.append(paramJson)
+  return res
+
+
+###############
+### 3.2 API FOR ENVIRONMENT SERVICE
 ###########################################################################
 @app.route('/getAllServices')
 def getAllService():
@@ -343,7 +398,6 @@ def deleteService():
 	return jsonify({"code": 200, "result": "delete success!"})
 
 ###########################################################################
-
 
 
 
