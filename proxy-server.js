@@ -22,13 +22,13 @@ var server = require('http').createServer(function(req, res) {
 
   switch(true){
     case /stress-test.*/.test(reqUrl):
-        console.log("proxy to stress-test port at 8080");
+        console.log("proxy to stress-test port at 5312");
         if(false && reqUrl != 'stress-test/app.js') {
           prefixLength = "stress-test".length;
           req.url = "/" + reqUrl.substr(prefixLength + 1);
         }
         console.log("real req url is:" + req.url);
-        proxy.web(req, res, { target: 'http://localhost:8080' });
+        proxy.web(req, res, { target: 'http://localhost:5311' });
     break;
     case /proxy/.test(reqUrl):
         res.writeHead(200, {
@@ -48,6 +48,6 @@ var server = require('http').createServer(function(req, res) {
   }
 });
 
-var PORT = 8600;
+var PORT = 5312;
 console.log("proxy-server is listening on port:" + PORT);
 server.listen(PORT);

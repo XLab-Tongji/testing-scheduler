@@ -197,8 +197,8 @@ export default {
           url: this.global.SERVER_ADDR + "story-content",
           method: "GET",
           data: {
-              "service": "logic",
-              "story": "ts_logic_00.yaml"
+              "service":  this.$route.query.suiteName,
+              "story": this.$route.query.caseName
           },
           success: function(data) {
               if(data['code'] == 200) {
