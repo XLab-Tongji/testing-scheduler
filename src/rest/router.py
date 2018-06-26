@@ -218,7 +218,6 @@ def saveTCContent():
 
     casePath = os.path.join(suiteName, caseName)
     casePath = os.path.join(TESTSUITE_DIR, casePath)
-    casePath = os.path.join(BASE_DIR, "..", "tmp", "parseDataYaml.yaml")
     if os.path.exists(casePath):
       with open(casePath, "w") as f:
         pyaml.dump(parseData, f, safe=True)
