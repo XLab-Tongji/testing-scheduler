@@ -28,7 +28,7 @@ var server = require('http').createServer(function(req, res) {
           req.url = "/" + reqUrl.substr(prefixLength + 1);
         }
         console.log("real req url is:" + req.url);
-        proxy.web(req, res, { target: 'http://localhost:5311' });
+        proxy.web(req, res, { target: 'http://localhost:5312' });
     break;
     case /proxy/.test(reqUrl):
         res.writeHead(200, {
@@ -40,14 +40,14 @@ var server = require('http').createServer(function(req, res) {
         prefixLength = "workflow_server".length;
         req.url = "/" + reqUrl.substr(prefixLength + 1)
         console.log("real req url is:" + req.url)
-        proxy.web(req, res, { target: 'http://10.60.38.181:5201' });
+        proxy.web(req, res, { target: 'http://localhost:5201' });
     break;
     default:
         console.log("real req url is:" + req.url)
-        proxy.web(req, res, { target: 'http://10.60.38.181:5200' });
+        proxy.web(req, res, { target: 'http://localhost:5200' });
   }
 });
 
-var PORT = 5312;
+var PORT = 5311;
 console.log("proxy-server is listening on port:" + PORT);
 server.listen(PORT);
