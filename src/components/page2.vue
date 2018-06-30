@@ -196,8 +196,6 @@ export default {
       var self = this;
       for(var n in self.selected)
       {
-        alert(self.sname);
-        alert(self.selected[n]);
         $.ajax({
           url: this.global.SERVER_ADDR + "testcase/delete",
           method:"GET",
@@ -206,7 +204,6 @@ export default {
             caseName: self.selected[n]
           },
           success:function (data) {
-            alert(data['code']);
             if(data['code'] == 200)
             {
               self.yamls = self.yamls.filter(yaml => {

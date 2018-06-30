@@ -187,7 +187,7 @@
         created: function() {
             var self = this;
             $('#myModal').on('show.bs.modal', function () {
-                alert("##########modal open!!");
+                // alert("##########modal open!!");
             });
             $('#myModal').on('hidden.bs.modal', function () {
                 self.resetModalData();

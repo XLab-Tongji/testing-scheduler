@@ -261,17 +261,17 @@ export default {
                 for(var i=0; i<this.switchCases.length; ++i){
                     var caseValue = this.switchCases[i].value;
                     if(caseValue == ""){
-                        alert("Not completed1!!!");
+                        alert("Not completed!!!");
                         return;
                     }
                     var caseOrderType = this.switchCases[i].orderType;
                     if(caseOrderType == ""){
-                        alert("Not completed2!!!");
+                        alert("Not completed!!!");
                         return;
                     }
                     var caseOrderValue = this.switchCases[i].orderValue;
                     if(caseOrderValue == ""){
-                        alert("Not completed3!!!");
+                        alert("Not completed!!!");
                         return;
                     }
                     caseList.push({value: caseValue, orderType: caseOrderType, orderValue: caseOrderValue});

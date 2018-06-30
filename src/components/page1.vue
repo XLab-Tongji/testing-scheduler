@@ -188,7 +188,7 @@ export default {
       var self = this;
       for(var n in self.selected)
       {
-        alert(self.selected[n]);
+        // alert(self.selected[n]);
         $.ajax({
           url: this.global.SERVER_ADDR + "testsuite/delete",
           method:"GET",
