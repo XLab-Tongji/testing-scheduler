@@ -1,6 +1,7 @@
 grafana:
   apis:
     collect-data:
+      method: GET
       params:
         name:
           help: user name
