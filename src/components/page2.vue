@@ -238,8 +238,8 @@ export default {
           url: this.global.SERVER_ADDR + "run-test/story",
           method: "POST",
           data: {
-              "service": "logic",
-              "stories": "ts_logic_00.yaml"
+              "service": this.$route.query.name,
+              "stories": this.selected[0]
           },
           beforeSend: function(XHR) {
               self.wfloading = true;
@@ -255,8 +255,8 @@ export default {
           url: this.global.SERVER_ADDR + "story-content",
           method: "GET",
           data: {
-              "service":  this.$route.query.suiteName,
-              "story": this.$route.query.caseName
+              "service":  this.$route.query.name,
+              "story": this.selected[0]
           },
           success: function(data) {
               if(data['code'] == 200) {
