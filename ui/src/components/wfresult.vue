@@ -70,7 +70,7 @@ export default {
 			      // getWFOutput();
 			    }
 			    if(!self.initalPaintFlag) {
-			      if(responseTimeCounter > RESPONSE_TIME_LIMIT) {
+			      if(self.responseTimeCounter > self.RESPONSE_TIME_LIMIT) {
 			        self.initialPaintWFGraph();
 			        responseTimeCounter = 0;
 			      }

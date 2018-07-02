@@ -9,22 +9,27 @@ module.exports = {
 
     // Paths
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/stress-test/',
+    assetsPublicPath: '/',
     proxyTable: {
         '/wf-graph': {
-            target: 'http://10.60.38.181:5200/',
+            target: 'http://docker_conductor-ui_1:5200/',
             changeOrigin: true,
             pathRewrite: {'^/wf-graph':''}
         },
         '/api': {
-            target: 'http://10.60.38.181:5200/',
+            target: 'http://docker_conductor-ui_1:5200/',
             changeOrigin: true
+        },
+        '/workflow': {
+            target: 'http://docker_conductor-server_1:8080/',
+            changeOrigin: true,
+            pathRewrite: {'^/workflow', ''}
         }
     },
 
     // Various Dev Server settings
     host: '0.0.0.0', // can be overwritten by process.env.HOST
-    port: 5312, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 5311, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
@@ -60,7 +65,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/stress-test/',
+    assetsPublicPath: '/',
 
     /**
      * Source Maps
