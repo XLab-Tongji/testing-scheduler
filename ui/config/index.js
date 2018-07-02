@@ -10,7 +10,17 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/stress-test/',
-    proxyTable: {},
+    proxyTable: {
+        '/wf-graph': {
+            target: 'http://10.60.38.181:5200/',
+            changeOrigin: true,
+            pathRewrite: {'^/wf-graph':''}
+        },
+        '/api': {
+            target: 'http://10.60.38.181:5200/',
+            changeOrigin: true
+        }
+    },
 
     // Various Dev Server settings
     host: '0.0.0.0', // can be overwritten by process.env.HOST
