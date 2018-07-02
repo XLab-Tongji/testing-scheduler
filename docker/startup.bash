@@ -11,5 +11,5 @@ sudo docker network connect $conductor_network $server_container
 
 # build ui docker image
 sudo docker build -t $ui_image -f ./ui/Dockerfile ../
-sudo docker run -d -p 5311:5311 -p 5312:5312 --name $ui_container $ui_image
+sudo docker run -d -p 5311:5311 --name $ui_container $ui_image
 sudo docker network connect $conductor_network $ui_container
