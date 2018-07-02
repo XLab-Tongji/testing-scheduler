@@ -1,10 +1,29 @@
-#################
-#PYTHON PYC FILE
-#################
-*.pyc
+#################################
+##  files in server directory
+#################################
 
-#################
+# PYTHON PYC FILE
+/server/*.pyc
+
 # GENERATED FILE IN PROCESS
-#################
-/src/tmp/*
-!/src/tmp/readme.md
+/server/src/tmp/*
+!/server/src/tmp/readme.md
+#############################################################
+
+
+#################################
+##  files in ui directory
+#################################/ui/.DS_Store
+/ui/node_modules/
+/ui/dist/
+/ui/npm-debug.log*
+/ui/yarn-debug.log*
+/ui/yarn-error.log*
+
+# Editor directories and files
+/ui/.idea
+/ui/.vscode
+/ui/*.suo
+/ui/*.ntvs*
+/ui/*.njsproj
+/ui/*.sln
