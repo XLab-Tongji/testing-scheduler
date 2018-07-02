@@ -72,7 +72,7 @@ export default {
 			    if(!self.initalPaintFlag) {
 			      if(self.responseTimeCounter > self.RESPONSE_TIME_LIMIT) {
 			        self.initialPaintWFGraph();
-			        responseTimeCounter = 0;
+			        self.responseTimeCounter = 0;
 			      }
 			    } else {
 			      if(self.frameLoadedFlag || self.responseTimeCounter > self.RESPONSE_TIME_LIMIT) {
