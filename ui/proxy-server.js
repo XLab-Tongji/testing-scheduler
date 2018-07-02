@@ -40,11 +40,11 @@ var server = require('http').createServer(function(req, res) {
         prefixLength = "workflow_server".length;
         req.url = "/" + reqUrl.substr(prefixLength + 1)
         console.log("real req url is:" + req.url)
-        proxy.web(req, res, { target: 'http://10.60.38.181:5201' });
+        proxy.web(req, res, { target: 'http://docker_conductor-server_1:8080' });
     break;
     default:
         console.log("5200: real req url is:" + req.url)
-        proxy.web(req, res, { target: 'http://10.60.38.181:5200' });
+        proxy.web(req, res, { target: 'http://docker_conductor-ui_1:5000' });
   }
 });
 
