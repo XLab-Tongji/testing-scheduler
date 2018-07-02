@@ -23,7 +23,7 @@ module.exports = {
         '/workflow': {
             target: 'http://docker_conductor-server_1:8080/',
             changeOrigin: true,
-            pathRewrite: {'^/workflow', ''}
+            pathRewrite: {'^/workflow':''}
         }
     },
 
