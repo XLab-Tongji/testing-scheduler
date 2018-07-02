@@ -1,0 +1,15 @@
+---
+loop:
+  ip: 192.168.199.105
+  port: 6000
+  apis:
+    loop: 
+      realname: loop
+      format:
+        name: str
+    stress: 
+      realname: stress
+      format:
+        concurrent_num: int
+    reach: 
+      realname: reach

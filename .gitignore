@@ -1,0 +1,10 @@
+#################
+#PYTHON PYC FILE
+#################
+*.pyc
+
+#################
+# GENERATED FILE IN PROCESS
+#################
+/src/tmp/*
+!/src/tmp/readme.md

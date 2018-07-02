@@ -1,0 +1,33 @@
+################################################
+# date: 2018/4/20
+# spec: test the scenario of clearwater experiment
+# author: x-lab.Leo
+################################################
+
+---
+schema:
+  steps:
+    -
+      id: 1
+      name: inject-random-fault
+      type: test
+      action: start
+      service:
+        name: ansible
+        interface: faultload
+      step-args:
+        reg_user: 1000
+        call_user: 500
+        duration: 1
+        initial_reg_rate: 100
+        multiplier: 225
+        fault_duration: 2
+
+
+  flows:
+    -
+      name: main
+      orders:
+        -
+          type: normal
+          step: 1

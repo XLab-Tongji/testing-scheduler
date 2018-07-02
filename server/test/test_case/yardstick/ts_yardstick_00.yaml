@@ -1,0 +1,34 @@
+###################
+# time:
+# spec:
+# author:
+###################
+
+schema:
+  steps:
+    -
+      type: monitor
+      service: yardstick
+      call: REST
+      args:
+        command: start
+        target:
+          ip: 192.168.199.130
+          port: 8080
+        params:
+          - cpu
+          - memory
+          - disk
+
+    -
+      type: workload
+      service: yardstick
+      call: REST
+      args:
+        command: workload
+        target:
+          ip: 192.168.199.130
+          port: 8080
+        domain: make_a_phonecall
+        amount: 100
+        duration: 60

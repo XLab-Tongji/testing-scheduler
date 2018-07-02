@@ -1,0 +1,29 @@
+################################################
+# date: 2018/4/20
+# spec: test basic logic with service: greet
+# author: x-lab.Leo
+################################################
+
+---
+schema:
+  steps:
+    -
+      id: 1
+      name: test-tc-019
+      type: test
+      service:
+        name: yardstick
+        call: REST
+      action: run_testcase
+      args:
+        method: POST
+        args:
+          testcase: opnfv_yardstick_tc019
+
+  flows:
+    -
+      name: main
+      orders:
+        -
+          type: normal
+          step: 1

@@ -1,0 +1,8 @@
+service2:
+  apis:
+    api1:
+      method: GET
+      params: []
+      uri: dasd
+  ip: 192.168.1.111
+  port: 1234
