@@ -247,7 +247,7 @@ export default {
         var inputArr = wfDiv.getElementsByTagName("input");
         var idElem = inputArr[0];
         var workflowId = idElem.getAttribute("value");
-        var url = "/workflow_server/workflow/" + workflowId + "?includeTasks=true";
+        var url = this.global.WF_SERVER_ADDR + "workflow/" + workflowId + "?includeTasks=true";
         $.ajax({
             url: url,
             method: "GET",

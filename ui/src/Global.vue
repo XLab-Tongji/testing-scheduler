@@ -1,7 +1,10 @@
 <script>
-var BASE_URL_PREFIX = 'http://' + window.location.hostname
-var SERVER_ADDR = BASE_URL_PREFIX + ':' + 5310 + '/'
+const SERVER_ADDR = '/parser/'
+const WF_GRAPH_ADDR = '/wf-graph/'
+const WF_SERVER_ADDR = '/wf-server/'
 export default {
-	SERVER_ADDR
+	SERVER_ADDR,
+	WF_GRAPH_ADDR,
+	WF_SERVER_ADDR
 }
 </script>

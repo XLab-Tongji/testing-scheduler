@@ -20,10 +20,14 @@ module.exports = {
             target: 'http://docker_conductor-ui_1:5000/',
             changeOrigin: true
         },
-        '/workflow': {
+        '/wf-server': {
             target: 'http://docker_conductor-server_1:8080/',
             changeOrigin: true,
             pathRewrite: {'^/workflow':''}
+        },
+        '/parser': {
+            target: 'http://t-scheduler-server:5310/',
+            pathRewrite: {'^/parser':''}
         }
     },
 
