@@ -12,9 +12,9 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from conductorclient.run_new_workflow import WorkflowMgr
 BASE_DIR = os.path.dirname(__file__)
-CONDUCTOR_SERVER_ADDR = "http://10.60.38.181:5201"
-STORE_TASK_PATH = BASE_DIR + "/tmp/fake_task.json"
-STORE_WF_PATH = BASE_DIR + "/tmp/fake_workflow.json"
+CONDUCTOR_SERVER_ADDR = "http://docker_conductor-server_1:8080"
+STORE_TASK_PATH = BASE_DIR + "/tmp/generate_task.json"
+STORE_WF_PATH = BASE_DIR + "/tmp/generate_workflow.json"
 
 @click.command()
 @click.option("--filepath", help="file path of test case")
@@ -23,17 +23,17 @@ def cmdParse(filepath):
 
 def parse(filepath):
 	filePrefix, fileName = os.path.split(filepath)
-	print '------------ start to parse the test story:%s ------------------'%fileName
+	print '------------ start to parse the test case:%s ------------------'%fileName
 	with open(filepath) as f:
 		yaml_file = yaml.load(f)
-		parseStory(yaml_file['schema'], fileName)
+		parseTestcase(yaml_file['schema'], fileName)
 
 	workflowId = runWorkFlow()
-	print '------------------- execute end --------------------------------'
+	print '------------------- parse executes end --------------------------------'
 
 	return workflowId
 
-def parseStory(schema, storyName = 'story0'):
+def parseTestcase(schema, tcName = 'testcase0'):
 	if schema == None:
 		return parseLog(False, reason='schema not found.')
 	steps = schema['steps']
@@ -64,8 +64,8 @@ def parseStory(schema, storyName = 'story0'):
 		stepObjArr.append(stepObj)
 
 	#generate workflow by 'flow' and 'step'
-	storyName = os.path.splitext(storyName)[0]
-	wfFileObj = WorkflowFile(storyName)
+	tcName = os.path.splitext(tcName)[0]
+	wfFileObj = WorkflowFile(tcName)
 	workflowDict, taskMetaList = wfFileObj.generateMetaData(flows, stepObjArr)
 
 	with open(STORE_TASK_PATH, 'w') as f:

@@ -2,7 +2,7 @@ from conductor import conductor
 import json
 
 class WorkflowMgr(object):
-	def __init__(self, serverAddr = "http://192.168.199.131:8080"):
+	def __init__(self, serverAddr):
 		self._serverAddr = serverAddr
 		self._metaDataClient = conductor.MetadataClient(self._serverAddr + '/api')
 		self._workflowClient = conductor.WorkflowClient(self._serverAddr + '/api')
