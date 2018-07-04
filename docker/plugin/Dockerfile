@@ -1,4 +1,4 @@
-FROM java:8-jre-alpine
+FROM java
 MAINTAINER Leo.c
 RUN useradd -m noroot -s /bin/bash
 USER noroot

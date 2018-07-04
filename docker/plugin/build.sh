@@ -5,7 +5,7 @@ docker_tmppath=/home/noroot/build_dir/conductor
 #build the gradle project in a temp container.
 mkdir -p $tmppath
 docker build -t leoc/conductor -f $basepath/Dockerfile $basepath
-docker run -d --name conductor-builder leoc/condcutor
+docker run -d --name conductor-builder leoc/conductor
 docker cp  conductor-builder:$docker_tmppath $tmppath/
 docker rm -f conductor-builder
 #docker rmi leoc/conductor
