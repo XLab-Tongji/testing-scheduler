@@ -13,7 +13,8 @@
 
 #################################
 ##  files in ui directory
-#################################/ui/.DS_Store
+#################################
+/ui/.DS_Store
 /ui/node_modules/
 /ui/dist/
 /ui/npm-debug.log*
@@ -27,3 +28,8 @@
 /ui/*.ntvs*
 /ui/*.njsproj
 /ui/*.sln
+
+#################################
+##  files in docker directory
+#################################
+/docker/plugin/tmp_files/
