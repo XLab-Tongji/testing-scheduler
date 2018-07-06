@@ -3,7 +3,7 @@
 #################################
 
 # PYTHON PYC FILE
-/server/*.pyc
+/server/**/*.pyc
 
 # GENERATED FILE IN PROCESS
 /server/src/tmp/*
