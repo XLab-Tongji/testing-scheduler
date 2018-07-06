@@ -122,7 +122,7 @@ export default {
 		 if(iframeDiv != undefined ) {
 		     iframeContainer.removeChild(iframeDiv);
 		 }
-		 var apiPrefix = this.global.ADDR_WF_GRAPH + "#/workflow/id/";
+		 var apiPrefix = this.global.WF_GRAPH_ADDR + "#/workflow/id/";
 		 // var wfConfigDiv = document.getElementById("workflowId");
 		 // var inputArr = wfConfigDiv.getElementsByTagName("input");
 		 // var idElem = inputArr[0];
