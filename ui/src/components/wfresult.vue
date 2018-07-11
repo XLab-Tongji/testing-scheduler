@@ -40,7 +40,8 @@ export default {
 			initalPaintFlag : false,
 			RESPONSE_TIME_LIMIT : 6000,
 			responseTimeCounter : 0,
-			wfCompletedFlag : false
+			wfCompletedFlag : false,
+			timer: null
 		}
 	},
 	computed: {
@@ -50,12 +51,18 @@ export default {
 	},
 	watch: {
 		workflowId: function(val){
-			console.log("workflowId changed! " + val);
+			console.log("############## workflowId changed! " + val);
 			this.graphLoad();
 		},
 		wfJson: function(val){
 			this.fillWfContent(val);
 		}
+	},
+	mounted: function(){
+		window.clearInterval(this.timer);
+	},
+	destroyed: function(){
+		window.clearInterval(this.timer);
 	},
 	methods: {
 		graphLoad: function(){
@@ -64,9 +71,9 @@ export default {
 			this.initialPaintWFGraph();
 			var intervalTime = 1000;
 			var self = this;
-			  var intervalId = window.setInterval(function() {
+		  	this.timer = window.setInterval(function() {
 			    if(self.wfCompletedFlag) {
-			      window.clearInterval(intervalId);
+			      window.clearInterval(self.timer);
 			      // getWFOutput();
 			    }
 			    if(!self.initalPaintFlag) {
@@ -81,7 +88,7 @@ export default {
 			      }
 			    }
 			    self.responseTimeCounter += intervalTime;
-			  }, intervalTime);
+			}, intervalTime);
 		},
 		reset: function(){
 			this.frameLoadedFlag = false;

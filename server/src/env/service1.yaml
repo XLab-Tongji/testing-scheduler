@@ -1,6 +1,0 @@
-service1:
-  apis:
-    api1: {}
-    api3: {}
-  ip: 12.31.12.34
-  port: 1234

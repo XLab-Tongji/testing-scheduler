@@ -186,24 +186,23 @@ export default {
               self.wfloading = false;
               self.workflowId = data['result']['workflowId'];
               showMessage("success", "run testcase", " " + self.$route.query.caseName + " finished!");
+              $.ajax({
+                  url: self.global.SERVER_ADDR + "story-content",
+                  method: "GET",
+                  data: {
+                      "service":  self.$route.query.suiteName,
+                      "story": self.$route.query.caseName
+                  },
+                  success: function(data) {
+                      if(data['code'] == 200) {
+                          self.wfJson = data['result']['content'];
+                      }
+                  }
+              });
           },
           error: function(err) {
               self.wfloading = false;
               showMessage("error", "run testcase", "server error!");
-          }
-      });
-
-      $.ajax({
-          url: this.global.SERVER_ADDR + "story-content",
-          method: "GET",
-          data: {
-              "service":  this.$route.query.suiteName,
-              "story": this.$route.query.caseName
-          },
-          success: function(data) {
-              if(data['code'] == 200) {
-                  self.wfJson = data['result']['content'];
-              }
           }
       });
     },

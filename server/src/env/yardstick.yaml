@@ -2,7 +2,17 @@
 yardstick:
   ip: 10.60.38.173
   port: 5000
-  testcase_base_dir: ./
   apis:
-    run_testcase: yardstick/testcases/release/action
-    run_testsuite: run_testsuite234
+    run_testcase:
+      method: GET
+      uri: yardstick/testcases/release/action
+      params:
+        name:
+          help: host name 
+      
+    run_testsuite:
+      method: GET
+      uri: yardstick/testsuites/release/action
+      params:
+        name:
+          help: host name 

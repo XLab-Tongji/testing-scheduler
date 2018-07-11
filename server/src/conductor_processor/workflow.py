@@ -1,6 +1,7 @@
 import random
 import json
 import collections
+import re
 from task import TaskFile
 class WorkflowFile(object):
 	def __init__(self, name):
@@ -23,9 +24,9 @@ class WorkflowFile(object):
 		return d
 
 	def generateMetaData(self, flowList, stepObjArr):
-		flowObj = Flow(flowList, stepObjArr)
-		self._tasks, taskMetaList = flowObj.parseMainFlow()
-		normalTasks = flowObj.getNormalTaskList()
+		flowParser = FlowParser(flowList, stepObjArr)
+		self._tasks, taskMetaList = flowParser.parseMainFlow()
+		normalTasks = flowParser.getNormalTaskList()
 		for normalTask in normalTasks:
 			taskName = normalTask['name']
 			referenceName = normalTask['taskReferenceName']
@@ -34,7 +35,7 @@ class WorkflowFile(object):
 
 
 
-class Flow(object):
+class FlowParser(object):
 	def __init__(self, flowList, stepObjArr):
 		self._mainFlow = {}
 		self._subFlowDict = {}
@@ -45,7 +46,6 @@ class Flow(object):
 				self._mainFlow = flow
 			else:
 				self._subFlowDict[flow['name']] = flow
-		#notice: no flow is main exception
 
 	def parseMainFlow(self):
 		return self.parseOrderList(self._mainFlow['orders'], self._stepObjArr)
@@ -71,16 +71,11 @@ class Flow(object):
 				genTask = SwitchTask(order, stepObjArr, self)
 			elif order['type'] == "parallel":
 				genTask = ParallelTask(order, stepObjArr, self)
-			elif order['type'] == "loop":
-				genTask = LoopTask(order, stepObjArr, self)
 			tasks.append(genTask.getDict())
 
 			if order['type'] == "parallel":
 				joinTask = genTask.getJoinTask()
 				tasks.append(joinTask.getDict())
-			elif order['type'] == "loop":
-				loopFinishTask = genTask.getLoopFinishTask()
-				tasks.append(loopFinishTask.getDict())
 			
 			taskMetaList = genTask.getTaskMetaList()
 			if taskMetaList != None:
@@ -129,21 +124,35 @@ class BaseWorkflowTask(object):
 		return [taskFile.generateFromStep(self)]
 
 class NormalTask(BaseWorkflowTask):
-	def __init__(self, order, stepObjArr, flowObj):
+	def __init__(self, order, stepObjArr, flowParser):
 		relatedStepObj = stepObjArr[order['step'] - 1]
 		super(NormalTask, self).__init__(relatedStepObj.getName())
 		self._taskReferenceName = "task_%s"%getRandString(10)
 		self._stepId = relatedStepObj.getId()
 		self._type = "HTTP"
 		self._args['inputParameters'] = relatedStepObj.getArgs()
+		self._paramTransform(self._args['inputParameters'], flowParser)
 		print "NormalTask:----------------------\n", relatedStepObj.getArgs()
+
+	def _paramTransform(self, argsDict, flowParser):
+		for (k, v) in argsDict.items():
+			if isinstance(v, str):
+				if re.match("^\d+\.", v):
+					stepId, outputParam = v.split(".")
+					stepId = int(stepId)
+					normalTask = flowParser.getNormalTask(stepId)
+					if normalTask == None:
+						continue
+					argsDict[k] = "${%s.output.response.body.%s}"%(normalTask.getReferenceName(), outputParam)
+			elif isinstance(v, dict):
+				self._paramTransform(v, flowParser)
 
 	def getStepId(self):
 		return self._stepId
 	
 class SwitchTask(BaseWorkflowTask):
 	seqNumber = 0
-	def __init__(self, order, stepObjArr, flowObj):
+	def __init__(self, order, stepObjArr, flowParser):
 		super(SwitchTask, self).__init__("switch_" + str(SwitchTask.seqNumber))
 		SwitchTask.seqNumber = SwitchTask.seqNumber + 1
 		if 'name' in order:
@@ -152,14 +161,14 @@ class SwitchTask(BaseWorkflowTask):
 		caseValueParam = 'value'
 		stepId, outputParam = order['value'].split(".")
 		stepId = int(stepId)
-		normalTask = flowObj.getNormalTask(stepId)
+		normalTask = flowParser.getNormalTask(stepId)
 		caseValue = "${%s.output.response.body.%s}"%(normalTask.getReferenceName(), outputParam)
 		self._args['inputParameters'] = {caseValueParam: caseValue}
 		self._args['caseValueParam'] = caseValueParam
 		self._args['decisionCases'] = {}
 		self._childTaskMetaList = []
 		for case, caseOrders in order['cases'].items():
-			self._args['decisionCases'][case], taskMetaList = flowObj.parse(caseOrders, stepObjArr)
+			self._args['decisionCases'][case], taskMetaList = flowParser.parse(caseOrders, stepObjArr)
 			if taskMetaList != None:
 				self._childTaskMetaList.extend(taskMetaList)
 	def getTaskMetaList(self):
@@ -169,7 +178,7 @@ class SwitchTask(BaseWorkflowTask):
 
 class ParallelTask(BaseWorkflowTask):
 	seqNumber = 0
-	def __init__(self, order, stepObjArr, flowObj):
+	def __init__(self, order, stepObjArr, flowParser):
 		InstSeqNumber = ParallelTask.seqNumber
 		super(ParallelTask, self).__init__("parallel_" + str(InstSeqNumber))
 		ParallelTask.seqNumber = ParallelTask.seqNumber + 1
@@ -183,7 +192,7 @@ class ParallelTask(BaseWorkflowTask):
 		parallelList.sort()
 		for key, orderList in parallelList:
 			print orderList
-			taskList, taskMetaList = flowObj.parse(orderList, stepObjArr)
+			taskList, taskMetaList = flowParser.parse(orderList, stepObjArr)
 			self._args['forkTasks'].append(taskList)
 			lastTasksNameList.append(taskList[-1]['taskReferenceName'])
 			if taskMetaList != None:
@@ -204,77 +213,6 @@ class ParallelJoinTask(BaseWorkflowTask):
 		super(ParallelJoinTask, self).__init__("paralleljoin_" + str(seqNumber))
 		self._type = "JOIN"
 		self._args['joinOn'] = joinOnList
-
-class LoopTask(BaseWorkflowTask):
-	seqNumber = 0
-	LOOP_SERVICE_URL = "http://192.168.199.105:6000/loop"
-	def __init__(self, order, stepObjArr, flowObj):
-		InstSeqNumber = LoopTask.seqNumber
-
-		super(LoopTask, self).__init__("loop_" + str(InstSeqNumber))
-		if 'name' in order:
-			self._name = order['name']
-
-		self._taskReferenceName = self._name + "_" + getRandString(3)
-		LoopTask.seqNumber = LoopTask.seqNumber + 1
-		self._childTaskMetaList = []
-
-		self._type = "HTTP"
-		self._args['inputParameters'] = {"http_request": {}}
-		httpRequest = self._args['inputParameters']['http_request']
-		httpRequest['uri'] = LoopTask.LOOP_SERVICE_URL
-		httpRequest['method'] = "POST"
-		httpRequest['body'] = {}
-		requestBody = httpRequest['body']
-
-		##parse loopTasks
-		loopTasks = order['body']
-		taskList, taskMetaList = flowObj.parse(loopTasks, stepObjArr)
-		for task in taskList:
-			task['taskReferenceName'] = task['name'] + "_" + getRandString(3)
-		requestBody['loopTasks'] = taskList
-		if taskMetaList != None:
-			self._childTaskMetaList.extend(taskMetaList)
-		##parse checkTask
-		checkTask = order['check']
-		cTaskList, cTaskMetaList = flowObj.parse(checkTask, stepObjArr)
-		for task in cTaskList:
-			task['taskReferenceName'] = task['name'] + "_" + getRandString(3)
-
-		requestBody['loopCheckTask'] = cTaskList[0]
-		if cTaskMetaList != None:
-			self._childTaskMetaList.extend(cTaskMetaList)
-		##append workflowId, taskRefName
-		requestBody['workflowId'] = "${workflow.workflowId}"
-		requestBody['taskRefName'] = self._taskReferenceName
-		##parse loopChange
-		loopChanges = order['change']
-		for (taskName, changeDetail) in loopChanges.items():
-			for task in taskList:
-				if task['name'] == taskName:
-					taskRefName = task['taskReferenceName']
-					loopChanges[taskRefName] = loopChanges.pop(taskName)
-		requestBody['loopChange'] = loopChanges
-
-		# loop finish task
-		self._finishTaskObj = LoopFinishTask(self._taskReferenceName)
-		requestBody['finishTaskRefName'] = self._finishTaskObj.getReferenceName()
-
-
-	def getTaskMetaList(self):
-		selfTaskMetaList = super(LoopTask, self).getTaskMetaList()
-		selfTaskMetaList.extend(self._childTaskMetaList)
-		selfTaskMetaList.extend(self._finishTaskObj.getTaskMetaList())
-		return selfTaskMetaList
-
-	def getLoopFinishTask(self):
-		return self._finishTaskObj
-
-class LoopFinishTask(BaseWorkflowTask):
-	def __init__(self, loopTaskRefName):
-		super(LoopFinishTask, self).__init__("loop_finish_(%s)"%loopTaskRefName)
-		self._taskReferenceName = self._name
-		self._type = "SIMPLE"
 
 def getRandString(length):
 	return "".join(random.choice(str("0123456789")) for i in range(length))

@@ -13,7 +13,8 @@ import yaml
 import traceback
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-TESTSUITE_DIR = os.path.join(BASE_DIR, "..", "..", "test", "test_case")
+#TESTSUITE_DIR = os.path.join(BASE_DIR, "..", "..", "test", "test_case")
+TESTSUITE_DIR = os.path.join(BASE_DIR, "..", "..", "test", "new_tc")
 SERVICE_DIR = os.path.join(BASE_DIR, "..", "env")
 app = Flask(__name__)
 CORS(app)
@@ -29,7 +30,8 @@ def hello():
 def runTestStory():
 	stories = [request.values.get('stories')]
 	service_name = request.values.get('service')
-	baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_case")
+  # baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_case")
+	baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "new_tc")
 	for story in stories:
 		storyDir = os.path.join(baseTestDir, service_name, story)
 		app.logger.debug("storyDir:%s"%storyDir)
@@ -43,7 +45,7 @@ def getStoryContent():
 	service_name = request.args['service']
 	baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_story")
 	storyFileDir = os.path.join(baseTestDir, service_name, story_name)
-	storyFileDir = os.path.join(BASE_DIR, "..", "tmp", "fake_workflow.json")
+	storyFileDir = os.path.join(BASE_DIR, "..", "tmp", "generate_workflow.json")
 	with open(storyFileDir, "r") as f:
 		storyContent = f.read()
 	result = {"code": 200, "result": {"service": service_name, "story": story_name, "content": storyContent}}

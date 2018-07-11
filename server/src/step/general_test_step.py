@@ -1,6 +1,7 @@
 from step.test_step import TestStep
 import os
 import yaml
+import re
 class GeneralTestStep(TestStep):
 	__step_type__ = "test"
 
@@ -39,13 +40,15 @@ class GeneralTestStep(TestStep):
 
 	def _contextTransform(self, argsDict):
 		for (k, v) in argsDict.items():
-			if isinstance(v, str) and len(v) > 4 and v[0:4] == "cxt.":
-				v = v[4:]
-				layers = v.split(".")
-				contextData = self._context
-				for layer in layers:
-					contextData = contextData[layer]
-				argsDict[k] = contextData
+			if isinstance(v, str):
+				#if len(v) > 4 and v[0:4] == "cxt.":
+				if re.match('^cxt\.', v):
+					v = v[4:]
+					layers = v.split(".")
+					contextData = self._context['context']
+					for layer in layers:
+						contextData = contextData[layer]
+					argsDict[k] = contextData
 			elif isinstance(v, dict):
 				self._contextTransform(v)
 

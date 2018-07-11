@@ -8,10 +8,12 @@ from step.test_step import TestStep
 from step.step_manager import TestStepManager
 from conductor_processor.task import TaskFile
 from conductor_processor.workflow import WorkflowFile
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(os.path.join(BASE_DIR, ".."))
 from conductorclient.run_new_workflow import WorkflowMgr
-BASE_DIR = os.path.dirname(__file__)
+
 CONDUCTOR_SERVER_ADDR = "http://docker_conductor-server_1:8080"
 STORE_TASK_PATH = BASE_DIR + "/tmp/generate_task.json"
 STORE_WF_PATH = BASE_DIR + "/tmp/generate_workflow.json"
@@ -60,6 +62,11 @@ def parseTestcase(schema, tcName = 'testcase0'):
 	for step in steps:
 		if 'args' not in step:
 			step['args'] = {}
+		# type and action can be extended, default couple is 'test' & 'start'.
+		if 'type' not in step:
+			step['type'] = 'test'
+			step['action'] = 'start'
+
 		stepObj = testStepMgr.getStepObj(step['type'], step['id'], step['name'], step['service'], step['action'], step['args'])
 		stepObjArr.append(stepObj)
 
