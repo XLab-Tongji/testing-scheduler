@@ -50,9 +50,9 @@ def parseTestcase(schema, tcName = 'testcase0'):
 	# load SUT context
 	contextDict = {}
 	if 'context' in schema:
-		contextDir = schema['context']['dir']
+		contextDir = schema['context']
 		print "contextDir is:%s"%contextDir
-		contextDir = os.path.join(BASE_DIR, "..", contextDir)
+		contextDir = os.path.join(BASE_DIR, "env", "conf", contextDir)
 		with open(contextDir, "r") as f:
 			contextDict = yaml.load(f)
 	#

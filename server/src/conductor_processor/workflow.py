@@ -137,7 +137,8 @@ class NormalTask(BaseWorkflowTask):
 	def _paramTransform(self, argsDict, flowParser):
 		for (k, v) in argsDict.items():
 			if isinstance(v, str):
-				if re.match("^\d+\.", v):
+				if re.match("^\(\d+\..*\)", v):
+					v = v[1:-1]
 					stepId, outputParam = v.split(".")
 					stepId = int(stepId)
 					normalTask = flowParser.getNormalTask(stepId)
@@ -159,6 +160,7 @@ class SwitchTask(BaseWorkflowTask):
 			self._name = order['name']
 		self._type = "DECISION"
 		caseValueParam = 'value'
+		order['value'] = order['value'][1:-1]
 		stepId, outputParam = order['value'].split(".")
 		stepId = int(stepId)
 		normalTask = flowParser.getNormalTask(stepId)

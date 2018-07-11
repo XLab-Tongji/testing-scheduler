@@ -42,10 +42,10 @@ class GeneralTestStep(TestStep):
 		for (k, v) in argsDict.items():
 			if isinstance(v, str):
 				#if len(v) > 4 and v[0:4] == "cxt.":
-				if re.match('^cxt\.', v):
-					v = v[4:]
+				if re.match('^\(context\..*\)', v):
+					v = v[9:-1]
 					layers = v.split(".")
-					contextData = self._context['context']
+					contextData = self._context
 					for layer in layers:
 						contextData = contextData[layer]
 					argsDict[k] = contextData
