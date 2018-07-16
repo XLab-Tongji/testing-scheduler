@@ -1,30 +1,27 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import page1 from '@/components/page1'
-import page2 from '@/components/page2'
-import page3 from '@/components/page3'
+import testsuite from '@/components/testsuite'
+import testcase from '@/components/testcase'
+import testcase_content from '@/components/testcase_content'
 import environment from '@/components/environment'
-import editor from '@/components/editor'
-import step from '@/components/step'
-import flow from '@/components/flow'
 Vue.use(Router)
 const Result = {template: "<div>please visit <a target='blank' href='http://lab205.jios.org:30002/dashboard/db/cluster?orgId=1'>grafana page.</a></div>"}
 export default new Router({
   routes: [
     {
       path: '/',
-      name: 'suite',
-      component: page1
+      name: 'testsuite',
+      component: testsuite
     },
     {
       path: '/stories',
-      name: 'page2',
-      component: page2
+      name: 'testcase',
+      component: testcase
     },
     {
       path: '/content',
-      name: 'page3',
-      component: page3
+      name: 'testcase_content',
+      component: testcase_content
     },
     {
       path: '/result',
@@ -32,7 +29,7 @@ export default new Router({
     },
     {
       path: '/report',
-      component: page1
+      component: testcase
     },
     {
       path: '/environment',

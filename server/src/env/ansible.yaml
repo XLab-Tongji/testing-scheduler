@@ -1,37 +1,34 @@
----
 ansible:
+  apis:
+  - method: GET
+    name: faultload
+    params:
+    - description: call user count
+      name: call_user
+    - description: workload time
+      name: duration
+    - description: faultload time
+      name: fault_duration
+    - description: register speed
+      name: initial_reg_rate
+    - description: multiplier
+      name: multiplier
+    - description: register user count
+      name: reg_user
+    uri: faultload
+  - method: GET
+    name: workload
+    params:
+    - description: call user count
+      name: call_user
+    - description: workload time
+      name: duration
+    - description: register speed
+      name: initial_reg_rate
+    - description: multiplier
+      name: multiplier
+    - description: register user count
+      name: reg_user
+    uri: workload
   ip: 100.64.227.222
   port: 9006
-  apis:
-    
-    workload:
-      method: GET
-      uri: workload
-      params:
-        reg_user: 
-          help: register user count
-        call_user:
-          help: call user count
-        duration: 
-          help: workload time
-        initial_reg_rate:
-          help: register speed
-        multiplier: 
-          help: multiplier
-
-    faultload:
-      method: GET
-      uri: faultload
-      params:
-        reg_user: 
-          help: register user count
-        call_user:
-          help: call user count
-        duration: 
-          help: workload time
-        initial_reg_rate:
-          help: register speed
-        multiplier: 
-          help: multiplier
-        fault_duration:
-          help: faultload time

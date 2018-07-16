@@ -1,8 +1,8 @@
 {
-  "name": "testproject",
+  "name": "testing-scheduler-ui",
   "version": "1.0.0",
   "description": "learn vue",
-  "author": "XuMengyi <1621424098@qq.com>",
+  "author": "ZhengQibin <qibinZheng2014@tongji.edu.cn>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -12,10 +12,8 @@
   },
   "dependencies": {
     "bootstrap": "^3.3.6",
-    "codemirror": "^5.11.0",
     "font-awesome": "^4.5.0",
     "jquery": "^3.3.1",
-    "summernote": "^0.8.10",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },

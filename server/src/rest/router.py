@@ -257,14 +257,11 @@ def getServiceContent():
         filePath = os.path.join(SERVICE_DIR, fileName)
         with open(filePath, "r") as f:
           content = yaml.load(f)
-          apisDict = content[serviceName]['apis']
-          for (apiName,apiContent) in apisDict.items():
-            apiJson = {}
-            apiJson["name"] = apiName
-            if "params" in apiContent:
-                params = apiContent["params"]
-                apiJson["params"] = paramTransform(params)
-            res["actions"].append(apiJson)
+          apisArr = content[serviceName]['apis']
+          for i in range(len(apisArr)):
+            apisArr[i].pop("method")
+            apisArr[i].pop("uri")
+          res["actions"] = apisArr
   except BaseException, e:
     app.logger.debug(traceback.format_exc())
     return jsonify({"code": 500, "notice": notice, "error": e.message, "detail error message": repr(e)})
