@@ -30,10 +30,10 @@ def parse(filepath):
 		yaml_file = yaml.load(f)
 		parseTestcase(yaml_file['schema'], fileName)
 
-	workflowId = runWorkFlow()
+	#workflowId = runWorkFlow()
 	print '------------------- parse executes end --------------------------------'
 
-	return workflowId
+	#return workflowId
 
 def parseTestcase(schema, tcName = 'testcase0'):
 	if schema == None:
