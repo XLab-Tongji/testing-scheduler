@@ -1,8 +1,7 @@
 FROM python:2.7
 MAINTAINER Leo.C
-ENV REPO_DIR /home/testing-scheduler
-COPY . .
-WORKDIR ${REPO_DIR}/server
+WORKDIR /home/testing-scheduler/server
+COPY ./server .
 
 RUN pip install -r ./python_modules.txt
 EXPOSE 5310

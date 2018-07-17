@@ -1,12 +1,7 @@
-FROM node:alpine
-MAINTAINER Leo.C
-ENV REPO_DIR /home/testing-scheduler
-COPY . .
-WORKDIR ${REPO_DIR}/ui
+FROM nginx
+MAINTAINER Leo.c
 
-RUN /bin/sh -c 'npm config set registry https://registry.npm.taobao.org'
-RUN /bin/sh -c 'npm install vue; npm install -g vue-cli'
-RUN /bin/sh -c 'npm install .'
+RUN rm /etc/nginx/conf.d/default.conf
 
-EXPOSE 5311
-CMD /bin/sh -c 'npm run dev'
+ADD ./ui/config/default.conf /etc/nginx/conf.d/
+COPY ./docker/ui/dist/  /usr/share/nginx/html/

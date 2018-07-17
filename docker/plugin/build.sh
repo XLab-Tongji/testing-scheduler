@@ -8,7 +8,7 @@ docker build -t leoc/conductor -f $basepath/Dockerfile $basepath
 docker run -d --name conductor-builder leoc/conductor
 docker cp  conductor-builder:$docker_tmppath $tmppath/
 docker rm -f conductor-builder
-#docker rmi leoc/conductor
+docker rmi leoc/conductor
 
 #build the images of conductor.
 cd $tmppath/conductor/docker
