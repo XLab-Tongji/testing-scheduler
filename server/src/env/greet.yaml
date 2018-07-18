@@ -10,6 +10,8 @@ greet:
       params:
         - name: name
           description: user name
+      template:
+        uri: (uri)?name=(name)
 
     -
       name: answer 
