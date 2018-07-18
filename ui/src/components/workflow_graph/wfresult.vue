@@ -137,7 +137,7 @@ export default {
 		 var apiUrl = apiPrefix + this.workflowId;
 		 // console.log("workflowId input:" + workflowId);
 		 console.log("workflowId prop:" + this.workflowId);
-		 var iframeDiv = "<iframe id=\"testFrame\" width=\"0\" height=\"0\" style=\"display:none\" src=\"" + apiUrl + "\"></iframe>";
+		 var iframeDiv = "<iframe id=\"testFrame\" width=\"0\" height=\"0\" style=\"\" src=\"" + apiUrl + "\"></iframe>";
 		 iframeContainer.innerHTML = iframeDiv;
 
 		 this.frameLoadedFlag = false;
