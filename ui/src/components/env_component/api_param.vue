@@ -1,11 +1,15 @@
 <template>
-	<div>
-         <div class="row">
-            <label class="col-sm-3 control-label">Params</label>
-            <button type="button" class="btn btn-primary btn-sm" v-on:click="addNewParam()">New</button>
+	<div class="row">
+
+         <div class="form-group">
+            <label class="col-lg-3 control-label">Params</label>
+            <div class="col-lg-2">
+                <button type="button" class="btn btn-primary btn-sm" v-on:click="addNewParam()">New</button>
+            </div>
          </div>
-         <div class="row">
-            <div class="col-sm-offset-2 col-sm-8">
+         <div class="form-group">
+            <div class="col-lg-offset-2 col-lg-8">
+                <div class="table-responsive">
                  <table class="table table-bordered text-center">
                     <thead>
                         <tr>
@@ -26,6 +30,7 @@
                         </tr>
                     </tbody>
                  </table>
+                </div>
              </div>
           </div>
      </div>
