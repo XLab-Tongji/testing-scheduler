@@ -3,33 +3,38 @@ greet:
   ip: 10.60.38.181
   port: 5202
   apis:
-    greet: 
+    -
+      name: greet 
       method: GET
       uri: greet
       params:
-        name:
-          help: user name
+        - name: name
+          description: user name
 
-    answer: 
+    -
+      name: answer 
       method: POST
       uri: answer
       params:
-        ping:
-          help: param ping
+        - name: ping
+          description: param ping
 
-    ten: 
+    -
+      name: ten 
       method: GET
       uri: ten
 
 
-    switch:
+    -
+      name: switch
       method: GET
       uri: switch
       return:
         -
           result
 
-    switch_2:
+    -
+      name: switch_2
       method: GET
       uri: switch_2
       return:
