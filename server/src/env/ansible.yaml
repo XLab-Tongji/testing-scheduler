@@ -15,16 +15,16 @@ ansible:
       name: multiplier
     - description: register user count
       name: reg_user
-    uri: faultload
+    baseuri: faultload
     template:
-      uri: (uri)
+      uri: ((baseuri))
       body:
-        call_user: (call_user)
-        duration: (duration)
-        fault_duration: (fault_duration)
-        initial_reg_rate: (initial_reg_rate)
-        multiplier: (multiplier)
-        reg_user: (reg_user)
+        call_user: ((call_user))
+        duration: ((duration))
+        fault_duration: ((fault_duration))
+        initial_reg_rate: ((initial_reg_rate))
+        multiplier: ((multiplier))
+        reg_user: ((reg_user))
 
   - method: POST
     name: workload
@@ -39,16 +39,16 @@ ansible:
       name: multiplier
     - description: register user count
       name: reg_user
-    uri: workload
+    baseuri: workload
     template:
-      uri: (uri)
+      uri: ((baseuri))
       body:
-        call_user: (call_user)
-        duration: (duration)
-        fault_duration: (fault_duration)
-        initial_reg_rate: (initial_reg_rate)
-        multiplier: (multiplier)
-        reg_user: (reg_user)
+        call_user: ((call_user))
+        duration: ((duration))
+        fault_duration: ((fault_duration))
+        initial_reg_rate: ((initial_reg_rate))
+        multiplier: ((multiplier))
+        reg_user: ((reg_user))
         
   ip: 100.64.227.222
   port: 9006

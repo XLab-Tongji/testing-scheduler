@@ -36,7 +36,7 @@
                                 <br />
                                 <div id="api-panels" class="api col-sm-offset-1 col-sm-10">
                                     <div class="panel-group" id="accordion">
-                                        <service-api v-for="api in apis" panel-parent="#accordion" v-bind="api" v-on:name="api.name = $event" v-on:method="api.method = $event" v-on:uri="api.uri = $event" v-on:params="api.params = $event" v-on:template="api.template = $event" v-on:delete="removeApi"></service-api>
+                                        <service-api v-for="api in apis" panel-parent="#accordion" v-bind="api" v-on:name="api.name = $event" v-on:method="api.method = $event" v-on:baseuri="api.baseuri = $event" v-on:params="api.params = $event" v-on:template="api.template = $event" v-on:delete="removeApi"></service-api>
                                     </div>
 
                                 	<button type="button" class="btn btn-primary pull-right" v-on:click="addNewApi()">New</button>
@@ -89,7 +89,7 @@ export default {
     },
     methods: {
         addNewApi: function() {
-            var newApi = {'name': 'new', 'method': 'GET', 'uri': '', 'params': []};
+            var newApi = {'name': 'new', 'method': 'GET', 'baseuri': '', 'params': [], 'template': {"uri": "((baseuri))"}};
             this.apis.push(newApi);
         },
         removeApi: function(name) {

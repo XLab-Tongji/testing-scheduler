@@ -9,10 +9,10 @@ ansible_template:
       name: testcase
     template:
       body:
-        action: (action)
+        action: ((action))
         args:
-          testcase: (testcase)
-      uri: (uri)?action=(action)&testcase=(testcase)
-    uri: yardstick/testcases/release/action
+          testcase: ((testcase))
+      uri: ((baseuri))?action=((action))&testcase=((testcase))
+    baseuri: yardstick/testcases/release/action
   ip: 10.60.38.173
   port: 5000

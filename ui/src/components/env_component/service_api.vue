@@ -10,7 +10,7 @@
                 <div class="panel-body"> 
                     <base-input name="name" v-model="name"></base-input> 
                     <base-input name="method" v-model="method"></base-input> 
-                    <base-input name="uri" v-model="uri"></base-input> 
+                    <base-input name="baseuri" v-model="baseuri"></base-input> 
                     <api-param v-bind:params="params"></api-param> 
                     
                     <div class="form-group" v-bind:class="{  'has-error': jsonSyntaxError}">
@@ -19,7 +19,7 @@
                         </label> 
                         <div class="col-lg-7">
                             <!-- help text -->
-                            <span id="tempHelp">Json格式文本，用于定义发送http请求的报文内容。示例如下：<br>( 其中 (&lt;variable&gt;) 为占位符，用于替换实际值 )<br>GET方式：<br>{<br> &nbsp;"url" : "(url)?name=(name)"<br>}<br>POST方式:<br>{<br> &nbsp;"url" : "(url)",<br> &nbsp;"body" : {<br>&nbsp;&nbsp;&nbsp;"name" : "(name)",<br>&nbsp;&nbsp;&nbsp;"account" : {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"id" : "(user_name)",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"addr" : "SH"<br>&nbsp;&nbsp;&nbsp;}<br>&nbsp;}<br>}</span>
+                            <span id="tempHelp">Json格式文本，用于定义发送http请求的报文内容。示例如下：<br>( 其中 ((&lt;variable&gt;)) 为占位符，用于替换实际值 )<br>GET方式：<br>{<br> &nbsp;"uri" : "((baseuri))?name=((name))"<br>}<br>POST方式:<br>{<br> &nbsp;"uri" : "((baseuri))",<br> &nbsp;"body" : {<br>&nbsp;&nbsp;&nbsp;"name" : "((name))",<br>&nbsp;&nbsp;&nbsp;"account" : {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"id" : "((user_name))",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"addr" : "SH"<br>&nbsp;&nbsp;&nbsp;}<br>&nbsp;}<br>}</span>
 
 
                             <textarea class="form-control" style="min-height: 200px;" v-model="templateStr"></textarea>
@@ -37,7 +37,7 @@ import api_param from "./api_param.vue"
 import Vue from "vue"
 
 export default {
-	props: ['panelParent', 'name', 'method', 'uri', 'params', 'template'],
+	props: ['panelParent', 'name', 'method', 'baseuri', 'params', 'template'],
     watch: {
         name: function(val) {
             this.$emit("name", val);
@@ -45,8 +45,8 @@ export default {
         method: function(val) {
             this.$emit("method", val);
         },
-        uri: function(val) {
-            this.$emit("uri", val);
+        baseuri: function(val) {
+            this.$emit("baseuri", val);
         },
         params: function(val) {
             this.$emit("params", val);

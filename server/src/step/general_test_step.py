@@ -13,9 +13,8 @@ class GeneralTestStep(TestStep):
 	def _contextTransform(self, argsDict):
 		for (k, v) in argsDict.items():
 			if isinstance(v, str):
-				#if len(v) > 4 and v[0:4] == "cxt.":
-				if re.match('^\(context\..*\)', v):
-					v = v[9:-1]
+				if re.match('^\(\(context\..*\)\)', v):
+					v = v[10:-2]
 					layers = v.split(".")
 					contextData = self._context
 					for layer in layers:
@@ -44,7 +43,7 @@ class GeneralTestStep(TestStep):
 		# transform the args config
 		self._contextTransform(self._args_temp)
 
-		interfaceUri = interfaceConf['uri'] + interfaceConf['template']['uri'][5:]
+		interfaceUri = interfaceConf['baseuri'] + interfaceConf['template']['uri'][11:]
 		interfaceUri = "http://%s:%s/%s"%(conf['ip'], conf['port'], interfaceUri)
 		requestParam['uri'] = self._uriTransform(interfaceUri)
 
@@ -55,17 +54,17 @@ class GeneralTestStep(TestStep):
 		self._args['http_request'] = requestParam
 
 	def _uriTransform(self, uri):
-		return re.sub("\(.*?\)", self._uriResReplace, uri)
+		return re.sub("\(\(.*?\)\)", self._uriResReplace, uri)
 
 	def _uriResReplace(self, match):
-		matchTrim = match.group()[1:-1]
+		matchTrim = match.group()[2:-2]
 		return self._args_temp[matchTrim]
 
 	def _paramTransform(self, argsTemplate, argsDict):
 		for (k, v) in argsTemplate.items():
 			if isinstance(v, str):
-				if re.match('^\(.*\)', v):
-					argsTemplate[k] = argsDict[k]
+				if re.match('^\(\(.*\)\)', v):
+					argsTemplate[k] = argsDict[v[2:-2]]
 			elif isinstance(v, dict):
 				self._paramTransform(v, argsDict)
 

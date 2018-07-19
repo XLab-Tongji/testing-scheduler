@@ -1,6 +1,6 @@
-conductor_network='docker_default'
 group="x-lab"
 server_image="$group/testing-scheduler:server"		# server image name
 server_container="t-scheduler-server"				# server container name
 
-sudo docker run -d -p 5310:5310 --net=$conductor_network --name $server_container $server_image
+sudo docker rm -f $server_container
+sudo docker rmi $server_image

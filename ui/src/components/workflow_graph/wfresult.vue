@@ -1,13 +1,13 @@
 <template>
-<div style="min-height: 600px; overflow-x: hidden; overflow-y: auto;">
-    <div id="file-section1" class="col-md-5">
+<div style="min-height: 600px; overflow-x: auto; overflow-y: auto;">
+    <div id="file-section1" class="col-md-4">
       <div id="workflow-content-div">
-        <div class="dark-gray-bg" style="padding-left: 10px;font-size: 17px;"> <span> WORKFLOW.JSON CONTENT</span></div>
+        <div class="dark-gray-bg" style="font-size: 17px; max-width: 500px; margin: 0 auto 10px;"> WORKFLOW.JSON CONTENT</div>
         <pre class="white-pink" id="workflow-content" style="height: 600px; background-color:#f5f5f5;"></pre>
       </div>
     </div>      
-	<div class="col-md-offset-2 col-md-5" id="graph-show-section" style="height:600px;">
-	  <div v-show="!wfloading" id="workflow-graph" style="margin-top: 10px;margin-left: 70px;">
+	<div class="col-md-8" id="graph-show-section" style="">
+	  <div v-show="!wfloading" id="workflow-graph" style="margin-top: 10px;">
 	  </div>
 	  <div v-show="wfloading" class="spiner-example" id="loading">
 	    <div class="sk-spinner sk-spinner-three-bounce">
@@ -225,3 +225,12 @@ export default {
 	}
 }
 </script>
+
+<style scoped>
+#workflow-graph {
+	text-align: center;
+}
+#workflow-graph > div{
+	display: inline-block;
+}
+</style>

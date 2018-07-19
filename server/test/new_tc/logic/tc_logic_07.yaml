@@ -83,7 +83,7 @@ schema:
           step: 2
         -
           type: switch
-          value: 2.result
+          value: ((2.result))
           cases:
             A:
               -

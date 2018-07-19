@@ -1,6 +1,6 @@
 ################################################
 # date: 2018/4/20
-# spec: test use param of the context
+# spec: test conductor basic logic
 # author: x-lab.Leo
 ################################################
 
@@ -9,22 +9,12 @@ schema:
   steps:
     -
       id: 1
-      name: make_a_greet
+      name: suitetest_01
       service:
         name: greet
         interface: greet
       args:
         name: leo
-
-    -
-      id: 2
-      name: response_the_greet
-      service:
-        name: greet
-        interface: answer
-      args:
-        ping: ((context.sprout.name))
-
   flows:
     -
       name: main
@@ -32,7 +22,3 @@ schema:
         -
           type: normal
           step: 1
-        -
-          type: normal
-          step: 2
-  context: clearwater-conf.yaml

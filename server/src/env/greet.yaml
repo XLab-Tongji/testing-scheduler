@@ -6,33 +6,39 @@ greet:
     -
       name: greet 
       method: GET
-      uri: greet
+      baseuri: greet
       params:
         - name: name
           description: user name
       template:
-        uri: (uri)?name=(name)
+        uri: ((baseuri))?name=((name))
 
     -
       name: answer 
       method: POST
-      uri: answer
+      baseuri: answer
       params:
         - name: ping
           description: param ping
+      template:
+        uri: ((baseuri))
+        body:
+          ping: ((ping))
 
     -
       name: ten 
       method: GET
-      uri: ten
+      baseuri: ten
       template:
-        uri: (uri)
+        uri: ((baseuri))
 
 
     -
       name: switch
       method: GET
-      uri: switch
+      baseuri: switch
+      template:
+        uri: ((baseuri))
       return:
         -
           result
@@ -40,7 +46,9 @@ greet:
     -
       name: switch_2
       method: GET
-      uri: switch_2
+      baseuri: switch_2
+      template:
+        uri: ((baseuri))
       return:
         -
           result

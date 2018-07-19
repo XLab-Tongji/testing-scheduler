@@ -69,26 +69,31 @@
                       </a>
                   </div>
               </div>
-              <div class="ibox-content" style="padding-top: 60px;">
-                <div id="executing" class="col-md-3" style="padding: 0 30px 60px;">
-                  <table class="table" style="margin-top: 30px;">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>testcase</th>
-                        <th>status</th>
-                      </tr>
-                    </thead>
-                    <tbody>                   
-                      <tr v-for="testcase in casesInSuite">
-                        <td>{{ testcase.id }}</td>
-                        <td>{{ testcase.testcase }}</td>
-                        <td v-bind:class="statusClass(testcase.status)">{{ testcase.status }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div> 
-                <div class="col-md-9">
+              <div class="ibox-content" style="padding-top: 30px;">
+                <div id="executing" class="row" style="padding: 0 30px 60px;">
+                  <div class="col-md-offset-2 col-md-8">
+                      <div class="table-responsive">
+                        <table class="table text-center" style="margin-top: 30px;">
+                          <thead>
+                            <tr>
+                              <th class="text-center">#</th>
+                              <th class="text-center">testcase</th>
+                              <th class="text-center">status</th>
+                            </tr>
+                          </thead>
+                          <tbody>                   
+                            <tr v-for="testcase in casesInSuite">
+                              <td>{{ testcase.id }}</td>
+                              <td>{{ testcase.testcase }}</td>
+                              <td v-bind:class="statusClass(testcase.status)">{{ testcase.status }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                  </div>
+                </div>
+                <hr class="hr-line-solid"> 
+                <div class="row" style="margin-top: 60px;">
                   <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson' v-on:wfComplete="wfComplete = $event"></wfresult>
                 </div>
               </div>
@@ -212,6 +217,9 @@ export default {
       var self = this;
       if(self.selected.length == 0) {
         showMessage("warning", "run testsuite", "please select one!");
+        return;
+      } else if(self.selected.length != 1) {
+        showMessage("warning", "run testsuite", "sorry, one suite at a time!");
         return;
       }
 

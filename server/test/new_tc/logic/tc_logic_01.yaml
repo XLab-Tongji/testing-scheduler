@@ -10,44 +10,36 @@ schema:
     -
       id: 1
       name: make_a_greet
-      type: test
       service:
         name: greet
         interface: greet
-      action: start
       args:
         name: leo
 
     -
       id: 2
       name: response_the_greet
-      type: test
       service:
         name: greet
         interface: answer
-      action: start
       args:
         ping: ping_from_leo
 
     -
       id: 3
       name: make_a_greet_3
-      type: test
       service:
         name: greet
         interface: greet
-      action: start
       args:
         name: leo_@
 
     -
       id: 4
       name: make_a_greet_4
-      type: test
       service:
         name: greet
         interface: greet
-      action: start
       args:
         name: leo_@
     

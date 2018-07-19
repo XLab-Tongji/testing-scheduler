@@ -58,7 +58,7 @@ schema:
           step: 1
         -
           type: switch
-          value: 1.result
+          value: ((1.result))
           cases:
             A:
               - 
