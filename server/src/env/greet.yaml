@@ -25,6 +25,8 @@ greet:
       name: ten 
       method: GET
       uri: ten
+      template:
+        uri: (uri)
 
 
     -

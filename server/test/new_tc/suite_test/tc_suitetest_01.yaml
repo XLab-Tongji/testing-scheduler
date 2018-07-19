@@ -9,10 +9,10 @@ schema:
   steps:
     -
       id: 1
-      name: make_a_greet
+      name: suitetest_01
       service:
         name: greet
-        interface: greet
+        interface: ten
       args:
         name: leo
   flows:

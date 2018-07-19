@@ -26,17 +26,24 @@ CORS(app)
 def hello():
 	return "Hello, World! This is a greet from parser." + SERVICE_DIR
 
-@app.route("/run-test/story", methods=['POST'])
+@app.route("/execute/testcase", methods=['POST'])
 def runTestStory():
-	stories = [request.values.get('stories')]
-	service_name = request.values.get('service')
-  # baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_case")
-	baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "new_tc")
-	for story in stories:
-		storyDir = os.path.join(baseTestDir, service_name, story)
-		app.logger.debug("storyDir:%s"%storyDir)
-		workflowId = test_parser.parse(storyDir)
-	return jsonify({"code": 200, "result": {"workflowId": workflowId}})
+  notice = "if you see this, and cannot solve the problem by the error message, please contact me."
+  
+  suiteName = request.values.get('suiteName')
+  caseName = request.values.get('caseName')
+  try:
+    # baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_case")
+    baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "new_tc")
+    casePath = os.path.join(baseTestDir, suiteName, caseName)
+    if os.path.exists(casePath):
+      workflowId = test_parser.parse(casePath)
+      return jsonify({"code": 200, "result": {"workflowId": workflowId}})
+    else:
+      return jsonify({"code": 300, "error": "no such test case!%s"%(casePath)})
+  except BaseException, e:
+    app.logger.debug(traceback.format_exc())
+    return jsonify({"code": 500, "notice": notice, "error": e.message, "detail error message": repr(e)})
 
 
 @app.route("/story-content")

@@ -51,7 +51,7 @@
             </div>
             <div class="ibox-content" style="max-height: 600px; overflow-y: auto; padding: 0; border: 1px solid #e7e7e7;">
                 <div style='text-align:center;'>
-                  <textarea v-show='!isEditable' v-model="content" id="tc_content" style="max-width:2400px; width: 100%;height: 100%;min-height: 500px;font-size:16px;border:none; vertical-align: middle; padding: 30px 0 0 40px;">
+                  <textarea v-show='!isEditable' v-model="content" id="tc_content" style="max-width:2400px; width: 100%;height: 100%;min-height: 500px;font-size:16px;border:none; vertical-align: middle; padding: 30px 0 20px 40px;">
                   </textarea>
                 </div><editor v-show='isEditable' v-bind:saveSignal='saveSignal' v-bind = 'editorContent' v-on:saveResponse='processSaveResponse'></editor>
             </div>
@@ -89,23 +89,10 @@
 import {addClass, removeClass, isContainClass} from '../assets/js/my-util.js'
 import editor from './editor/editor.vue'
 import wfresult from './workflow_graph/wfresult.vue'
-import toastr from '../assets/js/toastr.min.js'
+import showMessage from './message/showMessage.js'
   var content;
   var suitename;
-function showMessage(type, title, msg){
-  if(type == "success"){
-    toastr.success(msg,title);
-  }
-  else if(type == "info") {
-    toastr.info(msg, title);
-  }
-  else if(type == "error"){
-    toastr.error(msg,title);
-  }
-  else {
-    toastr.warning(msg, title);
-  }
-}
+
 export default {
   name: 'testcase_content',
   data () {
@@ -170,18 +157,18 @@ export default {
     runTestcase: function(){
       var self = this;
       $.ajax({
-          url: this.global.SERVER_ADDR + "run-test/story",
+          url: this.global.SERVER_ADDR + "execute/testcase",
           method: "POST",
           data: {
-              "service": this.$route.query.suiteName,
-              "stories": this.$route.query.caseName
+              "suiteName": this.$route.query.suiteName,
+              "caseName": this.$route.query.caseName
           },
           beforeSend: function(XHR) {
               self.wfloading = true;
               showMessage("info", "run testcase", "start to run " + self.$route.query.caseName);
           },
           success: function(data) {
-              console.log("ajax run test story!");
+              console.log("ajax run test case!");
               self.wfloading = false;
               self.workflowId = data['result']['workflowId'];
               showMessage("success", "run testcase", " " + self.$route.query.caseName + " finished!");

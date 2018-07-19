@@ -70,32 +70,27 @@
                   </div>
               </div>
               <div class="ibox-content" style="padding-top: 60px;">
-                <div id="executing" class="col-md-2" style="height:600px; margin-right: 200px;">
+                <div id="executing" class="col-md-3" style="padding: 0 30px 60px;">
                   <table class="table" style="margin-top: 30px;">
-                    <tr style="border-top-width: 1px;border-top-style: solid;">
-                      <td style="padding-right: 8px">1</td>
-                      <td style="padding-right: 8px">opnfv_bottleneck_ts001.yaml</td>
-                      <td style="padding-right: 8px"><p class="text-success">pass</p></td>
-                    </tr>
-                    <tr style="border-top-width: 1px;border-top-style: solid;">
-                      <td>2</td>
-                      <td>opnfv_bottleneck_ts002.yaml</td>
-                      <td><p class="text-success">pass</p></td>
-                    </tr >
-                    <tr style="border-top-width: 1px;border-top-style: solid;">
-                      <td>3</td>
-                      <td>opnfv_bottleneck_ts003.yaml</td>
-                      <td><p class="text-success">pass</p></td>
-                    </tr>
-                    <tr style="border-top-width: 1px;border-top-style: solid;">
-                      <td>4</td>
-                      <td>opnfv_bottleneck_ts004.yaml</td>
-                      <td><p class="text-warning">running</p></td>
-                    </tr>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>testcase</th>
+                        <th>status</th>
+                      </tr>
+                    </thead>
+                    <tbody>                   
+                      <tr v-for="testcase in casesInSuite">
+                        <td>{{ testcase.id }}</td>
+                        <td>{{ testcase.testcase }}</td>
+                        <td v-bind:class="statusClass(testcase.status)">{{ testcase.status }}</td>
+                      </tr>
+                    </tbody>
                   </table>
                 </div> 
-
-                  <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson'></wfresult>
+                <div class="col-md-9">
+                  <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson' v-on:wfComplete="wfComplete = $event"></wfresult>
+                </div>
               </div>
           </div>
       </div>
@@ -107,6 +102,7 @@
 <script>
 import {addClass, removeClass, isContainClass} from '../assets/js/my-util.js'
 import wfresult from './workflow_graph/wfresult.vue'
+import showMessage from './message/showMessage.js'
 export default {
   name: 'testsuite',
   data () {
@@ -117,7 +113,14 @@ export default {
       workflowId: '',
       wfloading: false,
       wfJson: '',
-      selected: []
+      selected: [],
+      casesInSuite: [],
+      running: {
+        suiteName: "",
+        caseName: ""
+      },
+      curRunningId: 0,
+      wfComplete: false
     }
   },
   created: function() {
@@ -207,36 +210,100 @@ export default {
     },
     runTestsuites: function() {
       var self = this;
+      if(self.selected.length == 0) {
+        showMessage("warning", "run testsuite", "please select one!");
+        return;
+      }
+
+      self.running.suiteName = self.selected[0];
       $.ajax({
-          url: this.global.SERVER_ADDR + "run-test/story",
+        url: this.global.SERVER_ADDR + "testsuite/content",
+        method: "GET",
+        data: {
+          "suiteName": self.running.suiteName
+        },
+        success: function(data) {
+          if (data['code'] == 200) {
+            var caseList = data['result'];
+            for(var i=0; i < caseList.length; i++) {
+              caseList[i]['status'] = "waiting";
+            }
+            self.casesInSuite = caseList;
+            showMessage("info", "run testsuite", "start to run <strong>" + self.running.suiteName + "</strong>");
+            self.runTestcase();
+          }
+          
+        }
+      });
+   
+    },
+    runTestcase: function() {
+        console.log("######################################## runTestcase!" + this.curRunningId);
+        var self = this;
+        if (self.curRunningId == self.casesInSuite.length) {
+          self.curRunningId = 0;
+          console.log("######################################## run at end!");
+          return;
+        }
+        self.wfComplete = false;
+        var i = self.curRunningId;
+        self.casesInSuite[i]['status'] = "running";
+        self.running.caseName = self.casesInSuite[i]['testcase'];
+        $.ajax({
+          url: self.global.SERVER_ADDR + "execute/testcase",
           method: "POST",
           data: {
-              "service": "logic",
-              "stories": "ts_logic_00.yaml"
+              "suiteName": self.running.suiteName,
+              "caseName": self.running.caseName
           },
           beforeSend: function(XHR) {
               self.wfloading = true;
+              console.log("ajax wfloading true!" + self.running.caseName);
           },
           success: function(data) {
-              console.log("ajax run test story!");
+              console.log("ajax run test case success!");
               self.wfloading = false;
+              console.log("ajax wfloading false!" + self.running.caseName);
               self.workflowId = data['result']['workflowId'];
+              $.ajax({
+                  url: self.global.SERVER_ADDR + "story-content",
+                  method: "GET",
+                  data: {
+                      "service":  self.running.suiteName,
+                      "story": self.running.caseName
+                  },
+                  success: function(data) {
+                      if(data['code'] == 200) {
+                          self.wfJson = data['result']['content'];
+                      }
+                  }
+              });
           }
-      });
+        });
 
-      $.ajax({
-          url: this.global.SERVER_ADDR + "story-content",
-          method: "GET",
-          data: {
-              "service":  this.$route.query.suiteName,
-              "story": this.$route.query.caseName
-          },
-          success: function(data) {
-              if(data['code'] == 200) {
-                  self.wfJson = data['result']['content'];
-              }
-          }
-      });    
+    },
+    statusClass: function(status) {
+      if(status == "waiting") {
+        return "text-primary";
+      }
+      if(status == "running") {
+        return "text-warning";
+      }
+      if(status == "pass") {
+        return "text-success";
+      }
+      if(status == "failed") {
+        return "text-danger";
+      }
+    }
+  },
+  watch: {
+    wfComplete: function(val) {
+      console.log("################# wfCompelete change:" + val + "  " + this.curRunningId);
+      if(val == false) return;
+      var i = this.curRunningId++;
+      this.casesInSuite[i]['status'] = "pass";
+      this.runTestcase();
     }
   },
   components: {

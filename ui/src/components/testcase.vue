@@ -18,7 +18,7 @@
                 <div class="ibox-title">
                     <h5 style="font-size:26px;margin-top: -3px;">Test Case</h5>
                     <div class="ibox-tools">
-                    <button class="btn btn-info btn-sm my-button-sm" type="button" v-on:click="runTestcases()">Run</button>
+                    <button class="btn btn-info btn-sm my-button-sm" type="button" v-on:click="runMultiTestcase()">Run</button>
                     <button class="btn btn-success btn-sm my-button-sm" type="button" v-on:click="create()">Create</button>
                     <button class="btn btn-danger btn-sm my-button-sm" v-on:click="deleteyaml()" type="button">Delete</button>
                     <a class="collapse-link">
@@ -73,32 +73,27 @@
                   </div>
               </div>
               <div class="ibox-content" style="padding-top: 60px;">
-                <div id="executing" class="col-md-2" style="height:600px; margin-right: 200px;">
+                <div id="executing" class="col-md-3" style="padding: 0 30px 60px;">
                     <table class="table" style="margin-top: 30px;">
-                      <tr style="border-top-width: 1px;border-top-style: solid;">
-                        <td style="padding-right: 8px">1</td>
-                        <td style="padding-right: 8px">opnfv_bottleneck_ts001.yaml</td>
-                        <td style="padding-right: 8px"><p class="text-success">pass</p></td>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>testcase</th>
+                        <th>status</th>
                       </tr>
-                      <tr style="border-top-width: 1px;border-top-style: solid;">
-                        <td>2</td>
-                        <td>opnfv_bottleneck_ts002.yaml</td>
-                        <td><p class="text-success">pass</p></td>
-                      </tr >
-                      <tr style="border-top-width: 1px;border-top-style: solid;">
-                        <td>3</td>
-                        <td>opnfv_bottleneck_ts003.yaml</td>
-                        <td><p class="text-success">pass</p></td>
+                    </thead>
+                    <tbody>                   
+                      <tr v-for="testcase in runTestcases">
+                        <td>{{ testcase.id }}</td>
+                        <td>{{ testcase.testcase }}</td>
+                        <td v-bind:class="statusClass(testcase.status)">{{ testcase.status }}</td>
                       </tr>
-                      <tr style="border-top-width: 1px;border-top-style: solid;">
-                        <td>4</td>
-                        <td>opnfv_bottleneck_ts004.yaml</td>
-                        <td><p class="text-warning">running</p></td>
-                      </tr>
-                    </table>
+                    </tbody>
+                  </table>
                 </div> 
-
-                  <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson'></wfresult>
+                <div class="col-md-9">
+                  <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson' v-on:wfComplete="wfComplete = $event"></wfresult>
+                </div>
               </div>
           </div>
       </div>
@@ -111,6 +106,7 @@
 <script>
 import {addClass, removeClass, isContainClass} from '../assets/js/my-util.js'
 import wfresult from './workflow_graph/wfresult.vue'
+import showMessage from './message/showMessage.js'
 var yamls;
 var sname;
 export default {
@@ -124,7 +120,10 @@ export default {
       workflowId: '',
       wfloading: false,
       wfJson: '',
-      selected: []
+      selected: [],
+      curRunningId: 0,
+      runTestcases: [],
+      wfComplete: false
     }
   },
   created: function() {
@@ -167,7 +166,7 @@ export default {
     additem: function () {
       var self = this;
       const  storytext = self.newstory.trim()
-      if(storytext )
+      if(storytext)
       {
         $.ajax({
           url: this.global.SERVER_ADDR + "testcase/new",
@@ -231,38 +230,86 @@ export default {
       this.addstory = '';
 
     },
-    runTestcases: function() {
+    runMultiTestcase: function() {
       var self = this;
+      if(self.selected.length == 0) {
+        showMessage("warning", "run testsuite", "please select one!");
+        return;
+      }
+      for(var i=0; i < self.selected.length; i++) {
+        var testcaseItem = {'id': i, 'testcase': '', 'status': "waiting"};
+        testcaseItem['testcase'] = self.selected[i];
+        self.runTestcases.push(testcaseItem);
+      }
+      self.curRunningId = 0;
+      showMessage("info", "run testcases", "start to run <strong>testcases</strong>");
+      self.runOneTestcase();
+         
+    },
+    runOneTestcase: function() {
+      var self = this;
+      if (self.curRunningId == self.runTestcases.length) {
+        self.curRunningId = 0;
+        console.log("######################################## run at end!");
+        return;
+      }
+      self.wfComplete = false;
+      var i = self.curRunningId;
+      self.runTestcases[i]['status'] = "running";
       $.ajax({
-          url: this.global.SERVER_ADDR + "run-test/story",
+          url: self.global.SERVER_ADDR + "execute/testcase",
           method: "POST",
           data: {
-              "service": this.$route.query.name,
-              "stories": this.selected[0]
+              "suiteName": self.sname,
+              "caseName": self.runTestcases[self.curRunningId]['testcase']
           },
           beforeSend: function(XHR) {
               self.wfloading = true;
+              console.log("ajax wfloading true!" + self.runTestcases[self.curRunningId]['testcase']);
           },
           success: function(data) {
-              console.log("ajax run test story!");
+              console.log("ajax run test case success!");
               self.wfloading = false;
+              console.log("ajax wfloading false!" + self.runTestcases[self.curRunningId]['testcase']);
               self.workflowId = data['result']['workflowId'];
+              $.ajax({
+                  url: self.global.SERVER_ADDR + "story-content",
+                  method: "GET",
+                  data: {
+                      "service":  self.sname,
+                      "story": self.runTestcases[self.curRunningId]['testcase']
+                  },
+                  success: function(data) {
+                      if(data['code'] == 200) {
+                          self.wfJson = data['result']['content'];
+                      }
+                  }
+              });
           }
       });
-
-      $.ajax({
-          url: this.global.SERVER_ADDR + "story-content",
-          method: "GET",
-          data: {
-              "service":  this.$route.query.name,
-              "story": this.selected[0]
-          },
-          success: function(data) {
-              if(data['code'] == 200) {
-                  self.wfJson = data['result']['content'];
-              }
-          }
-      });    
+    },
+    statusClass: function(status) {
+      if(status == "waiting") {
+        return "text-primary";
+      }
+      if(status == "running") {
+        return "text-warning";
+      }
+      if(status == "pass") {
+        return "text-success";
+      }
+      if(status == "failed") {
+        return "text-danger";
+      }
+    }
+  },
+  watch: {
+    wfComplete: function(val) {
+      console.log("################# wfCompelete change:" + val + "  " + this.curRunningId);
+      if(val == false) return;
+      var i = this.curRunningId++;
+      this.runTestcases[i]['status'] = "pass";
+      this.runOneTestcase();
     }
   },
   components: {

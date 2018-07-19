@@ -1,12 +1,12 @@
 <template>
 <div style="min-height: 600px; overflow-x: hidden; overflow-y: auto;">
-    <div id="file-section1" class="col-md-4">
+    <div id="file-section1" class="col-md-5">
       <div id="workflow-content-div">
         <div class="dark-gray-bg" style="padding-left: 10px;font-size: 17px;"> <span> WORKFLOW.JSON CONTENT</span></div>
         <pre class="white-pink" id="workflow-content" style="height: 600px; background-color:#f5f5f5;"></pre>
       </div>
     </div>      
-	<div class="col-md-offset-2 col-md-4" id="graph-show-section" style="height:600px;">
+	<div class="col-md-offset-2 col-md-5" id="graph-show-section" style="height:600px;">
 	  <div v-show="!wfloading" id="workflow-graph" style="margin-top: 10px;margin-left: 70px;">
 	  </div>
 	  <div v-show="wfloading" class="spiner-example" id="loading">
@@ -41,6 +41,7 @@ export default {
 			RESPONSE_TIME_LIMIT : 6000,
 			responseTimeCounter : 0,
 			wfCompletedFlag : false,
+			intervalTime : 1000,
 			timer: null
 		}
 	},
@@ -69,11 +70,11 @@ export default {
 			console.log("load function activate");
 			this.reset();
 			this.initialPaintWFGraph();
-			var intervalTime = 1000;
 			var self = this;
-		  	this.timer = window.setInterval(function() {
+		  	self.timer = window.setInterval(function() {
 			    if(self.wfCompletedFlag) {
-			      window.clearInterval(self.timer);
+			      // console.log("#####################################clean the interval" + self.timer);
+			      // window.clearInterval(self.timer);
 			      // getWFOutput();
 			    }
 			    if(!self.initalPaintFlag) {
@@ -87,8 +88,8 @@ export default {
 			        self.responseTimeCounter = 0;
 			      }
 			    }
-			    self.responseTimeCounter += intervalTime;
-			}, intervalTime);
+			    self.responseTimeCounter += self.intervalTime;
+			}, self.intervalTime);
 		},
 		reset: function(){
 			this.frameLoadedFlag = false;
@@ -137,7 +138,7 @@ export default {
 		 var apiUrl = apiPrefix + this.workflowId;
 		 // console.log("workflowId input:" + workflowId);
 		 console.log("workflowId prop:" + this.workflowId);
-		 var iframeDiv = "<iframe id=\"testFrame\" width=\"0\" height=\"0\" style=\"\" src=\"" + apiUrl + "\"></iframe>";
+		 var iframeDiv = "<iframe id=\"testFrame\" width=\"0\" height=\"0\" style=\"border: none;\" src=\"" + apiUrl + "\"></iframe>";
 		 iframeContainer.innerHTML = iframeDiv;
 
 		 this.frameLoadedFlag = false;
@@ -187,6 +188,9 @@ export default {
 			      }
 			      if(i == (newNodes.length - 1) && newGraphStyle == 'stroke: #48a770; fill: #48a770') {
 			          this.wfCompletedFlag = true;
+			          console.log("#####################################completed: clean the interval  " + this.timer);
+			          window.clearInterval(this.timer);
+			          this.$emit("wfComplete", true);
 			      }
 			    } 
 			 }
