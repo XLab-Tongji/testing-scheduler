@@ -1,5 +1,5 @@
 FROM node:alpine
-MAINTAINER Leo.C
+MAINTAINER x-lab/Leo
 WORKDIR /home/testing-scheduler/ui
 COPY ./ui .
 

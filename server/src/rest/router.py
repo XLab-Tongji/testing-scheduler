@@ -267,7 +267,7 @@ def getServiceContent():
           apisArr = content[serviceName]['apis']
           for i in range(len(apisArr)):
             apisArr[i].pop("method")
-            apisArr[i].pop("uri")
+            apisArr[i].pop("baseuri")
           res["actions"] = apisArr
   except BaseException, e:
     app.logger.debug(traceback.format_exc())

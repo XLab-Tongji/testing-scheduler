@@ -2,4 +2,4 @@ basepath=$(cd `dirname $0`; pwd)                                        # get th
 projectpath=$basepath/../../..                                          # get the root directory of this project
 group="x-lab"
 ui_image="$group/testing-scheduler:ui-builder"                            # ui image name
-sudo docker build -t $ui_image -f $basepath/Dockerfile $projectpath
+docker build -t $ui_image -f $basepath/Dockerfile $projectpath

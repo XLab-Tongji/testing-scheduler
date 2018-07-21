@@ -1,5 +1,5 @@
 FROM nginx
-MAINTAINER Leo.c
+MAINTAINER x-lab/Leo
 
 RUN rm /etc/nginx/conf.d/default.conf
 

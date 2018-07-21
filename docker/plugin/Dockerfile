@@ -1,5 +1,5 @@
 FROM java
-MAINTAINER Leo.c
+MAINTAINER x-lab/Leo
 RUN useradd -m noroot -s /bin/bash
 USER noroot
 WORKDIR /home/noroot

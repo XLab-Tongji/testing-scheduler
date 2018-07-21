@@ -4,9 +4,6 @@ docker_tmppath=/home/noroot/build_dir/conductor
 group="x-lab"
 plugin_image="$group/conductor:builder"
 plugin_container="conductor-builder"
-echo $plugin_image
-echo $plugin_container
-exit
 #build the gradle project in a temp container.
 
 mkdir -p $tmppath

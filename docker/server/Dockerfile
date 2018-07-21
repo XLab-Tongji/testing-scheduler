@@ -1,5 +1,5 @@
 FROM python:2.7
-MAINTAINER Leo.C
+MAINTAINER x-lab/Leo
 WORKDIR /home/testing-scheduler/server
 COPY ./server .
 
