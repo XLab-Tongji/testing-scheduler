@@ -14,7 +14,8 @@ import traceback
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 TESTSUITE_DIR = os.path.join(BASE_DIR, "..", "..", "test", "test_case")
-SERVICE_DIR = os.path.join(BASE_DIR, "..", "env")
+SERVICE_DIR = os.path.join(BASE_DIR, "..", "env", "service")
+CONTEXT_FILE_DIR = os.path.join(BASE_DIR, "..", "env", "context", "context.yaml")
 app = Flask(__name__)
 CORS(app)
 
@@ -106,7 +107,6 @@ def getTCContent():
     casePath = os.path.join(TESTSUITE_DIR, casePath)
     if os.path.exists(casePath):
       with open(casePath, "r") as f:
-        #fileContent = yaml.load(f)
         fileContent = f.read()
       res = fileContent
       editorRes = test_parser.getWebTestcase(yaml.load(res))
@@ -276,9 +276,30 @@ def paramTransform(paramDict):
     res.append(paramJson)
   return res
 
-
+@app.route("/service/action_response")
+def actionResponse():
+  res = {}
+  try:
+    serviceName = request.values.get("serviceName")
+    actionName = request.values.get("actionName")
+    for fileName in os.listdir(SERVICE_DIR):
+        if serviceName == os.path.splitext(fileName)[0]:
+          res["responseParams"] = []
+          filePath = os.path.join(SERVICE_DIR, fileName)
+          with open(filePath, "r") as f:
+            content = yaml.load(f)
+            apisArr = content[serviceName]['apis']
+          for i in range(len(apisArr)):
+            if actionName == apisArr[i]['name'] and ("response" in apisArr[i]):
+                res["responseParams"] = apisArr[i]["response"]
+  except BaseException, e:
+    app.logger.debug(traceback.format_exc())
+    return jsonify({"code": 500, "error": e.message})
+  if res == {}:
+    return jsonify({"code": 300, "error": "no such service!"})
+  return jsonify({"code": 200, "result": res})
 ###############
-### 3.2 API FOR ENVIRONMENT SERVICE
+### 3.2 API FOR ENVIRONMENT SERVICE AND CONTEXT
 ###########################################################################
 @app.route('/env/getAllServices')
 def getAllService():
@@ -386,6 +407,29 @@ def deleteService():
 		return jsonify({"code": 500, "error": repr(e)})
 	return jsonify({"code": 200, "result": "delete success!"})
 
+@app.route('/env/getContext')
+def getContext():
+  try:
+    with open(CONTEXT_FILE_DIR, "r") as f:
+      fileContent = f.read()
+    res = fileContent
+  except BaseException, e:
+    return jsonify({"code": 500, "error": repr(e)})
+  return jsonify({"code": 200, "result": {"context": res}})
+
+@app.route('/env/editContext', methods=['POST'])
+def editContext():  
+  try:
+    context = request.values.get("context")
+    test = yaml.load(context)
+    with open(CONTEXT_FILE_DIR, "w") as f:
+      f.write(context)
+  except yaml.constructor.ConstructorError, e:
+    return jsonify({"code": 500, "error": "context content error: not a .yaml file!"})
+  except BaseException, e:
+    return jsonify({"code": 500, "error": repr(e)})
+
+  return jsonify({"code": 200, "result": "edit context success!"})
 ###########################################################################
 
 

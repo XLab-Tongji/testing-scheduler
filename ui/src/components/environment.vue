@@ -4,35 +4,14 @@
         <div class="col-lg-offset-2 col-lg-8">
             <div class="ibox">
                 <div class="ibox-content">
-                    <h1>SUT</h1>
-                    <form method="get" class="form-horizontal">
-                        <div class="form-group">
-                            <label class="col-lg-3 control-label">Cluster</label>
-                            <div class="col-lg-5">
-                                <input type="text" class="form-control" placeholder="192.168.1.1">
-                            </div>
+                    <h1>CONTEXT <i class="fa fa-question-circle"></i></h1>
+                    <div class="row">
+                        <div class="col-md-offset-1 col-md-10">
+                            <textarea v-model="context" id="context-content" style="font-size: 16px; padding: 4px; width: 100%; min-height: 300px; max-height: 300px;">
+                            </textarea>
+                            <button type="button" class="btn btn-primary pull-right" v-on:click="saveContext()">Save</button>
                         </div>
-                        <div class="form-group">
-                            <label class="col-lg-3 control-label"></label>
-                            <div class="col-lg-5">
-                                <input type="text" class="form-control" placeholder="192.168.1.2">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-lg-3 control-label"></label>
-                            <div class="col-lg-5">
-                                <input type="text" class="form-control" placeholder="192.168.1.3">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-lg-3 control-label">Config file</label>
-                            <div class="col-lg-5">
-                                <input type="text" class="form-control" placeholder="/openrc">
-                            </div>
-                            <div class="col-lg-2"><button class="btn btn-w-m btn-info">upload</button></div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -93,7 +72,8 @@ export default {
                 edit: true,
                 service: "ansible",
                 tag: "default"
-            }
+            },
+            context: ''
         }
     },
     components: {
@@ -105,10 +85,24 @@ export default {
         var errorInfo = 'Unable to get the service list';
         $.ajax({
             url: this.global.SERVER_ADDR + "env/getAllServices",
-            method: "get",
+            method: "GET",
             success: function(data) {
                 if(data['code'] == 200) {
                     self.serviceList = data['result'];
+                } else {
+                    showMessage(data['code'], msgTitle, errorInfo, data['error']);
+                }
+            },
+            error: function(obj, status, msg) {
+                showMessage("error", msgTitle, errorInfo, msg);
+            }
+        });
+        $.ajax({
+            url: this.global.SERVER_ADDR + "env/getContext",
+            method: "GET",
+            success: function(data) {
+                if(data['code'] == 200) {
+                    self.context = data['result']['context'];
                 } else {
                     showMessage(data['code'], msgTitle, errorInfo, data['error']);
                 }
@@ -222,6 +216,28 @@ export default {
             }
             var formatDate = year + seperator + month + seperator + strDate;
             return formatDate;
+        },
+        saveContext: function() {
+            var self = this;
+            var msgTitle = "SAVE -- CONTEXT";
+            var errorInfo = "Failed to save context!";
+            $.ajax({
+                url: this.global.SERVER_ADDR + "env/editContext",
+                method: "POST",
+                data: {
+                    context: self.context
+                },
+                success: function(data) {
+                    if(data['code'] == 200) {
+                        showMessage(data['code'], msgTitle, "Save context successfully!");
+                    } else {
+                        showMessage(data['code'], msgTitle, errorInfo, data['error']);
+                    }
+                },
+                error: function(obj, status, msg) {
+                    showMessage("error", msgTitle, errorInfo, msg);
+                }
+            });
         }
     }
 }

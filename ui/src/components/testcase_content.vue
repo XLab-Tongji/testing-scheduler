@@ -17,7 +17,7 @@
     </div>
 
 
-    <div id="page-content" style="" class="row">
+    <div id="page-content" class="row">
       <div class="col-lg-12">
         <div class="ibox">
             <div class="ibox-title">

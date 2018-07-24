@@ -47,14 +47,11 @@ def parseTestcase(schema, tcName = 'testcase0'):
 	## steps is a list, step is dict. no json here.
 	# steps = sorted(steps, sortById)
 
-	# load SUT context
+	# load context
 	contextDict = {}
-	if 'context' in schema:
-		contextDir = schema['context']
-		print "contextDir is:%s"%contextDir
-		contextDir = os.path.join(BASE_DIR, "env", "conf", contextDir)
-		with open(contextDir, "r") as f:
-			contextDict = yaml.load(f)
+	contextDir = os.path.join(BASE_DIR, "env", "context", "context.yaml")
+	with open(contextDir, "r") as f:
+		contextDict = yaml.load(f)
 	#
 	testStepMgr = TestStepManager(contextDict)
 
