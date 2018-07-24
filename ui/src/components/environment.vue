@@ -70,7 +70,7 @@
 
                     <!-- modal of one service -->
                     <div class="row">
-                        <service-modal v-bind:type="type" v-on:service-creation="plusAService" v-on:service-edition="editAServiceName"></service-modal>
+                        <service-modal v-bind:type="type" v-on:service-creation="plusAService" v-on:service-edition="editAServiceName" v-on:creation-fail="creationFailHandler"></service-modal>
                     </div>
                 </div>
             </div>
@@ -80,105 +80,149 @@
 </template>
 
 <script>
-    import Vue from 'vue'
-    import service_modal from "./env_component/service_modal.vue"
-    
-    export default {
-  		name: 'environment',
-        data: function() {
-	        return {
-	            serviceList: [],
-	            type: {
-	                edit: true,
-	                service: "ansible",
-                    tag: "default"
-	            }
-	        }
-        },
-        components: {
-        	'service-modal': service_modal
-        },
-        created: function() {
-            var self = this;
-            $.ajax({
-                url: this.global.SERVER_ADDR + "getAllServices",
-                method: "get",
-                success: function(data) {
-                    if(data['code'] == 200) {
-                        self.serviceList = data['result'];
-                    }
-                }
-            });
-        },
-        methods: {
-            addNewService: function(){
-                this.type.edit = false;
-                this.type.tag = "abc";
-                this.type.service = null;
-                this.type.originName = null;
-                if(this.type.content){
-                    this.type.content = null;
-                }
-                $("#myModal").modal("show");
-            },
-            plusAService: function(serviceName){
-                var item = {'id': '', 'name': '', 'time': ''};
-                item['id'] = this.serviceList[this.serviceList.length - 1]['id'] + 1;
-                item['name'] = serviceName;
-                item['time'] = '2018-01-01';
-                this.serviceList.push(item);
-            },
-            editAServiceName: function(edition) {
-                for(var i = 0;i < this.serviceList.length; i++) {
-                    if(edition['oldName'] == this.serviceList[i]['name']) {
-                        this.serviceList[i]['name'] = edition['newName'];
-                    }
-                }
-            },
-            editService: function(serviceName){
-                this.type.edit = true;
-                this.type.tag = "abc";
-                this.type.service = serviceName;
-                this.type.originName = serviceName;
-                if(this.type.content){
-                    this.type.content = null;
-                }
-                console.log(this.type);
-                var self = this;
-                $.ajax({
-                    url: this.global.SERVER_ADDR + "getService",
-                    method: "get",
-                    data: {
-                        "serviceName": serviceName
-                    },
-                    success: function(data) {
-                        console.log("#############get service!!!");
-                        self.type.tag = "heyheyhey";
-                        self.type.content = data['result'];
-                        self.type.originName = self.type.service;
-                        console.log(self.type.content);
-                        console.log("#############end!!!");
-                    }
-                });
-                $("#myModal").modal("show");
-            },
-            deleteService: function(serviceName){
-                $.ajax({
-                    url: this.global.SERVER_ADDR + "deleteService",
-                    method: "post",
-                    data: {
-                        "serviceName": serviceName
-                    },
-                    success: function(data) {
-                        console.log("#############delete service!!!");
-                    }
-                });
-                for(var i = 0;i < this.serviceList.length; i++) {
-                    if(serviceName == this.serviceList[i]['name']) {
-                        this.serviceList.splice(i, 1);
-                    }
-                }
+import Vue from 'vue'
+import service_modal from "./env_component/service_modal.vue"
+import showMessage from './message/showMessage.js'
+
+export default {
+	name: 'environment',
+    data: function() {
+        return {
+            serviceList: [],
+            type: {
+                edit: true,
+                service: "ansible",
+                tag: "default"
             }
         }
+    },
+    components: {
+    	'service-modal': service_modal
+    },
+    created: function() {
+        var self = this;
+        var msgTitle = "GET -- SERVICE LIST";
+        var errorInfo = 'Unable to get the service list';
+        $.ajax({
+            url: this.global.SERVER_ADDR + "env/getAllServices",
+            method: "get",
+            success: function(data) {
+                if(data['code'] == 200) {
+                    self.serviceList = data['result'];
+                } else {
+                    showMessage(data['code'], msgTitle, errorInfo, data['error']);
+                }
+            },
+            error: function(obj, status, msg) {
+                showMessage("error", msgTitle, errorInfo, msg);
+            }
+        });
+    },
+    methods: {
+        addNewService: function(){
+            this.type.edit = false;
+            this.type.tag = "abc";
+            this.type.service = null;
+            this.type.originName = null;
+            if(this.type.content){
+                this.type.content = null;
+            }
+            $("#myModal").modal("show");
+        },
+        plusAService: function(serviceName){
+            var item = {'id': '', 'name': '', 'time': ''};
+            item['id'] = this.serviceList[this.serviceList.length - 1]['id'] + 1;
+            item['name'] = serviceName;
+            item['time'] = this.getFormatDate(new Date());
+            this.serviceList.push(item);
+        },
+        editAServiceName: function(edition) {
+            for(var i = 0;i < this.serviceList.length; i++) {
+                if(edition['oldName'] == this.serviceList[i]['name']) {
+                    this.serviceList[i]['name'] = edition['newName'];
+                }
+            }
+        },
+        editService: function(serviceName){
+            this.type.edit = true;
+            this.type.tag = "abc";
+            this.type.service = serviceName;
+            this.type.originName = serviceName;
+            if(this.type.content){
+                this.type.content = null;
+            }
+            console.log(this.type);
+            var self = this;
+            var msgTitle = "GET -- SERVICE";
+            var errorInfo = "Unable to get the service: <strong>" + self.type.service + "</strong>";
+            $.ajax({
+                url: this.global.SERVER_ADDR + "env/getService",
+                method: "GET",
+                data: {
+                    "serviceName": serviceName
+                },
+                success: function(data) {
+                    if(data['code'] == 200) {
+                        self.type.tag = "hhh";
+                        self.type.content = data['result'];
+                        self.type.originName = self.type.service;
+                    } else {
+                        showMessage(data['code'], msgTitle, errorInfo, data['error']);
+                    }
+                    
+                },
+                error: function(obj, status, msg) {
+                    showMessage("error", msgTitle, errorInfo, msg);
+                }
+            });
+            $("#myModal").modal("show");
+        },
+        deleteService: function(serviceName){
+            var msgTitle = "DELETE -- SERVICE";
+            $.ajax({
+                url: this.global.SERVER_ADDR + "env/deleteService",
+                method: "POST",
+                data: {
+                    "serviceName": serviceName
+                },
+                success: function(data) {
+                    if(data['code'] == 200) {
+                        showMessage(data['code'], msgTitle, "Delete <strong>" + serviceName + "</strong> successfully.");
+                    } else {
+                        showMessage(data['code'], msgTitle,  "Failed to delete <strong>" + serviceName + "</strong>", data['error']);
+                    }
+                },
+                error: function(obj, status, msg) {
+                    showMessage("error", msgTitle, "Failed to delete <strong>" + serviceName + "</strong>", msg);
+                }
+            });
+            for(var i = 0;i < this.serviceList.length; i++) {
+                if(serviceName == this.serviceList[i]['name']) {
+                    this.serviceList.splice(i, 1);
+                }
+            }
+        },
+        creationFailHandler: function(serviceName) {
+            for(var i = 0; i < this.serviceList.length; i++) {
+                if(serviceName == this.serviceList[i].name) {
+                    this.serviceList.splice(i, 1);
+                }
+            }
+        },
+        getFormatDate: function(date) {
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var strDate = date.getDate();
+            var seperator = "-";
+            if(month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+            if(strDate >= 1 && strDate <= 9) {
+                strDate = "0" + strDate;
+            }
+            var formatDate = year + seperator + month + seperator + strDate;
+            return formatDate;
+        }
     }
+}
 </script>

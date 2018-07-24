@@ -53,7 +53,7 @@ import '../../assets/css/editor.css'
 
 import step from './step.vue'
 import flow from './flow.vue'
-
+import showMessage from '../message/showMessage.js'
 export default {
     name: 'editor',
     props: ['saveSignal', 'stepList', 'mainOrdersList', 'subflowList'],
@@ -113,6 +113,7 @@ export default {
             if(newVal == true) {
                 console.log("editor newVal true");
                 var self = this;
+                var msgTitle = "SAVE -- TESTCASE";
                 $.ajax({
                     url: this.global.SERVER_ADDR + "testcase/save",
                     method: "POST",
@@ -126,13 +127,15 @@ export default {
                     success: function(data) {
                         console.log("ajax save content!");
                         if(data['code'] == 200) {
+                            showMessage("success", msgTitle, "Save content successfully!");
                             self.$emit('saveResponse', true);
                         } else {
+                            showMessage(data['code'], msgTitle, "Failed to save content!", data['error']);
                             self.$emit('saveResponse', false);
                         }
                     },
-                    error: function(error) {
-                        console.log("ajax save content!");
+                    error: function(obj, status, msg) {
+                        showMessage(status, msgTitle, "Failed to save content!", msg);
                         self.$emit('saveResponse', false);
                     }
                 });

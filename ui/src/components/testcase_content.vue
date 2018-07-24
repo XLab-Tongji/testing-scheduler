@@ -7,7 +7,7 @@
             <router-link to="/" >root</router-link>
           </li>
           <li>
-            <router-link :to="{ path: '/stories', query: { name: suitename }}" >{{this.$route.query.suiteName}}</router-link>
+            <router-link :to="{ path: '/testcase', query: { name: suitename }}" >{{this.$route.query.suiteName}}</router-link>
           </li>
           <li>
             <router-link :to="{ path: '/content', query: { suiteName: suitename, caseName: casename } }"><b>{{this.$route.query.caseName}}</b></router-link>
@@ -17,7 +17,7 @@
     </div>
 
 
-    <div id="p2_content1" style="" class="row">
+    <div id="page-content" style="" class="row">
       <div class="col-lg-12">
         <div class="ibox">
             <div class="ibox-title">
@@ -90,180 +90,145 @@ import {addClass, removeClass, isContainClass} from '../assets/js/my-util.js'
 import editor from './editor/editor.vue'
 import wfresult from './workflow_graph/wfresult.vue'
 import showMessage from './message/showMessage.js'
-  var content;
-  var suitename;
 
 export default {
-  name: 'testcase_content',
-  data () {
-    return {
-      content,
-      editorContent: {'stepList': [], 'mainOrdersList': [], 'subflowList': []},
-      bakContent: '',
-      isEditable: false,
-      contentLoading: false,
-      contentSaving: false,
-      suitename:this.$route.query.suiteName,
-      casename:this.$route.query.caseName,
-      SERVER_ADDR: "http://localhost:5310/",
-      workflowId: '',
-      wfloading: false,
-      wfJson: '',
-      stories: [],
-      services: [
-        'greet',
-        'yardstick',
-        'logic'
-      ],
-      service_selected: '',
-      selected: [],
-      saveSignal: false
-    }
-  },
-  created: function() {
-      this.getTestcase();
-  },
-  computed: {
-    selectAll: {
-      get: function () {
-        return this.stories ? this.selected.length == this.stories.length : false;
-      },
-      set: function (value) {
-        var selected = [];
-
-        if (value) {
-          this.stories.forEach(function (story) {
-            selected.push(story.id);
-          });
-        }
-        this.selected = selected;
+    name: 'testcase_content',
+    data () {
+      return {
+          content: '',
+          editorContent: {'stepList': [], 'mainOrdersList': [], 'subflowList': []},
+          bakContent: '',
+          isEditable: false,
+          contentLoading: false,
+          contentSaving: false,
+          suitename:this.$route.query.suiteName,
+          casename:this.$route.query.caseName,
+          workflowId: '',
+          wfloading: false,
+          wfJson: '',
+          stories: [],
+          services: [
+            'greet',
+            'yardstick',
+            'logic'
+          ],
+          service_selected: '',
+          saveSignal: false
       }
-    }
-  },
-  methods: {
-    setEditable: function(){
-      this.isEditable = true;
-      this.bakContent = this.content;
     },
-    cancelEdit: function(){
-      this.content = this.bakContent;
-      this.isEditable = false;
-    },
-    saveTestcase: function(){
-      console.log("save");
-      this.saveSignal = true;
-      this.contentSaving = true;
-    },
-    runTestcase: function(){
-      var self = this;
-      $.ajax({
-          url: this.global.SERVER_ADDR + "execute/testcase",
-          method: "POST",
-          data: {
-              "suiteName": this.$route.query.suiteName,
-              "caseName": this.$route.query.caseName
-          },
-          beforeSend: function(XHR) {
-              self.wfloading = true;
-              showMessage("info", "run testcase", "start to run " + self.$route.query.caseName);
-          },
-          success: function(data) {
-              console.log("ajax run test case!");
-              self.wfloading = false;
-              self.workflowId = data['result']['workflowId'];
-              showMessage("success", "run testcase", " " + self.$route.query.caseName + " finished!");
-              $.ajax({
-                  url: self.global.SERVER_ADDR + "story-content",
-                  method: "GET",
-                  data: {
-                      "service":  self.$route.query.suiteName,
-                      "story": self.$route.query.caseName
-                  },
-                  success: function(data) {
-                      if(data['code'] == 200) {
-                          self.wfJson = data['result']['content'];
-                      }
-                  }
-              });
-          },
-          error: function(err) {
-              self.wfloading = false;
-              showMessage("error", "run testcase", "server error!");
-          }
-      });
-    },
-    getTestcase: function(){
-        var self = this;
-        $.ajax({
-          url: this.global.SERVER_ADDR + "testcase/content",
-          method:"GET",
-          data:{
-            suiteName:  this.$route.query.suiteName,
-            caseName: this.$route.query.caseName
-          },
-          beforeSend: function(XHR) {
-              self.contentLoading = true;
-          },
-          success:function (data) {
-            if(data['code'] == 200) {
-              self.content = data['result']['content'];
-              self.contentLoading = false;
-              /*var eContent = data['result']['editorContent'];
-              self.editorContent['stepList'] = eContent['stepList'];
-              self.editorContent['mainOrdersList'] = eContent['mainOrdersList'];
-              self.editorContent['subflowList'] = eContent['subflowList'];
-              */
-              self.editorContent = data['result']['editorContent'];
-            }
-            else {
-              showMessage("failed", "content error", "fail to load testcase content!");
-              self.contentLoading = false;
-            }
-          },
-          error: function (error) {
-            showMessage("failed", "content error", "fail to load testcase content!");
-            self.contentLoading = false;
-          }
-        });
-    },
-    getOutput: function() {
-        console.log("get output active!");
-        var wfConfigDiv = document.getElementById("workflowId");
-        var inputArr = wfDiv.getElementsByTagName("input");
-        var idElem = inputArr[0];
-        var workflowId = idElem.getAttribute("value");
-        var url = this.global.WF_SERVER_ADDR + "workflow/" + workflowId + "?includeTasks=true";
-        $.ajax({
-            url: url,
-            method: "GET",
-            success: function(data) {
-                console.log("get output:");
-                console.log(data);
-            }
-        });
-    },
-    async processSaveResponse(result) {
-      if(result == true) {
-        // await this.sleep(5000);
-        this.saveSignal = false;
-        this.isEditable = false;
-        this.contentSaving = false;
-        showMessage("success", "operation ok", "save content success!");
+    created: function() {
         this.getTestcase();
-      } else {
-        // await this.sleep(5000);
-        this.saveSignal = false;
-        this.contentSaving = false;
-        showMessage("error", "operation error", "failed to save content!");
+    },
+    methods: {
+      setEditable: function(){
+          this.isEditable = true;
+          this.bakContent = this.content;
+      },
+      cancelEdit: function(){
+          this.content = this.bakContent;
+          this.isEditable = false;
+      },
+      saveTestcase: function(){
+          console.log("save");
+          this.saveSignal = true;
+          this.contentSaving = true;
+      },
+      runTestcase: function(){
+        var self = this;
+        var msgTitle = "RUN -- TESTCASE";
+        $.ajax({
+            url: this.global.SERVER_ADDR + "execute/testcase",
+            method: "POST",
+            data: {
+                "suiteName": this.$route.query.suiteName,
+                "caseName": this.$route.query.caseName
+            },
+            beforeSend: function(XHR) {
+                self.wfloading = true;
+                showMessage("info", msgTitle, "start to run <strong>" + self.$route.query.caseName + "</strong>");
+            },
+            success: function(data) {
+                if(data['code'] == 200) {
+                    self.workflowId = data['result']['workflowId'];
+                    showMessage(data['code'], msgTitle, "<strong>" + self.$route.query.caseName + "</strong> finished!");
+                    $.ajax({
+                        url: self.global.SERVER_ADDR + "story-content",
+                        method: "GET",
+                        data: {
+                            "service":  self.$route.query.suiteName,
+                            "story": self.$route.query.caseName
+                        },
+                        success: function(data) {
+                            if(data['code'] == 200) {
+                                self.wfJson = data['result']['content'];
+                            } else {
+                              showMessage(data['code'], msgTitle, "workflow.json get failed!");
+                            }
+                        },
+                        error: function(obj, status, msg) {
+                          showMessage(status, msgTitle, msg);
+                        }
+                    });
+                } else {
+                  self.wfloading = false;
+                  showMessage(data['code'], msgTitle, "Failed to run <strong>" + self.$route.query.caseName + "</strong>", data['error']);
+                }
+            },
+            error: function(obj, status, msg) {
+                self.wfloading = false;
+                showMessage(status, msgTitle, "Failed to run <strong>" + self.$route.query.caseName + "</strong>", msg);
+            }
+        });
+      },
+      getTestcase: function(){
+          var self = this;
+          var msgTitle = "GET -- TESTCASE";
+          $.ajax({
+            url: this.global.SERVER_ADDR + "testcase/content",
+            method:"GET",
+            data:{
+              suiteName:  this.$route.query.suiteName,
+              caseName: this.$route.query.caseName
+            },
+            beforeSend: function(XHR) {
+                self.contentLoading = true;
+            },
+            success:function (data) {
+              if(data['code'] == 200) {
+                self.content = data['result']['content'];
+                self.contentLoading = false;
+                self.editorContent = data['result']['editorContent'];
+              }
+              else {
+                showMessage("error", msgTitle, "fail to load testcase content!", data['error']);
+                self.contentLoading = false;
+              }
+            },
+            error: function (obj, status, msg) {
+              showMessage(status, msgTitle, "fail to load testcase content!", msg);
+              self.contentLoading = false;
+            }
+          });
+      },
+      async processSaveResponse(result) {
+          
+          if(result == true) {
+            this.saveSignal = false;
+            this.isEditable = false;
+            this.contentSaving = false;
+            this.getTestcase();
+          } else {
+            this.saveSignal = false;
+            this.contentSaving = false;
+          }
+      },
+      sleep: function(d) {  
+          return new Promise((resolve) => setTimeout(resolve, d))  
       }
     },
-    sleep: function(d) {  
-        return new Promise((resolve) => setTimeout(resolve, d))  
+    components: {
+      editor,
+      wfresult
     }
-  },
-  components: {
-    editor,
-    wfresult
-  }
 }
 </script>

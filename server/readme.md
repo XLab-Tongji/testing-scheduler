@@ -1,11 +1,12 @@
-测试方法：
-[终端]
-./test_parser.py --filepath=path1
-说明：path1为测试用例文件所在路径，举例： ../test/test_story/yardstick/ts_yardstick_00.yaml
+operations:
+[cmd]
+./test_parser.py --filepath=path/to/file
+explanation：
+- ./test_parser.py  the parse script
+- path/to/file the file path of the test case.
 
-[Web]
-1. 需要执行如下命令：
- python src/rest/router.py
-2. 启动前端的服务器, 详情见项目stressTest-UI
-2. 浏览器访问路径：
-http://localhost:8600/stress-test/page2.html
+[web]
+1. run the command below in cmd：
+	python src/rest/router.py
+2. start the server of frontend. see the readme.md in "./ui" directory.
+3. view the web page: http://localhost:5311/

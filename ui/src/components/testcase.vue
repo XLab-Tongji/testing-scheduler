@@ -7,12 +7,12 @@
             <router-link to="/" >root</router-link>
           </li>
           <li>
-            <router-link :to="{ path: '/stories', query: { name: sname }}"><b>{{this.$route.query.name}}</b></router-link>
+            <router-link :to="{ path: '/testcase', query: { name: sname }}"><b>{{this.$route.query.name}}</b></router-link>
           </li>
         </ol>
       </div>
     </div>
-    <div id="p2_content1" style="" class="row">
+    <div id="page-content" style="" class="row">
         <div class="col-lg-8">
             <div class="ibox">
                 <div class="ibox-title">
@@ -20,7 +20,7 @@
                     <div class="ibox-tools">
                     <button class="btn btn-info btn-sm my-button-sm" type="button" v-on:click="runMultiTestcase()">Run</button>
                     <button class="btn btn-success btn-sm my-button-sm" type="button" v-on:click="create()">Create</button>
-                    <button class="btn btn-danger btn-sm my-button-sm" v-on:click="deleteyaml()" type="button">Delete</button>
+                    <button class="btn btn-danger btn-sm my-button-sm" v-on:click="deleteCases()" type="button">Delete</button>
                     <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
                     </a>
@@ -38,15 +38,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="yaml in yamls">
-                          <td><input class="checkbox1" style="width:20px" type="checkbox" v-model="selected" :value="yaml.testcase"> </td>
-                          <td class="smallbox" style="with:250px;"><router-link :to="{ path: '/content', query: { suiteName: sname, caseName: yaml.testcase } }">{{yaml.testcase}}</router-link></td>
+                        <tr v-for="testcase in testcases">
+                          <td><input class="checkbox1" style="width:20px" type="checkbox" v-model="selected" :value="testcase.testcase"> </td>
+                          <td class="smallbox" style="with:250px;"><router-link :to="{ path: '/content', query: { suiteName: sname, caseName: testcase.testcase } }">{{testcase.testcase}}</router-link></td>
                         </tr>
                     </tbody>
                     <tfoot id="create-box" style="display: none">
                         <tr>
                             <td class="checkbox1" style="width:20px"><input type="checkbox"> </td>
-                            <td class="smallbox" style="with:250px;"><input type="text" v-model="newstory" @keydown.enter="additem" ></td>
+                            <td class="smallbox" style="with:250px;"><input type="text" v-model="newCase" @keydown.enter="additem" ></td>
                         </tr>
                     </tfoot>
                   </table>                             
@@ -82,13 +82,20 @@
                               <th class="text-center">#</th>
                               <th class="text-center">testcase</th>
                               <th class="text-center">status</th>
+                              <th class="text-center">operation</th>
                             </tr>
                           </thead>
                           <tbody>                   
                             <tr v-for="testcase in runTestcases">
                               <td>{{ testcase.id }}</td>
                               <td>{{ testcase.testcase }}</td>
-                              <td v-bind:class="statusClass(testcase.status)">{{ testcase.status }}</td>
+                              <td><span class="badge" v-bind:class="'badge-' + statusClass(testcase.status)">{{ testcase.status }}</span></td>
+                              <td>
+                                <div style="display: inline-block;min-width: 130px;">
+                                  <button class="btn btn-primary btn-outline btn-xs fadeIn" v-on:click="runTestcase()" v-show="testcase.status == 'failed'">rerun</button>
+                                  <button class="btn btn-primary btn-outline btn-xs fadeIn" v-on:click="runNextCase($event.target)" v-show="testcase.status == 'failed'">run next one</button>
+                                </div>
+                              </td>
                             </tr>
                           </tbody>
                         </table>
@@ -112,15 +119,13 @@
 import {addClass, removeClass, isContainClass} from '../assets/js/my-util.js'
 import wfresult from './workflow_graph/wfresult.vue'
 import showMessage from './message/showMessage.js'
-var yamls;
-var sname;
 export default {
   name: 'testcase',
   data () {
     return {
-      yamls,
+      testcases: [],
       sname: this.$route.query.name,
-      newstory:'',
+      newCase:'',
       addstory:'',
       workflowId: '',
       wfloading: false,
@@ -133,6 +138,8 @@ export default {
   },
   created: function() {
     var self = this;
+    var msgTitle = "GET -- TESTCASES";
+    var errorInfo = "Failed to get testcase list.";
     $.ajax({
       url: this.global.SERVER_ADDR + "testsuite/content",
       method:"GET",
@@ -141,22 +148,27 @@ export default {
       },
       success:function (data) {
         if(data['code'] == 200) {
-          self.yamls = data['result'];
+          self.testcases = data['result'];
+        } else {
+          showMessage(data['code'], msgTitle, errorInfo, data['error']);
         }
+      },
+      error: function(obj, status, msg) {
+        showMessage(status, msgTitle, errorInfo, msg);
       }
     });
   },
   computed: {
     selectAll: {
       get: function () {
-        return this.yamls ? this.selected.length == this.yamls.length : false;
+        return this.testcases ? this.selected.length == this.testcases.length : false;
       },
       set: function (value) {
         var selected = [];
 
         if (value) {
-          this.yamls.forEach(function (yaml) {
-            selected.push(yaml.testcase);
+          this.testcases.forEach(function (testcase) {
+            selected.push(testcase.testcase);
           });
         }
         this.selected = selected;
@@ -170,75 +182,79 @@ export default {
     },
     additem: function () {
       var self = this;
-      const  storytext = self.newstory.trim()
-      if(storytext)
+      var msgTitle = "CREATE -- TESTCASE";
+      const caseName = self.newCase.trim();
+      if(caseName)
       {
         $.ajax({
           url: this.global.SERVER_ADDR + "testcase/new",
-          method:"GET",
+          method:"POST",
           data:{
             suiteName: self.sname,
-            caseName: storytext
+            caseName: caseName
           },
           success:function (data) {
             if(data['code'] == 200){
-              self.yamls.push({
-                id: self.yamls.length + 1 ,
-                testcase: storytext,
-              })
+              self.testcases.push({
+                id: self.testcases.length + 1 ,
+                testcase: caseName,
+              });
+              showMessage(data['code'], msgTitle, "Create <strong>" + caseName + "</strong> succesfully!");
+            } else {
+              showMessage(data['code'], msgTitle, "Failed to create <strong>" + caseName + "</strong>!", data['error']);
             }
+          },
+          error: function(obj, status, msg) {
+            showMessage(status, msgTitle, "Failed to create <strong>" + caseName + "</strong>!", msg);
           }
-        })
-
+        });
       }
       var cbox = document.getElementById("create-box");
       cbox.style.display = "none";
-      this.newstory = '';
+      this.newCase = '';
     },
-    deleteyaml:function () {
+    deleteCases:function () {
       var self = this;
-      for(var n in self.selected)
+      var msgTitle = "DELETE -- TESTCASE";
+      var deleteArr = self.selected.slice(0);
+      self.testcases = self.testcases.filter(item => {
+          for(var i in deleteArr) {
+            if(item.testcase == deleteArr[i]) {
+              return false;
+            }
+          }
+          return true;
+      });
+      self.selected = [];
+      for(var i in deleteArr)
       {
         $.ajax({
           url: this.global.SERVER_ADDR + "testcase/delete",
-          method:"GET",
-          data:{
+          method: "POST",
+          data: {
             suiteName: self.sname,
-            caseName: self.selected[n]
+            caseName: deleteArr[i]
           },
-          success:function (data) {
-            if(data['code'] == 200)
-            {
-              self.yamls = self.yamls.filter(yaml => {
-                return yaml.testcase !== self.selected[n]
-
-              })
+          success: function(data) {
+            if(data['code'] == 200){
+              showMessage(data['code'], msgTitle, "Delete <strong>" + deleteArr[i] + "</strong> succesfully!");
+            } else {
+              showMessage(data['code'], msgTitle, "Failed to delete <strong>" + deleteArr[i] + "</strong>!", data['error']);
             }
-
+          },
+          error: function(obj, status, msg) {
+            showMessage(status, msgTitle, "Failed to delete <strong>" + deleteArr[i] + "</strong>!", msg);
           }
-        })
-
+        });
       }
-
-    },
-    addyaml:function () {
-      const  yamltext = this.addstory.trim()
-      if(yamltext)
-      {
-        this.yamls.push({
-          id: this.yamls.length + 1 ,
-          storyname: yamltext,
-        })
-      }
-      var cbox = document.getElementById("add-box");
-      cbox.style.display = "none";
-      this.addstory = '';
 
     },
     runMultiTestcase: function() {
       var self = this;
+      var msgTitle = "RUN -- TESTCASES";
+      self.runTestcases = [];
       if(self.selected.length == 0) {
-        showMessage("warning", "run testsuite", "please select one!");
+        showMessage("warning", msgTitle, "please select one!");
         return;
       }
       for(var i=0; i < self.selected.length; i++) {
@@ -247,15 +263,15 @@ export default {
         self.runTestcases.push(testcaseItem);
       }
       self.curRunningId = 0;
-      showMessage("info", "run testcases", "start to run <strong>testcases</strong>");
+      showMessage("info", msgTitle, "start to run <strong>testcases</strong>");
       self.runOneTestcase();
          
     },
     runOneTestcase: function() {
       var self = this;
+      var msgTitle = "RUN -- TESTCASE";
       if (self.curRunningId == self.runTestcases.length) {
         self.curRunningId = 0;
-        console.log("######################################## run at end!");
         return;
       }
       self.wfComplete = false;
@@ -270,48 +286,67 @@ export default {
           },
           beforeSend: function(XHR) {
               self.wfloading = true;
-              console.log("ajax wfloading true!" + self.runTestcases[self.curRunningId]['testcase']);
           },
           success: function(data) {
-              console.log("ajax run test case success!");
-              self.wfloading = false;
-              console.log("ajax wfloading false!" + self.runTestcases[self.curRunningId]['testcase']);
-              self.workflowId = data['result']['workflowId'];
-              $.ajax({
-                  url: self.global.SERVER_ADDR + "story-content",
-                  method: "GET",
-                  data: {
-                      "service":  self.sname,
-                      "story": self.runTestcases[self.curRunningId]['testcase']
-                  },
-                  success: function(data) {
-                      if(data['code'] == 200) {
-                          self.wfJson = data['result']['content'];
+              if(data['code'] == 200) {
+                  self.workflowId = data['result']['workflowId'];
+                  $.ajax({
+                      url: self.global.SERVER_ADDR + "story-content",
+                      method: "GET",
+                      data: {
+                          "service":  self.sname,
+                          "story": self.runTestcases[self.curRunningId]['testcase']
+                      },
+                      success: function(data) {
+                          if(data['code'] == 200) {
+                              self.wfJson = data['result']['content'];
+                          } else {
+                            showMessage(data['code'], msgTitle, "workflow.json get failed!");
+                          }
+                      },
+                      error: function(obj, status, msg) {
+                        showMessage(status, msgTitle, msg);
                       }
-                  }
-              });
+                  });
+              } else {
+                var i = self.curRunningId;
+                self.runTestcases[i]['status'] = "failed";
+                self.wfloading = false;
+                showMessage(data['code'], msgTitle, "Failed to run <strong>" + self.runTestcases[i]['testcase'] + "</strong>", data['error']);
+              } 
+          },
+          error: function(obj, status, msg) {
+            var i = self.curRunningId;
+            self.runTestcases[i]['status'] = "failed";
+            self.wfloading = false;
+            showMessage(status, msgTitle, "Failed to run <strong>" + self.runTestcases[i]['testcase'] + "</strong>", msg);
           }
       });
     },
     statusClass: function(status) {
       if(status == "waiting") {
-        return "text-primary";
+        return "success";
       }
       if(status == "running") {
-        return "text-warning";
+        return "warning";
       }
       if(status == "pass") {
-        return "text-success";
+        return "primary";
       }
       if(status == "failed") {
-        return "text-danger";
+        return "danger";
       }
+    },
+    runNextCase: function(obj) {
+      $(obj).parent().css({"display": "none"});
+      var i = this.curRunningId++;
+      this.runOneTestcase();
     }
   },
   watch: {
     wfComplete: function(val) {
-      console.log("################# wfCompelete change:" + val + "  " + this.curRunningId);
       if(val == false) return;
+      this.wfloading = false;
       var i = this.curRunningId++;
       this.runTestcases[i]['status'] = "pass";
       this.runOneTestcase();

@@ -7,7 +7,12 @@
       </div>
     </div>      
 	<div class="col-md-8" id="graph-show-section" style="">
-	  <div v-show="!wfloading" id="workflow-graph" style="margin-top: 10px;">
+	  <div v-show="!wfloading" style="margin-top: 10px;">
+	  	<div style="min-height: 30px; text-align: right;">
+	  		<button v-show="workflowId != '' && !wfCompletedFlag" class="btn" v-on:click="completeWF(1)" title="mark the status 'complete' by hand.">mark it <strong>complete</strong></button>
+	  	</div>
+	  	<div id="workflow-graph">
+	  	</div>
 	  </div>
 	  <div v-show="wfloading" class="spiner-example" id="loading">
 	    <div class="sk-spinner sk-spinner-three-bounce">
@@ -72,11 +77,6 @@ export default {
 			this.initialPaintWFGraph();
 			var self = this;
 		  	self.timer = window.setInterval(function() {
-			    if(self.wfCompletedFlag) {
-			      // console.log("#####################################clean the interval" + self.timer);
-			      // window.clearInterval(self.timer);
-			      // getWFOutput();
-			    }
 			    if(!self.initalPaintFlag) {
 			      if(self.responseTimeCounter > self.RESPONSE_TIME_LIMIT) {
 			        self.initialPaintWFGraph();
@@ -108,19 +108,11 @@ export default {
 			var self = this;
 			 if (iframe.attachEvent) {
 			   iframe.attachEvent("onload", function(){
-			     window.setTimeout(function(){
-			        self.frameLoadedFlag = true;
-			        self.initialPaint();
-			        console.log("finish to initial paint");
-			     }, 1000);
+			     self.initialPaint();
 			   });
 			 } else {
-			  iframe.onload = function(){
-			    window.setTimeout(function(){
-			        self.frameLoadedFlag = true;
-			        self.initialPaint();
-			        console.log("finish to initial paint");
-			     }, 1000);
+			   iframe.onload = function(){
+			     self.initialPaint();
 			   }
 			 }
 		},
@@ -131,12 +123,7 @@ export default {
 		     iframeContainer.removeChild(iframeDiv);
 		 }
 		 var apiPrefix = this.global.WF_GRAPH_ADDR + "#/workflow/id/";
-		 // var wfConfigDiv = document.getElementById("workflowId");
-		 // var inputArr = wfConfigDiv.getElementsByTagName("input");
-		 // var idElem = inputArr[0];
-		 // var workflowId = idElem.getAttribute("value");
 		 var apiUrl = apiPrefix + this.workflowId;
-		 // console.log("workflowId input:" + workflowId);
 		 console.log("workflowId prop:" + this.workflowId);
 		 var iframeDiv = "<iframe id=\"testFrame\" width=\"0\" height=\"0\" style=\"border: none;\" src=\"" + apiUrl + "\"></iframe>";
 		 iframeContainer.innerHTML = iframeDiv;
@@ -145,21 +132,33 @@ export default {
 		},
 		initialPaint: function() {
 		  var iframe = document.getElementById("testFrame");
-		  var content = iframe.contentWindow.document.getElementById("graph-ui-content").cloneNode(true); 
+		  var frameContent = iframe.contentWindow.document.getElementById("graph-ui-content");
+		  if(frameContent == null) return;
+
+		  this.frameLoadedFlag = true;
+		  var content = frameContent.cloneNode(true); 
 		  content.id = "graph-ui-content-1";
 		  var graphDiv = document.getElementById("workflow-graph");
 		  graphDiv.appendChild(content); 
 
 		  this.initalPaintFlag = true;
+		  this.wfloading = false;
+		  console.log("####################wfloading   false######################");
 		},
 		repaint: function() {
 			 var iframe = document.getElementById("testFrame");
-			 var newContent = iframe.contentWindow.document.getElementById("graph-ui-content").cloneNode(true); 
+			 var frameContent = iframe.contentWindow.document.getElementById("graph-ui-content");
+			 if(frameContent == null) return;
+
+			 this.frameLoadedFlag = true;
+			 var newContent = frameContent.cloneNode(true); 
 			 var newNodes = newContent.getElementsByClassName("node");
 			 
 			 var oldContent = document.getElementById("graph-ui-content-1");
 			 var oldNodes = oldContent.getElementsByClassName("node");
 			 
+			 var completeText = iframe.contentWindow.document.getElementsByClassName("ui-content")[0].getElementsByTagName("h4")[0].getElementsByTagName("span")[3].innerHTML;
+
 			 if(newNodes.length > oldNodes.length) {
 			  console.log("execute in new > old");
 			    newContent.id = "graph-ui-content-1";
@@ -186,13 +185,10 @@ export default {
 			      if(oldTextStyle != newTextStyle) {
 			        oldText.setAttribute("style", newTextStyle);
 			      }
-			      if(i == (newNodes.length - 1) && newGraphStyle == 'stroke: #48a770; fill: #48a770') {
-			          this.wfCompletedFlag = true;
-			          console.log("#####################################completed: clean the interval  " + this.timer);
-			          window.clearInterval(this.timer);
-			          this.$emit("wfComplete", true);
-			      }
 			    } 
+			    if(completeText == "COMPLETED") {
+			        this.completeWF(5);
+			    }
 			 }
 			 else {
 			  	console.log("execute in new < old");
@@ -204,19 +200,22 @@ export default {
 		 var self = this;
 		 if (iframe.attachEvent) {
 		   iframe.attachEvent("onload", function(){
-		     window.setTimeout(function(){
-		        self.frameLoadedFlag = true;
-		        self.repaint();
-		     }, 1000);
+		     self.repaint();
 		   });
 		 } else {
-		  iframe.onload = function(){
-		    window.setTimeout(function(){
-		        self.frameLoadedFlag = true;
-		        self.repaint();
-		     }, 1000);
-		   }
+		   iframe.onload = function(){
+		  	 self.repaint();
+		  }
 		 } 
+		},
+		completeWF: function(delay) {
+			this.wfCompletedFlag = true;
+	        console.log("#####################################completed: clean the interval  " + this.timer);
+	        window.clearInterval(this.timer);
+	        var self = this;
+	        window.setTimeout(function() {
+	          self.$emit("wfComplete", true);
+	        }, delay*1000);
 		},
 		fillWfContent: function(wfContent) {
 			var contentDiv = document.getElementById("workflow-content");

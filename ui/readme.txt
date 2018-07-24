@@ -6,4 +6,4 @@
 1.命令行进入项目目录
 2.npm install .
 3.编译：npm run dev
-4.浏览器输入：localhost:8080
+4.浏览器输入：localhost:5311

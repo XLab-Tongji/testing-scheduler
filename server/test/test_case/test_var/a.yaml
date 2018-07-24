@@ -1,0 +1,21 @@
+schema:
+  steps:
+  - id: 1
+    name: aaa
+    service:
+      name: greet
+      interface: switch
+    action: start
+    args: {}
+  - id: 2
+    name: c
+    service:
+      name: greet
+      interface: switch
+    action: start
+    args: {}
+  flows:
+  - name: main
+    orders:
+    - type: normal
+      step: 1

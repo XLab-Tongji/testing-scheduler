@@ -55,6 +55,8 @@
 </template>
 <script>
 import service_api from "./service_api.vue";
+import showMessage from '../message/showMessage.js'
+
 export default {
 	props: ['type'],
     data: function() {
@@ -71,8 +73,6 @@ export default {
         type: {
             handler: function(newVal, oldVal) {
                 console.log("###########type is changed!");
-                console.log(oldVal);
-                console.log(newVal);
                 if(newVal.content) {
                    var content = newVal.content;
                    this.ip =  content.ip;
@@ -93,8 +93,6 @@ export default {
             this.apis.push(newApi);
         },
         removeApi: function(name) {
-            console.log("remove get!");
-            console.log(name);
             for(var i = 0; i < this.apis.length; i++) {
                 if(name == this.apis[i]['name']) {
                     this.apis.splice(i, 1);
@@ -102,6 +100,17 @@ export default {
             }
         },
         save: function() {
+            if(this.ip == "") {
+                showMessage("warning", "SERVICE", "ip is not filled!");
+                return;
+            } else if (this.port == "") {
+                showMessage("warning", "SERVICE", "port is not filled!");
+                return;
+            } else if (this.type.service == "") {
+                showMessage("warning", "SERVICE", "service name is not filled!");
+                return;
+            }
+
             if(this.type.edit == true) {
                 this.saveEdition();
             } else {
@@ -111,10 +120,10 @@ export default {
             $("#myModal").modal("hide");
         },
         saveEdition: function() {
-            console.log("save edit!!!");
             var self = this;
+            var msgTitle = "SAVE -- SERVICE";
             $.ajax({
-                url: this.global.SERVER_ADDR + "editService",
+                url: this.global.SERVER_ADDR + "env/editService",
                 method: "post",
                 data: {
                     "oldName": 	self.type.originName,
@@ -124,7 +133,14 @@ export default {
                     "apis": 	JSON.stringify(self.apis),
                 },
                 success: function(data) {
-                    console.log("#############success edit");
+                    if(data['code'] == 200) {
+                        showMessage("success", msgTitle, "Save service <strong>" + self.type.service + "</strong> successfully!");
+                    } else {
+                        showMessage(data['code'], msgTitle, "Failed to save service <strong>" + self.type.service + "</strong>!", data['error']);
+                    }
+                },
+                error: function() {
+                    showMessage("error", msgTitle, "Failed to save service <strong>" + self.type.service + "</strong>!", msg);
                 }
             });
             var edition = {
@@ -136,8 +152,9 @@ export default {
         saveCreation: function() {
             console.log("save creation!!!");
             var self = this;
+            var msgTitle = "CREATE -- SERVICE";
             $.ajax({
-                url: this.global.SERVER_ADDR + "createService",
+                url: this.global.SERVER_ADDR + "env/createService",
                 method: "post",
                 data: {
                     "name": self.type.service,
@@ -146,7 +163,16 @@ export default {
                     "apis": JSON.stringify(self.apis)
                 },
                 success: function(data) {
-                    console.log("#############success create");
+                    if(data['code'] == 200) {
+                        showMessage("success", msgTitle, "Create <strong>"+ self.type.service + "</strong> successfully!");
+                    } else {
+                        showMessage(data['code'], msgTitle, "Failed to create service <strong>" + self.type.service + "</strong>!", data['error']);
+                        self.$emit("creation-fail", self.type.service);
+                    }
+                },
+                error: function() {
+                    showMessage("error", msgTitle, "Failed to create service <strong>" + self.type.service + "</strong>!", msg);
+                    self.$emit("creation-fail", self.type.service);
                 }
             });
             this.$emit("service-creation", this.type.service);

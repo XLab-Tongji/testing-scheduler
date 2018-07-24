@@ -6,7 +6,7 @@
 	      <li><router-link to="/">Test Suites</router-link></li>
 	      <li><router-link to="/result">Test Results</router-link></li>
 	      <li><router-link to="/report">Reports</router-link></li>
-	      <li><router-link to="/environment">Enviroments</router-link></li>
+	      <li><router-link to="/environment">Environments</router-link></li>
 	    </ul>
 	</div>
     <router-view/>

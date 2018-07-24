@@ -9,15 +9,15 @@
         </ol>
       </div>
     </div>
-    <div id="p2_content1" style="" class="row">
+    <div id="page-content" class="row">
       <div class="col-lg-8">
         <div class="ibox">
             <div class="ibox-title">
                 <h5 style="font-size:26px;margin-top: -3px;">Test Suite</h5>
                 <div class="ibox-tools">
                     <button class="btn btn-info btn-sm my-button-sm" type="button" v-on:click="runTestsuites()">Run</button>
-                    <button class="btn btn-success btn-sm my-button-sm" type="button" v-on:click="create()">Create</button>
-                    <button class="btn btn-danger btn-sm my-button-sm" v-on:click="deletestory()" type="button">Delete</button>
+                    <button class="btn btn-success btn-sm my-button-sm" type="button" v-on:click="createSuite()">Create</button>
+                    <button class="btn btn-danger btn-sm my-button-sm" v-on:click="deleteSuites()" type="button">Delete</button>
                     <a class="collapse-link">
                         <i class="fa fa-chevron-up"></i>
                     </a>
@@ -30,21 +30,21 @@
               <table class="my-table table table-bordered" cellspacing="0" cellpadding="0" style="text-align: center;">
                 <thead>
                   <tr>
-                    <td class="checkbox1" style="width:20px"><input type="checkbox" v-model="selectAll"> All</td>
+                    <td style="width:20px"><input type="checkbox" v-model="selectAll"> All</td>
                     <td class="smallbox" style="with:250px;">TestSuite Name</td>
                   </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="story in storys">
-                      <td><input class="checkbox1" style="width:20px" type="checkbox" v-model="selected" :value="story.testsuite"> </td>
-                      <td class="smallbox" style="with:250px;"><router-link :to="{ path: '/stories', query: { name: story.testsuite }}" >{{story.testsuite}}</router-link></td>
+                    <tr v-for="testsuite in testsuites">
+                      <td><input style="width:20px" type="checkbox" v-model="selected" :value="testsuite.testsuite"> </td>
+                      <td class="smallbox" style="with:250px;"><router-link :to="{ path: '/testcase', query: { name: testsuite.testsuite }}" >{{testsuite.testsuite}}</router-link></td>
 
                     </tr>
                 </tbody>
                 <tfoot id="create-box" style="display: none">
                     <tr>
-                      <td class="checkbox1" style="width:20px"><input type="checkbox"> </td>
-                      <td class="smallbox" style="with:250px;"><input type="text" v-model="newstory" @keydown.enter="additem" ></td>
+                      <td style="width:20px"><input type="checkbox"> </td>
+                      <td class="smallbox" style="with:250px;"><input type="text" v-model="newSuite" @keydown.enter="addItem" ></td>
                     </tr>
                 </tfoot>
               </table>                
@@ -79,13 +79,20 @@
                               <th class="text-center">#</th>
                               <th class="text-center">testcase</th>
                               <th class="text-center">status</th>
+                              <th class="text-center">operation</th>
                             </tr>
                           </thead>
                           <tbody>                   
                             <tr v-for="testcase in casesInSuite">
                               <td>{{ testcase.id }}</td>
                               <td>{{ testcase.testcase }}</td>
-                              <td v-bind:class="statusClass(testcase.status)">{{ testcase.status }}</td>
+                              <td><span class="badge" v-bind:class="'badge-' + statusClass(testcase.status)">{{ testcase.status }}</span></td>
+                              <td>
+                              <div style="display: inline-block;min-width: 130px;">
+                                <button class="btn btn-primary btn-outline btn-xs fadeIn" v-on:click="runTestcase()" v-show="testcase.status == 'failed'">rerun</button>
+                                <button class="btn btn-primary btn-outline btn-xs fadeIn" v-on:click="runNextCase($event.target)" v-show="testcase.status == 'failed'">run next one</button>
+                              </div>
+                              </td>
                             </tr>
                           </tbody>
                         </table>
@@ -112,8 +119,8 @@ export default {
   name: 'testsuite',
   data () {
     return {
-      newstory : '',
-      storys : '',
+      newSuite : '',
+      testsuites : '',
       service_selected : '',
       workflowId: '',
       wfloading: false,
@@ -130,28 +137,34 @@ export default {
   },
   created: function() {
     var self = this;
+    var msgTitle = "GET -- TESTSUITES";
+    var errorInfo = "Failed to get testsuite list.";
     $.ajax({
       url: this.global.SERVER_ADDR + "testsuite/list",
       method:"GET",
       data:{},
       success:function (data) {
         if(data['code'] == 200) {
-          self.storys = data['result'];
-
+          self.testsuites = data['result'];
+        } else {
+          showMessage(data['code'], msgTitle, errorInfo, data['error']);
         }
+      },
+      error: function(obj, status, msg) {
+        showMessage(status, msgTitle, errorInfo, msg);
       }
     });
   },
   computed: {
     selectAll: {
       get: function () {
-        return this.storys ? this.selected.length == this.storys.length : false;
+        return this.testsuites ? this.selected.length == this.testsuites.length : false;
       },
       set: function (value) {
         var selected = [];
 
         if (value) {
-          this.storys.forEach(function (story) {
+          this.testsuites.forEach(function (story) {
             selected.push(story.testsuite);
           });
         }
@@ -160,28 +173,35 @@ export default {
     }
 },
   methods:{
-    create: function () {
+    createSuite: function () {
       var cbox = document.getElementById("create-box");
       cbox.style.display = "table-footer-group";
     },
-    additem: function () {
+    addItem: function () {
       var self = this;
-      const  storytext = self.newstory.trim()
-      if(storytext)
+      const suiteName = self.newSuite.trim();
+      if(suiteName)
       {
+        var msgTitle = "CREATE -- TESTSUITE";
         $.ajax({
           url: this.global.SERVER_ADDR + "testsuite/new",
-          method:"GET",
+          method:"POST",
           data:{
-            suiteName:storytext
+            suiteName:suiteName
           },
           success:function(data){
             if(data['code'] == 200){
-              self.storys.push({
-                id: self.storys.length + 1 ,
-                testsuite: storytext,
-              })
+              self.testsuites.push({
+                id: self.testsuites.length + 1 ,
+                testsuite: suiteName,
+              });
+              showMessage(data['code'], msgTitle, "Create <strong>" + suiteName + "</strong> succesfully!");
+            } else {
+              showMessage(data['code'], msgTitle, "Failed to create <strong>" + suiteName + "</strong>!", data['error']);
             }
+          },
+          error: function(obj, status, msg) {
+            showMessage(status, msgTitle, "Failed to create <strong>" + suiteName + "</strong>!", msg);
           }
         })
 
@@ -189,37 +209,50 @@ export default {
 
       var cbox = document.getElementById("create-box");
       cbox.style.display = "none";
-      this.newstory = '';
+      this.newSuite = '';
     },
-    deletestory:function () {
-
+    deleteSuites:function () {
       var self = this;
-      for(var n in self.selected)
+      var msgTitle = "DELETE -- TESTSUITE";
+      var deleteArr = self.selected.slice(0);
+      self.testsuites = self.testsuites.filter(item => {
+          for(var i in deleteArr) {
+            if(item.testsuite == deleteArr[i]) {
+              return false;
+            }
+          }
+          return true;
+      });
+      self.selected = [];
+      for(var i in deleteArr)
       {
-        // alert(self.selected[n]);
         $.ajax({
           url: this.global.SERVER_ADDR + "testsuite/delete",
-          method:"GET",
+          method:"POST",
           data:{
-            suiteName: self.selected[n]
+            suiteName: deleteArr[i]
           },
           success:function (data) {
             if(data['code'] == 200){
-              self.storys = self.storys.filter(story => {
-                return story.testsuite !== self.selected[n];
-              })
+              showMessage(data['code'], msgTitle, "Delete <strong>" + deleteArr[i] + "</strong> succesfully!");
+            } else {
+              showMessage(data['code'], msgTitle, "Failed to delete <strong>" + deleteArr[i] + "</strong>!", data['error']);
             }
+          },
+          error: function(obj, status, msg) {
+            showMessage(status, msgTitle, "Failed to delete <strong>" + deleteArr[i] + "</strong>!", msg);
           }
         });
       }
     },
     runTestsuites: function() {
       var self = this;
+      var msgTitle = "RUN -- TESTSUITE";
       if(self.selected.length == 0) {
-        showMessage("warning", "run testsuite", "please select one!");
+        showMessage("warning", msgTitle, "please select one!");
         return;
       } else if(self.selected.length != 1) {
-        showMessage("warning", "run testsuite", "sorry, one suite at a time!");
+        showMessage("warning", msgTitle, "sorry, one suite at a time!");
         return;
       }
 
@@ -233,24 +266,31 @@ export default {
         success: function(data) {
           if (data['code'] == 200) {
             var caseList = data['result'];
+            if(caseList.length == 0) {
+              showMessage("info", msgTitle, "<strong>" + self.running.suiteName + "</strong> is empty!");
+              return;
+            }
             for(var i=0; i < caseList.length; i++) {
               caseList[i]['status'] = "waiting";
             }
             self.casesInSuite = caseList;
-            showMessage("info", "run testsuite", "start to run <strong>" + self.running.suiteName + "</strong>");
+            showMessage(data['code'], msgTitle, "Start to run <strong>" + self.running.suiteName + "</strong>");
             self.runTestcase();
-          }
-          
+          } else {
+            showMessage(data['code'], msgTitle, "Failed to run <strong>" + self.running.suiteName + "</strong>", data['error']);
+          }        
+        },
+        error: function(obj, status, msg) {
+          showMessage(status, msgTitle, "Failed to run <strong>" + self.running.suiteName + "</strong>", msg);
         }
       });
    
     },
     runTestcase: function() {
-        console.log("######################################## runTestcase!" + this.curRunningId);
         var self = this;
+        var msgTitle = "RUN -- TESTCASE";
         if (self.curRunningId == self.casesInSuite.length) {
           self.curRunningId = 0;
-          console.log("######################################## run at end!");
           return;
         }
         self.wfComplete = false;
@@ -266,49 +306,68 @@ export default {
           },
           beforeSend: function(XHR) {
               self.wfloading = true;
-              console.log("ajax wfloading true!" + self.running.caseName);
           },
           success: function(data) {
-              console.log("ajax run test case success!");
-              self.wfloading = false;
-              console.log("ajax wfloading false!" + self.running.caseName);
-              self.workflowId = data['result']['workflowId'];
-              $.ajax({
-                  url: self.global.SERVER_ADDR + "story-content",
-                  method: "GET",
-                  data: {
-                      "service":  self.running.suiteName,
-                      "story": self.running.caseName
-                  },
-                  success: function(data) {
-                      if(data['code'] == 200) {
-                          self.wfJson = data['result']['content'];
-                      }
-                  }
-              });
+              if(data['code'] == 200) {
+                self.workflowId = data['result']['workflowId'];
+                $.ajax({
+                    url: self.global.SERVER_ADDR + "story-content",
+                    method: "GET",
+                    data: {
+                        "service":  self.running.suiteName,
+                        "story": self.running.caseName
+                    },
+                    success: function(data) {
+                        if(data['code'] == 200) {
+                            self.wfJson = data['result']['content'];
+                        } else {
+                            showMessage(data['code'], msgTitle, "workflow.json get failed!");
+                        }
+                    },
+                    error: function(obj, status, msg) {
+                      showMessage(status, msgTitle, msg);
+                    }
+                });
+              } else {
+                var i = self.curRunningId;
+                self.casesInSuite[i]['status'] = "failed";
+                self.wfloading = false;
+                showMessage(data['code'], msgTitle, "Failed to run <strong>" + self.running.caseName + "</strong>", data['error']);
+              }
+          },
+          error: function(obj, status, msg) {
+            var i = self.curRunningId;
+            self.casesInSuite[i]['status'] = "failed";
+            self.wfloading = false;
+            showMessage(status, msgTitle, "Failed to run <strong>" + self.running.caseName + "</strong>", msg);
           }
         });
 
     },
     statusClass: function(status) {
       if(status == "waiting") {
-        return "text-primary";
+        return "success";
       }
       if(status == "running") {
-        return "text-warning";
+        return "warning";
       }
       if(status == "pass") {
-        return "text-success";
+        return "primary";
       }
       if(status == "failed") {
-        return "text-danger";
+        return "danger";
       }
+    },
+    runNextCase: function(obj) {
+      $(obj).parent().css({"display": "none"});
+      var i = this.curRunningId++;
+      this.runTestcase();
     }
   },
   watch: {
     wfComplete: function(val) {
-      console.log("################# wfCompelete change:" + val + "  " + this.curRunningId);
       if(val == false) return;
+      this.wfloading = false;
       var i = this.curRunningId++;
       this.casesInSuite[i]['status'] = "pass";
       this.runTestcase();

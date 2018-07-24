@@ -13,8 +13,7 @@ import yaml
 import traceback
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-#TESTSUITE_DIR = os.path.join(BASE_DIR, "..", "..", "test", "test_case")
-TESTSUITE_DIR = os.path.join(BASE_DIR, "..", "..", "test", "new_tc")
+TESTSUITE_DIR = os.path.join(BASE_DIR, "..", "..", "test", "test_case")
 SERVICE_DIR = os.path.join(BASE_DIR, "..", "env")
 app = Flask(__name__)
 CORS(app)
@@ -27,23 +26,21 @@ def hello():
 	return "Hello, World! This is a greet from parser." + SERVICE_DIR
 
 @app.route("/execute/testcase", methods=['POST'])
-def runTestStory():
-  notice = "if you see this, and cannot solve the problem by the error message, please contact me."
-  
+def runTestcase():
   suiteName = request.values.get('suiteName')
   caseName = request.values.get('caseName')
   try:
-    # baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_case")
-    baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "new_tc")
-    casePath = os.path.join(baseTestDir, suiteName, caseName)
+    casePath = os.path.join(TESTSUITE_DIR, suiteName, caseName)
     if os.path.exists(casePath):
       workflowId = test_parser.parse(casePath)
+      if workflowId == None or workflowId == '':
+        return jsonify({"code": 500, "error": "Server Error."})
       return jsonify({"code": 200, "result": {"workflowId": workflowId}})
     else:
-      return jsonify({"code": 300, "error": "no such test case!%s"%(casePath)})
+      return jsonify({"code": 300, "error": "no such test case:  %s"%(os.path.join(suiteName, caseName))})
   except BaseException, e:
     app.logger.debug(traceback.format_exc())
-    return jsonify({"code": 500, "notice": notice, "error": e.message, "detail error message": repr(e)})
+    return jsonify({"code": 500, "error": e.message})
 
 
 @app.route("/story-content")
@@ -65,7 +62,6 @@ def getStoryContent():
 def getAllSuite():
   res = []
   id = 1
-  notice = "if you see this, and cannot solve the problem by the error message, please contact me."
   try:
     for fileName in os.listdir(TESTSUITE_DIR):
       suiteInfo = {}
@@ -74,7 +70,7 @@ def getAllSuite():
       res.append(suiteInfo)
       id = id + 1
   except BaseException, e:
-    return jsonify({"code": 500, "notice": notice, "error": e.message, "detail error message": repr(e)})
+    return jsonify({"code": 500, "error": e.message})
  
   return jsonify({"code": 200, "result": res}) 
 
@@ -82,7 +78,6 @@ def getAllSuite():
 def getSuiteContent():
   res = []
   id = 1
-  notice = "if you see this, and cannot solve the problem by the error message, please contact me."
   try:
     suiteName = request.values.get("suiteName")
     exSuitePath = os.path.join(TESTSUITE_DIR, suiteName)
@@ -96,7 +91,7 @@ def getSuiteContent():
     else:
        return jsonify({"code": 300, "error": "no such test suite!"})
   except BaseException, e:
-    return jsonify({"code": 500, "notice": notice, "error": e.message, "detail error message": repr(e)})
+    return jsonify({"code": 500, "error": e.message})
   
   return jsonify({"code": 200, "result": res})
 
@@ -104,7 +99,6 @@ def getSuiteContent():
 def getTCContent():
   res = ""
   editorRes = ""
-  notice = "if you see this, and cannot solve the problem by yourself, please contact me."
   try:
     suiteName = request.values.get("suiteName")
     caseName = request.values.get("caseName")
@@ -121,32 +115,30 @@ def getTCContent():
   except BaseException, e:
     app.logger.debug("exception! tc content!")
     app.logger.debug(traceback.format_exc())
-    return jsonify({"code": 500, "notice": notice,"error": e.message, "detail error message": repr(e)})   
+    return jsonify({"code": 500, "error": e.message})   
   
   return jsonify({"code": 200, "result": {"content": res, "editorContent": editorRes}})
 
-@app.route("/testsuite/new")
+@app.route("/testsuite/new", methods=['POST'])
 def addNewSuite():
   res = []
   id = 1
-  notice = "if you see this, and cannot solve the problem by the error message, please contact me."
   try:
     suiteName = request.values.get("suiteName")
     for fileName in os.listdir(TESTSUITE_DIR):
       if fileName == suiteName:
-        return jsonify({"code": 300, "error": "testsuite has existed!"})
+        return jsonify({"code": 300, "error": "testsuite already exists!"})
     testSuitePath = os.path.join(TESTSUITE_DIR, suiteName)
     os.mkdir(testSuitePath)
   except BaseException, e:
-    return jsonify({"code": 500, "notice": notice, "error": e.message, "detail error message": repr(e)})
+    return jsonify({"code": 500, "error": e.message})
  
   return jsonify({"code": 200, "result": "ok"}) 
 
-@app.route("/testsuite/delete")
+@app.route("/testsuite/delete", methods=['POST'])
 def deleteSuite():
   res = []
   id = 1
-  notice = "if you see this, and cannot solve the problem by the error message, please contact me."
   try:
     suiteName = request.values.get("suiteName")
     for fileName in os.listdir(TESTSUITE_DIR):
@@ -156,7 +148,7 @@ def deleteSuite():
         os.rmdir(testSuitePath)
         return jsonify({"code": 200, "result": "ok"})
   except BaseException, e:
-    return jsonify({"code": 500, "notice": notice, "error": e.message, "detail error message": repr(e)})
+    return jsonify({"code": 500, "error": e.message})
  
   return jsonify({"code": 300, "error": "no such testsuite!"})
  
@@ -168,11 +160,10 @@ def del_file(path):
     else:
       del_file(path_file)
 
-@app.route("/testcase/new")
+@app.route("/testcase/new", methods=['POST'])
 def createTestcase():
   res = []
   id = 1
-  notice = "if you see this, and cannot solve the problem by the error message, please contact me."
   try:
     suiteName = request.values.get("suiteName")
     caseName = request.values.get("caseName")
@@ -180,21 +171,20 @@ def createTestcase():
     if os.path.exists(exSuitePath):
        for fileName in os.listdir(exSuitePath):
          if fileName == caseName:
-           return jsonify({"code": 301, "error": "testcase has existed!"})
+           return jsonify({"code": 301, "error": "testcase already exists!"})
        casePath = os.path.join(exSuitePath, caseName)
        with open(casePath, "w") as f:
          pass
     else:
        return jsonify({"code": 300, "error": "no such test suite!"})
   except BaseException, e:
-    return jsonify({"code": 500, "notice": notice, "error": e.message, "detail error message": repr(e)})
+    return jsonify({"code": 500, "error": e.message})
   
   return jsonify({"code": 200, "result": "ok"})
 
 
-@app.route("/testcase/delete")
+@app.route("/testcase/delete", methods=['POST'])
 def deleteTestcase():
-  notice = "if you see this, and cannot solve the problem by the error message, please contact me."
   try:
     suiteName = request.values.get("suiteName")
     caseName = request.values.get("caseName")
@@ -209,13 +199,12 @@ def deleteTestcase():
     else:
        return jsonify({"code": 300, "error": "no such test suite!"})
   except BaseException, e:
-    return jsonify({"code": 500, "notice": notice, "error": e.message, "detail error message": repr(e)})
+    return jsonify({"code": 500, "error": e.message})
   
 
 @app.route("/testcase/save", methods=["POST"])
 def saveTCContent():
   res = ""
-  notice = "if you see this, and cannot solve the problem by yourself, please contact me."
   try:
     suiteName = request.values.get("suiteName")
     caseName = request.values.get("caseName")
@@ -233,7 +222,8 @@ def saveTCContent():
     else:
       return jsonify({"code": 300, "error": "no such file!"})
   except BaseException, e:
-    return jsonify({"code": 500, "notice": notice,"error": e.message, "detail error message": repr(e)})   
+    app.logger.debug(traceback.format_exc())
+    return jsonify({"code": 500, "error": e.message})   
   
   return jsonify({"code": 200, "result": "save success"})
 
@@ -243,19 +233,17 @@ def saveTCContent():
 @app.route("/service/list")
 def getAllServices():
   res = []
-  notice = "if you see this, and cannot solve the problem by yourself, please contact me."
   try:
     for fileName in os.listdir(SERVICE_DIR):
       serviceName = os.path.splitext(fileName)[0]
       res.append(serviceName)
   except BaseException, e:
-      return jsonify({"code": 500, "notcie": notice, "error": e.message, "detail error message": repr(e)})
+      return jsonify({"code": 500, "error": e.message})
   return jsonify({"code": 200, "result": res})
 
 @app.route("/service/content")
 def getServiceContent():
   res = {}
-  notice = "if you see this, and cannot solve the problem by yourself, please contact me."
   try:
     serviceName = request.values.get("serviceName")
     for fileName in os.listdir(SERVICE_DIR):
@@ -271,7 +259,7 @@ def getServiceContent():
           res["actions"] = apisArr
   except BaseException, e:
     app.logger.debug(traceback.format_exc())
-    return jsonify({"code": 500, "notice": notice, "error": e.message, "detail error message": repr(e)})
+    return jsonify({"code": 500, "error": e.message})
   if res == {}:
     return jsonify({"code": 300, "error": "no such service!"})
 
@@ -292,11 +280,10 @@ def paramTransform(paramDict):
 ###############
 ### 3.2 API FOR ENVIRONMENT SERVICE
 ###########################################################################
-@app.route('/getAllServices')
+@app.route('/env/getAllServices')
 def getAllService():
 	res = []
 	id = 1
-	notice = "if you see this, and cannot solve the problem by yourself, please contact me."
 	try:
 		for fileName in os.listdir(SERVICE_DIR):
 			item = {}
@@ -311,9 +298,8 @@ def getAllService():
 		return jsonify({"code": 500, "error": repr(e)})
 	return jsonify({"code": 200, "result": res})
 
-@app.route('/getService')
+@app.route('/env/getService')
 def getService():
-	notice = "if you see this, and cannot solve the problem by yourself, please contact me."
 	try:
 		serviceName = request.values.get('serviceName')
 		serviceFile = serviceName + '.yaml'
@@ -328,14 +314,13 @@ def getService():
 	except BaseException, e:
 		return jsonify({"code": 500, "error": repr(e)})
 
-@app.route('/createService', methods=['POST'])
+@app.route('/env/createService', methods=['POST'])
 def createService():
 	try:
 		name = str(request.values.get('name'))
 		ip = str(request.values.get('ip'))
 		port = int(request.values.get('port'))
 		apis = json.loads(request.values.get('apis'))
-		app.logger.debug(apis)
 		service = {
 			name: {
 				'ip': ip,
@@ -354,7 +339,7 @@ def createService():
 		return jsonify({"code": 500, "error": repr(e)})
 	return jsonify({"code": 200, "result": "create success!"})
 
-@app.route('/editService', methods=['POST'])
+@app.route('/env/editService', methods=['POST'])
 def editService():
 	try:
 		oldName = str(request.values.get('oldName'))
@@ -387,7 +372,7 @@ def editService():
 		return jsonify({"code": 500, "error": repr(e)})
 	return jsonify({"code": 200, "result": "edit success!"})
 
-@app.route('/deleteService', methods=['POST'])
+@app.route('/env/deleteService', methods=['POST'])
 def deleteService():
 	try:
 		name = str(request.values.get('serviceName'))

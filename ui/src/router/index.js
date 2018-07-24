@@ -14,7 +14,7 @@ export default new Router({
       component: testsuite
     },
     {
-      path: '/stories',
+      path: '/testcase',
       name: 'testcase',
       component: testcase
     },
