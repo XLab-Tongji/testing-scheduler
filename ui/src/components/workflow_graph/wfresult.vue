@@ -108,11 +108,19 @@ export default {
 			var self = this;
 			 if (iframe.attachEvent) {
 			   iframe.attachEvent("onload", function(){
-			     self.initialPaint();
+			     window.setTimeout(function(){
+			        self.frameLoadedFlag = true;
+			        self.initialPaint();
+			        console.log("finish to initial paint");
+			     }, 1000);
 			   });
 			 } else {
 			   iframe.onload = function(){
-			     self.initialPaint();
+			    window.setTimeout(function(){
+			        self.frameLoadedFlag = true;
+			        self.initialPaint();
+			        console.log("finish to initial paint");
+			     }, 1000);
 			   }
 			 }
 		},
@@ -200,11 +208,17 @@ export default {
 		 var self = this;
 		 if (iframe.attachEvent) {
 		   iframe.attachEvent("onload", function(){
-		     self.repaint();
+		     window.setTimeout(function(){
+		        self.frameLoadedFlag = true;
+		        self.repaint();
+		     }, 1000);
 		   });
 		 } else {
-		   iframe.onload = function(){
-		  	 self.repaint();
+		  iframe.onload = function(){
+		    window.setTimeout(function(){
+		        self.frameLoadedFlag = true;
+		        self.repaint();
+		     }, 1000);
 		  }
 		 } 
 		},

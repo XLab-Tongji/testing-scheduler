@@ -5,4 +5,5 @@ COPY ./server .
 
 RUN pip install -r ./python_modules.txt
 EXPOSE 5310
-CMD sh -c 'python ./src/rest/router.py'
+EXPOSE 5312
+CMD sh -c 'python ./src/rest/router.py; python ./src/rest/test_service_demo.py'

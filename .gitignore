@@ -33,4 +33,4 @@
 ##  files in docker directory
 #################################
 /docker/plugin/tmp_files/
-/docekr/ui/dist/
+/docker/ui/dist/

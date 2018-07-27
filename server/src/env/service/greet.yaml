@@ -1,7 +1,7 @@
 ---
 greet:
-  ip: 10.60.38.181
-  port: 5202
+  ip: 127.0.0.1
+  port: 5312
   apis:
     -
       name: greet 
