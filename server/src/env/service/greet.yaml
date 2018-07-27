@@ -1,6 +1,6 @@
 ---
 greet:
-  ip: 127.0.0.1
+  ip: t-scheduler-server
   port: 5312
   apis:
     -
