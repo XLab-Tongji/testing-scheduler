@@ -112,7 +112,6 @@
   </div>
 </template>
 <script>
-import {addClass, removeClass, isContainClass} from '../assets/js/my-util.js'
 import wfresult from './workflow_graph/wfresult.vue'
 import showMessage from './message/showMessage.js'
 export default {
@@ -370,6 +369,7 @@ export default {
       this.wfloading = false;
       var i = this.curRunningId++;
       this.casesInSuite[i]['status'] = "pass";
+      // run the next testcase.
       this.runTestcase();
     }
   },

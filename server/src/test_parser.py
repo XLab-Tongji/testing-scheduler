@@ -127,11 +127,6 @@ def parseWebTestcase(webTestcase):
 		replaceSubflow['orders'] = parseOrderList(subflowItem['orderList'], stepIndexDict, typeDict)
 		parseFlowList.append(replaceSubflow)
 
-	#with open("parseData.json", "w") as f:
-	#	f.write(json.dumps(parseData, indent=True))
-	#with open("parseDataYaml.yaml", "w") as f:
-	#	pyaml.dump(parseData, f, safe=True)
-
 	print 'END parseWebTestcase----------------------------'
 	return parseData
 

@@ -106,13 +106,6 @@ export default {
           workflowId: '',
           wfloading: false,
           wfJson: '',
-          stories: [],
-          services: [
-            'greet',
-            'yardstick',
-            'logic'
-          ],
-          service_selected: '',
           saveSignal: false
       }
     },
@@ -211,7 +204,6 @@ export default {
           });
       },
       async processSaveResponse(result) {
-          
           if(result == true) {
             this.saveSignal = false;
             this.isEditable = false;
@@ -221,9 +213,6 @@ export default {
             this.saveSignal = false;
             this.contentSaving = false;
           }
-      },
-      sleep: function(d) {  
-          return new Promise((resolve) => setTimeout(resolve, d))  
       }
     },
     components: {
