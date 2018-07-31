@@ -4,13 +4,13 @@ This is a description text file about the current directory: **docker**.
 This directory contains the shell scripts which are used to build this project(**testing-scheduler**) as a dockerized application.
 
 # Introduction & Manual
-##0. requirement
+## 0. requirement
 
 - a server host with linux os
 - docker installed on the host 
 - docker-compose installed on the host
 
-##1. docker containers
+## 1. docker containers
 Built by these scripts, the dockerized application will contain 6 containers(1 + 1 + 4). They can be divided as three components:
 
 * 1 server container: server component of **testing-scheduler**.
@@ -25,7 +25,7 @@ Correspondingly, there are three subdirectories in the current directory(**docke
 
 The three subdirectories contains scripts respectively.The scripts (in one subdirectory) are used to build image and start container for single component.
 
-##2. commands
+## 2. commands
 *NOTICE: run these commands under root account or use "sudo" before every command.*
 
 ### 2.1 general build
