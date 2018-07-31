@@ -1,8 +1,16 @@
-################################################
-# date: 2018/4/20
-# spec: test conductor basic logic of switch
+########################################################
+# date: 2018/7/20
 # author: x-lab.Leo
-################################################
+#
+# description: test conductor basic logic of switch
+# switch will determine the next case to execute based
+# on the "value", and "value" can be assigned by the 
+# previous step's output.
+# The testcase below is an example.
+# To referring the step's output, using ((x.y)).
+# x is the id of the step,
+# y is the output key of the step.
+########################################################
 
 ---
 schema:

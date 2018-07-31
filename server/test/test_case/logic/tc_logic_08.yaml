@@ -1,10 +1,10 @@
-################################################
-# date: 2018/4/20
-# spec: test conductor basic logic of parallel.
-# parallel nested in parallel
-# + sub workflow
+#######################################################
+# date: 2018/7/20
 # author: x-lab.Leo
-################################################
+
+# description: test conductor basic logic of parallel.
+# parallel nested in parallel using subflow
+#######################################################
 
 ---
 schema:

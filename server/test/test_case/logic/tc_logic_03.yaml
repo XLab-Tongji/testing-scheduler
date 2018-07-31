@@ -1,8 +1,14 @@
-################################################
-# date: 2018/4/20
-# spec: test useless sub workflow
+########################################################
+# date: 2018/7/20
 # author: x-lab.Leo
-################################################
+
+# description: test useless sub workflow
+# In this testcase, there is a subflow whose name
+# is 'flow-1' which will not be executed because no
+# other flow refers to it.
+# This testcase is used to test that besides main flow,
+# whether subflow can be parsed without exception.
+########################################################
 
 ---
 schema:

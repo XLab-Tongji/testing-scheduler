@@ -1,5 +1,5 @@
 # Brief Introduction
-This folder **server** contains server subproject of the project **testing-scheduler**.
+This folder **server** contains server subproject of the project **testing-scheduler**. 
 
 This server project is developed based on **Python**.
 

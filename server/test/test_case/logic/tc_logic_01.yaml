@@ -1,7 +1,9 @@
 ################################################
-# date: 2018/4/20
-# spec: test step sort
+# date: 2018/7/20
 # author: x-lab.Leo
+#
+# description: test conductor basic logic
+# 5 steps while only 2 in them will be executed.
 ################################################
 
 ---

@@ -1,8 +1,14 @@
-################################################
-# date: 2018/4/20
-# spec: test use param of the context
+######################################################
+# date: 2018/7/20
 # author: x-lab.Leo
-################################################
+
+# description: test use param of the context
+# we can using the context param just like 
+# environment variable by writting ((context.a.b.c)).
+# 'context' is a constant string, 
+# a, b, c is the key in the context yaml file
+# (src/env/context/context.yaml).
+######################################################
 
 ---
 schema:
