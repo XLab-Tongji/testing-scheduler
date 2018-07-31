@@ -7,8 +7,8 @@ This directory contains the shell scripts which are used to build this project(*
 ## 0. requirement
 
 - a server host with linux os
-- docker installed on the host 
-- docker-compose installed on the host
+- **docker** installed on the host 
+- **docker-compose** installed on the host
 
 ## 1. docker containers
 Built by these scripts, the dockerized application will contain 6 containers(1 + 1 + 4). They can be divided as three components:
