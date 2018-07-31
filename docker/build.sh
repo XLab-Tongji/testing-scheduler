@@ -1,8 +1,9 @@
+basepath=$(cd `dirname $0`; pwd)					# get the absolute path of this shell file.
 #build conductor
-sh plugin/build.sh
+sh $basepath/plugin/build.sh
 
 #build server
-sh server/build.sh
+sh $basepath/server/build.sh
 
 #build ui
-sh ui/build.sh
+sh $basepath/ui/build.sh

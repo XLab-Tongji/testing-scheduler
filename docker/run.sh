@@ -1,8 +1,9 @@
+basepath=$(cd `dirname $0`; pwd)					# get the absolute path of this shell file.
 #run conductor containers
-sh plugin/run.sh
+sh $basepath/plugin/run.sh
 
 #run server
-sh server/run.sh
+sh $basepath/server/run.sh
 
 #run ui
-sh ui/run.sh
+sh $basepath/ui/run.sh
