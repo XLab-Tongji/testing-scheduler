@@ -12,16 +12,16 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
         '/wf-graph': {
-            target: 'http://docker_conductor-ui_1:5000/',
+            target: 'http://conductor_conductor-ui_1:5000/',
             changeOrigin: true,
             pathRewrite: {'^/wf-graph':''}
         },
         '/api': {
-            target: 'http://docker_conductor-ui_1:5000/',
+            target: 'http://conductor_conductor-ui_1:5000/',
             changeOrigin: true
         },
         '/wf-server': {
-            target: 'http://docker_conductor-server_1:8080/',
+            target: 'http://conductor_conductor-server_1:8080/',
             changeOrigin: true,
             pathRewrite: {'^/workflow':''}
         },

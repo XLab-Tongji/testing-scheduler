@@ -14,7 +14,7 @@ import sys
 sys.path.append(os.path.join(BASE_DIR, ".."))
 from conductorclient.run_new_workflow import WorkflowMgr
 
-CONDUCTOR_SERVER_ADDR = "http://docker_conductor-server_1:8080"
+CONDUCTOR_SERVER_ADDR = "http://conductor_conductor-server_1:8080"
 STORE_TASK_PATH = BASE_DIR + "/tmp/generate_task.json"
 STORE_WF_PATH = BASE_DIR + "/tmp/generate_workflow.json"
 
