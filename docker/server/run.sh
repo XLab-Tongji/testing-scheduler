@@ -1,4 +1,4 @@
-conductor_network='docker_default'
+conductor_network='conductor_default'
 group="x-lab"
 server_image="$group/testing-scheduler:server"		# server image name
 server_container="t-scheduler-server"				# server container name
