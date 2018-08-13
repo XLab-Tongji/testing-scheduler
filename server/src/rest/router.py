@@ -24,7 +24,7 @@ CORS(app)
 ###########################################################################
 @app.route("/")
 def hello():
-	return "Hello, World! This is a greet from parser." + SERVICE_DIR
+  return "Hello, World! This is a greet from parser." + SERVICE_DIR
 
 @app.route("/execute/testcase", methods=['POST'])
 def runTestcase():
@@ -47,13 +47,13 @@ def runTestcase():
 @app.route("/story-content")
 def getStoryContent():
   try:
-  	story_name = request.args['story']
-  	service_name = request.args['service']
-  	baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_story")
-  	storyFileDir = os.path.join(baseTestDir, service_name, story_name)
-  	storyFileDir = os.path.join(BASE_DIR, "..", "tmp", "generate_workflow.json")
-  	with open(storyFileDir, "r") as f:
-  		storyContent = f.read()
+    story_name = request.args['story']
+    service_name = request.args['service']
+    baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_story")
+    storyFileDir = os.path.join(baseTestDir, service_name, story_name)
+    storyFileDir = os.path.join(BASE_DIR, "..", "tmp", "generate_workflow.json")
+    with open(storyFileDir, "r") as f:
+      storyContent = f.read()
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
@@ -89,14 +89,14 @@ def getSuiteContent():
     suiteName = request.values.get("suiteName")
     exSuitePath = os.path.join(TESTSUITE_DIR, suiteName)
     if os.path.exists(exSuitePath):
-       for fileName in os.listdir(exSuitePath):
-          tcInfo = {}
-          tcInfo["id"] = id
-          tcInfo["testcase"] = fileName
-          res.append(tcInfo)
-          id = id + 1
+      for fileName in os.listdir(exSuitePath):
+        tcInfo = {}
+        tcInfo["id"] = id
+        tcInfo["testcase"] = fileName
+        res.append(tcInfo)
+        id = id + 1
     else:
-       return jsonify({"code": 300, "error": "no such test suite!"})
+      return jsonify({"code": 300, "error": "no such test suite!"})
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
@@ -177,14 +177,14 @@ def createTestcase():
     caseName = request.values.get("caseName")
     exSuitePath = os.path.join(TESTSUITE_DIR, suiteName)
     if os.path.exists(exSuitePath):
-       for fileName in os.listdir(exSuitePath):
-         if fileName == caseName:
-           return jsonify({"code": 301, "error": "testcase already exists!"})
-       casePath = os.path.join(exSuitePath, caseName)
-       with open(casePath, "w") as f:
-         pass
+      for fileName in os.listdir(exSuitePath):
+        if fileName == caseName:
+          return jsonify({"code": 301, "error": "testcase already exists!"})
+      casePath = os.path.join(exSuitePath, caseName)
+      with open(casePath, "w") as f:
+        pass
     else:
-       return jsonify({"code": 300, "error": "no such test suite!"})
+      return jsonify({"code": 300, "error": "no such test suite!"})
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
@@ -199,14 +199,14 @@ def deleteTestcase():
     caseName = request.values.get("caseName")
     exSuitePath = os.path.join(TESTSUITE_DIR, suiteName)
     if os.path.exists(exSuitePath):
-       for fileName in os.listdir(exSuitePath):
-         if fileName == caseName:
-           casePath = os.path.join(exSuitePath, caseName)
-           os.remove(casePath)
-           return jsonify({"code": 200, "result": "ok"})
-       return jsonify({"code": 301, "error": "no such test case!"})
+      for fileName in os.listdir(exSuitePath):
+        if fileName == caseName:
+          casePath = os.path.join(exSuitePath, caseName)
+          os.remove(casePath)
+          return jsonify({"code": 200, "result": "ok"})
+      return jsonify({"code": 301, "error": "no such test case!"})
     else:
-       return jsonify({"code": 300, "error": "no such test suite!"})
+      return jsonify({"code": 300, "error": "no such test suite!"})
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
@@ -248,7 +248,8 @@ def getAllServices():
       serviceName = os.path.splitext(fileName)[0]
       res.append(serviceName)
   except BaseException, e:
-      return jsonify({"code": 500, "error": "Server error"})
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
   return jsonify({"code": 200, "result": res})
 
 @app.route("/service/content")
@@ -282,7 +283,7 @@ def paramTransform(paramDict):
     paramJson["name"] = key
     paramJson["description"] = value["help"]
     if "params" in value:
-       paramJson["params"] = paramTransform(value["params"])
+      paramJson["params"] = paramTransform(value["params"])
     res.append(paramJson)
   return res
 
@@ -293,15 +294,15 @@ def actionResponse():
     serviceName = request.values.get("serviceName")
     actionName = request.values.get("actionName")
     for fileName in os.listdir(SERVICE_DIR):
-        if serviceName == os.path.splitext(fileName)[0]:
-          res["responseParams"] = []
-          filePath = os.path.join(SERVICE_DIR, fileName)
-          with open(filePath, "r") as f:
-            content = yaml.load(f)
-            apisArr = content[serviceName]['apis']
-          for i in range(len(apisArr)):
-            if actionName == apisArr[i]['name'] and ("response" in apisArr[i]):
-                res["responseParams"] = apisArr[i]["response"]
+      if serviceName == os.path.splitext(fileName)[0]:
+        res["responseParams"] = []
+        filePath = os.path.join(SERVICE_DIR, fileName)
+        with open(filePath, "r") as f:
+          content = yaml.load(f)
+          apisArr = content[serviceName]['apis']
+        for i in range(len(apisArr)):
+          if actionName == apisArr[i]['name'] and ("response" in apisArr[i]):
+            res["responseParams"] = apisArr[i]["response"]
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
@@ -341,9 +342,9 @@ def getService():
       with open(servicePath, "r") as f:
         serviceDict = yaml.load(f)
         serviceDict = serviceDict[serviceName]
-      return jsonify({"code": 200, "result": serviceDict})	
+      return jsonify({"code": 200, "result": serviceDict})  
     else:
-      return jsonify({"code": 300, "error": "no such service!"})		
+      return jsonify({"code": 300, "error": "no such service!"})    
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
