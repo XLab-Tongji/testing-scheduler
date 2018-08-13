@@ -443,6 +443,7 @@ def editContext():
     with open(CONTEXT_FILE_DIR, "w") as f:
       f.write(context)
   except yaml.constructor.ConstructorError, e:
+    app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "context content error: not a .yaml file!"})
   except BaseException, e:
     app.logger.error(traceback.format_exc())
