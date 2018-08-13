@@ -40,21 +40,26 @@ def runTestcase():
     else:
       return jsonify({"code": 300, "error": "no such test case:  %s"%(os.path.join(suiteName, caseName))})
   except BaseException, e:
-    app.logger.debug(traceback.format_exc())
-    return jsonify({"code": 500, "error": e.message})
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
 
 
 @app.route("/story-content")
 def getStoryContent():
-	story_name = request.args['story']
-	service_name = request.args['service']
-	baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_story")
-	storyFileDir = os.path.join(baseTestDir, service_name, story_name)
-	storyFileDir = os.path.join(BASE_DIR, "..", "tmp", "generate_workflow.json")
-	with open(storyFileDir, "r") as f:
-		storyContent = f.read()
-	result = {"code": 200, "result": {"service": service_name, "story": story_name, "content": storyContent}}
-	return jsonify(result)
+  try:
+  	story_name = request.args['story']
+  	service_name = request.args['service']
+  	baseTestDir = os.path.join(BASE_DIR, "..", "..", "test", "test_story")
+  	storyFileDir = os.path.join(baseTestDir, service_name, story_name)
+  	storyFileDir = os.path.join(BASE_DIR, "..", "tmp", "generate_workflow.json")
+  	with open(storyFileDir, "r") as f:
+  		storyContent = f.read()
+  except BaseException, e:
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
+
+  result = {"code": 200, "result": {"service": service_name, "story": story_name, "content": storyContent}}
+  return jsonify(result)
 
 ###############
 ### 2. TESTCASE CRUD
@@ -71,7 +76,8 @@ def getAllSuite():
       res.append(suiteInfo)
       id = id + 1
   except BaseException, e:
-    return jsonify({"code": 500, "error": e.message})
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
  
   return jsonify({"code": 200, "result": res}) 
 
@@ -85,14 +91,15 @@ def getSuiteContent():
     if os.path.exists(exSuitePath):
        for fileName in os.listdir(exSuitePath):
           tcInfo = {}
-	  tcInfo["id"] = id
+          tcInfo["id"] = id
           tcInfo["testcase"] = fileName
           res.append(tcInfo)
           id = id + 1
     else:
        return jsonify({"code": 300, "error": "no such test suite!"})
   except BaseException, e:
-    return jsonify({"code": 500, "error": e.message})
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
   
   return jsonify({"code": 200, "result": res})
 
@@ -113,9 +120,8 @@ def getTCContent():
     else:
       return jsonify({"code": 300, "error": "no such file!"})
   except BaseException, e:
-    app.logger.debug("exception! tc content!")
-    app.logger.debug(traceback.format_exc())
-    return jsonify({"code": 500, "error": e.message})   
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})   
   
   return jsonify({"code": 200, "result": {"content": res, "editorContent": editorRes}})
 
@@ -131,7 +137,8 @@ def addNewSuite():
     testSuitePath = os.path.join(TESTSUITE_DIR, suiteName)
     os.mkdir(testSuitePath)
   except BaseException, e:
-    return jsonify({"code": 500, "error": e.message})
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
  
   return jsonify({"code": 200, "result": "ok"}) 
 
@@ -148,7 +155,8 @@ def deleteSuite():
         os.rmdir(testSuitePath)
         return jsonify({"code": 200, "result": "ok"})
   except BaseException, e:
-    return jsonify({"code": 500, "error": e.message})
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
  
   return jsonify({"code": 300, "error": "no such testsuite!"})
  
@@ -178,7 +186,8 @@ def createTestcase():
     else:
        return jsonify({"code": 300, "error": "no such test suite!"})
   except BaseException, e:
-    return jsonify({"code": 500, "error": e.message})
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
   
   return jsonify({"code": 200, "result": "ok"})
 
@@ -199,7 +208,8 @@ def deleteTestcase():
     else:
        return jsonify({"code": 300, "error": "no such test suite!"})
   except BaseException, e:
-    return jsonify({"code": 500, "error": e.message})
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
   
 
 @app.route("/testcase/save", methods=["POST"])
@@ -222,8 +232,8 @@ def saveTCContent():
     else:
       return jsonify({"code": 300, "error": "no such file!"})
   except BaseException, e:
-    app.logger.debug(traceback.format_exc())
-    return jsonify({"code": 500, "error": e.message})   
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})   
   
   return jsonify({"code": 200, "result": "save success"})
 
@@ -238,7 +248,7 @@ def getAllServices():
       serviceName = os.path.splitext(fileName)[0]
       res.append(serviceName)
   except BaseException, e:
-      return jsonify({"code": 500, "error": e.message})
+      return jsonify({"code": 500, "error": "Server error"})
   return jsonify({"code": 200, "result": res})
 
 @app.route("/service/content")
@@ -258,8 +268,8 @@ def getServiceContent():
             apisArr[i].pop("baseuri")
           res["actions"] = apisArr
   except BaseException, e:
-    app.logger.debug(traceback.format_exc())
-    return jsonify({"code": 500, "error": e.message})
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
   if res == {}:
     return jsonify({"code": 300, "error": "no such service!"})
 
@@ -293,119 +303,125 @@ def actionResponse():
             if actionName == apisArr[i]['name'] and ("response" in apisArr[i]):
                 res["responseParams"] = apisArr[i]["response"]
   except BaseException, e:
-    app.logger.debug(traceback.format_exc())
-    return jsonify({"code": 500, "error": e.message})
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
   if res == {}:
     return jsonify({"code": 300, "error": "no such service!"})
   return jsonify({"code": 200, "result": res})
+
 ###############
 ### 3.2 API FOR ENVIRONMENT SERVICE AND CONTEXT
 ###########################################################################
 @app.route('/env/getAllServices')
 def getAllService():
-	res = []
-	id = 1
-	try:
-		for fileName in os.listdir(SERVICE_DIR):
-			item = {}
-			item['id'] = id
-			item['name'] = os.path.splitext(fileName)[0]
-			filePath = os.path.join(SERVICE_DIR, fileName)
-			filemt = time.localtime(os.stat(filePath).st_mtime)  
-			item['time'] = time.strftime("%Y-%m-%d",filemt)  
-			res.append(item)
-			id = id + 1 		
-	except BaseException, e:
-		return jsonify({"code": 500, "error": repr(e)})
-	return jsonify({"code": 200, "result": res})
+  res = []
+  id = 1
+  try:
+    for fileName in os.listdir(SERVICE_DIR):
+      item = {}
+      item['id'] = id
+      item['name'] = os.path.splitext(fileName)[0]
+      filePath = os.path.join(SERVICE_DIR, fileName)
+      filemt = time.localtime(os.stat(filePath).st_mtime)  
+      item['time'] = time.strftime("%Y-%m-%d",filemt)  
+      res.append(item)
+      id = id + 1
+  except BaseException, e:
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
+  return jsonify({"code": 200, "result": res})
 
 @app.route('/env/getService')
 def getService():
-	try:
-		serviceName = request.values.get('serviceName')
-		serviceFile = serviceName + '.yaml'
-		servicePath = os.path.join(SERVICE_DIR, serviceFile)
-		if os.path.exists(servicePath):
-			with open(servicePath, "r") as f:
-				serviceDict = yaml.load(f)
-				serviceDict = serviceDict[serviceName]
-			return jsonify({"code": 200, "result": serviceDict})	
-		else:
-			return jsonify({"code": 300, "error": "no such service!"})		
-	except BaseException, e:
-		return jsonify({"code": 500, "error": repr(e)})
+  try:
+    serviceName = request.values.get('serviceName')
+    serviceFile = serviceName + '.yaml'
+    servicePath = os.path.join(SERVICE_DIR, serviceFile)
+    if os.path.exists(servicePath):
+      with open(servicePath, "r") as f:
+        serviceDict = yaml.load(f)
+        serviceDict = serviceDict[serviceName]
+      return jsonify({"code": 200, "result": serviceDict})	
+    else:
+      return jsonify({"code": 300, "error": "no such service!"})		
+  except BaseException, e:
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
 
 @app.route('/env/createService', methods=['POST'])
 def createService():
-	try:
-		name = str(request.values.get('name'))
-		ip = str(request.values.get('ip'))
-		port = int(request.values.get('port'))
-		apis = json.loads(request.values.get('apis'))
-		service = {
-			name: {
-				'ip': ip,
-				'port': port,
-				'apis': apis
-			}
-		}
-		serviceJson = json.dumps(service, indent=True)
-		app.logger.debug(service)
+  try:
+    name = str(request.values.get('name'))
+    ip = str(request.values.get('ip'))
+    port = int(request.values.get('port'))
+    apis = json.loads(request.values.get('apis'))
+    service = {
+      name: {
+        'ip': ip,
+        'port': port,
+        'apis': apis
+      }
+    }
+    serviceJson = json.dumps(service, indent=True)
+    app.logger.debug(service)
 
-		serviceFile = name + '.yaml'
-		servicePath = os.path.join(SERVICE_DIR, serviceFile)
-		with open(servicePath, 'w') as f:
-			pyaml.dump(service, f, safe=True)
-	except BaseException, e:
-		return jsonify({"code": 500, "error": repr(e)})
-	return jsonify({"code": 200, "result": "create success!"})
+    serviceFile = name + '.yaml'
+    servicePath = os.path.join(SERVICE_DIR, serviceFile)
+    with open(servicePath, 'w') as f:
+      pyaml.dump(service, f, safe=True)
+  except BaseException, e:
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
+  return jsonify({"code": 200, "result": "create success!"})
 
 @app.route('/env/editService', methods=['POST'])
 def editService():
-	try:
-		oldName = str(request.values.get('oldName'))
-		name = str(request.values.get('newName'))
-		ip = str(request.values.get('ip'))
-		port = int(request.values.get('port'))
-		apis = json.loads(request.values.get('apis'))
-		app.logger.debug(apis)
-		service = {
-			name: {
-				'ip': ip,
-				'port': port,
-				'apis': apis
-			}
-		}
-		serviceJson = json.dumps(service, indent=True)
-		app.logger.debug(service)
+  try:
+    oldName = str(request.values.get('oldName'))
+    name = str(request.values.get('newName'))
+    ip = str(request.values.get('ip'))
+    port = int(request.values.get('port'))
+    apis = json.loads(request.values.get('apis'))
+    app.logger.debug(apis)
+    service = {
+      name: {
+        'ip': ip,
+        'port': port,
+        'apis': apis
+      }
+    }
+    serviceJson = json.dumps(service, indent=True)
+    app.logger.debug(service)
 
-		for fileName in os.listdir(SERVICE_DIR):
-			serviceName = os.path.splitext(fileName)[0]
-			if serviceName == oldName:
-				filePath = os.path.join(SERVICE_DIR, fileName)
-				os.remove(filePath)
+    for fileName in os.listdir(SERVICE_DIR):
+      serviceName = os.path.splitext(fileName)[0]
+      if serviceName == oldName:
+        filePath = os.path.join(SERVICE_DIR, fileName)
+        os.remove(filePath)
 
-		serviceFile = name + '.yaml'
-		servicePath = os.path.join(SERVICE_DIR, serviceFile)
-		with open(servicePath, 'w') as f:
-			pyaml.dump(service, f, safe=True)
-	except BaseException, e:
-		return jsonify({"code": 500, "error": repr(e)})
-	return jsonify({"code": 200, "result": "edit success!"})
+    serviceFile = name + '.yaml'
+    servicePath = os.path.join(SERVICE_DIR, serviceFile)
+    with open(servicePath, 'w') as f:
+      pyaml.dump(service, f, safe=True)
+  except BaseException, e:
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
+  return jsonify({"code": 200, "result": "edit success!"})
 
 @app.route('/env/deleteService', methods=['POST'])
 def deleteService():
-	try:
-		name = str(request.values.get('serviceName'))
+  try:
+    name = str(request.values.get('serviceName'))
 
-		for fileName in os.listdir(SERVICE_DIR):
-			serviceName = os.path.splitext(fileName)[0]
-			if serviceName == name:
-				filePath = os.path.join(SERVICE_DIR, fileName)
-				os.remove(filePath)
-	except BaseException, e:
-		return jsonify({"code": 500, "error": repr(e)})
-	return jsonify({"code": 200, "result": "delete success!"})
+    for fileName in os.listdir(SERVICE_DIR):
+      serviceName = os.path.splitext(fileName)[0]
+      if serviceName == name:
+        filePath = os.path.join(SERVICE_DIR, fileName)
+        os.remove(filePath)
+  except BaseException, e:
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
+  return jsonify({"code": 200, "result": "delete success!"})
 
 @app.route('/env/getContext')
 def getContext():
@@ -414,7 +430,8 @@ def getContext():
       fileContent = f.read()
     res = fileContent
   except BaseException, e:
-    return jsonify({"code": 500, "error": repr(e)})
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
   return jsonify({"code": 200, "result": {"context": res}})
 
 @app.route('/env/editContext', methods=['POST'])
@@ -427,12 +444,49 @@ def editContext():
   except yaml.constructor.ConstructorError, e:
     return jsonify({"code": 500, "error": "context content error: not a .yaml file!"})
   except BaseException, e:
-    return jsonify({"code": 500, "error": repr(e)})
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
 
   return jsonify({"code": 200, "result": "edit context success!"})
 ###########################################################################
 
+###############
+### 4 API FOR REGISTER A NEW SERVICE
+###########################################################################
+@app.route('/service/register')
+def registerService():
+  try:
+    name = request.values.get("name")
+    content = request.values.get("content")
+    test = yaml.load(content)
+    serviceFilePath = os.path.join(SERVICE_DIR, name + ".yaml")
+    if os.path.exists(serviceFilePath):
+      return jsonify({"code": 300, "error": "Such service exists! Please change its name."})
+    with open(serviceFilePath, "w") as f:
+      f.write(content)
+  except yaml.constructor.ConstructorError, e:
+    return jsonify({"code": 500, "error": "context content error: not a .yaml file!"})
+  except BaseException, e:
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
+  return jsonify({"code": 200, "result": "success"})
+
+@app.route('/service/file-register')
+def registerServiceByFile():
+  try:
+    filePath = request.values.get("filepath")
+    if os.path.exists(filePath):
+      with open(filePath, "r") as f:
+        content = f.read()
+      (fileDir, serviceName) = os.path.split(filePath)
+      serviceFilePath = os.path.join(SERVICE_DIR, serviceName) 
+      with open(serviceFilePath, "w") as f:
+        f.write(content)
+  except BaseException, e:
+    app.logger.error(traceback.format_exc())
+    return jsonify({"code": 500, "error": "Server error"})
+  return jsonify({"code": 200, "result": "success"})
 
 
 if __name__ == "__main__":
-	app.run(host='0.0.0.0', port=5310, debug=True)
+  app.run(host='0.0.0.0', port=5310)
