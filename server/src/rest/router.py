@@ -121,7 +121,7 @@ def getTCContent():
       return jsonify({"code": 300, "error": "no such file!"})
   except BaseException, e:
     app.logger.error(traceback.format_exc())
-    return jsonify({"code": 500, "error": "Server error"})   
+    return jsonify({"code": 500, "error": "Server error"})
   
   return jsonify({"code": 200, "result": {"content": res, "editorContent": editorRes}})
 
@@ -140,7 +140,7 @@ def addNewSuite():
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
  
-  return jsonify({"code": 200, "result": "ok"}) 
+  return jsonify({"code": 200, "result": "ok"})
 
 @app.route("/testsuite/delete", methods=['POST'])
 def deleteSuite():
@@ -150,7 +150,7 @@ def deleteSuite():
     suiteName = request.values.get("suiteName")
     for fileName in os.listdir(TESTSUITE_DIR):
       if fileName == suiteName:
-        testSuitePath = os.path.join(TESTSUITE_DIR, fileName) 
+        testSuitePath = os.path.join(TESTSUITE_DIR, fileName)
         del_file(testSuitePath)
         os.rmdir(testSuitePath)
         return jsonify({"code": 200, "result": "ok"})
@@ -233,7 +233,7 @@ def saveTCContent():
       return jsonify({"code": 300, "error": "no such file!"})
   except BaseException, e:
     app.logger.error(traceback.format_exc())
-    return jsonify({"code": 500, "error": "Server error"})   
+    return jsonify({"code": 500, "error": "Server error"})
   
   return jsonify({"code": 200, "result": "save success"})
 
@@ -323,8 +323,8 @@ def getAllService():
       item['id'] = id
       item['name'] = os.path.splitext(fileName)[0]
       filePath = os.path.join(SERVICE_DIR, fileName)
-      filemt = time.localtime(os.stat(filePath).st_mtime)  
-      item['time'] = time.strftime("%Y-%m-%d",filemt)  
+      filemt = time.localtime(os.stat(filePath).st_mtime)
+      item['time'] = time.strftime("%Y-%m-%d",filemt)
       res.append(item)
       id = id + 1
   except BaseException, e:
@@ -342,9 +342,9 @@ def getService():
       with open(servicePath, "r") as f:
         serviceDict = yaml.load(f)
         serviceDict = serviceDict[serviceName]
-      return jsonify({"code": 200, "result": serviceDict})	
+      return jsonify({"code": 200, "result": serviceDict})
     else:
-      return jsonify({"code": 300, "error": "no such service!"})		
+      return jsonify({"code": 300, "error": "no such service!"})
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
