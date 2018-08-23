@@ -473,22 +473,6 @@ def registerService():
     return jsonify({"code": 500, "error": "Server error"})
   return jsonify({"code": 200, "result": "success"})
 
-@app.route('/service/file-register')
-def registerServiceByFile():
-  try:
-    filePath = request.values.get("filepath")
-    if os.path.exists(filePath):
-      with open(filePath, "r") as f:
-        content = f.read()
-      (fileDir, serviceName) = os.path.split(filePath)
-      serviceFilePath = os.path.join(SERVICE_DIR, serviceName) 
-      with open(serviceFilePath, "w") as f:
-        f.write(content)
-  except BaseException, e:
-    app.logger.error(traceback.format_exc())
-    return jsonify({"code": 500, "error": "Server error"})
-  return jsonify({"code": 200, "result": "success"})
-
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0', port=5310)
