@@ -1,0 +1,71 @@
+######################################################################
+# date: 2018/9/16
+#
+# this testcase is used to test the loop function.
+# this function is designed to provide 'loop' service outside this
+# test framework itself.
+# which means it will show as an independent service which run in
+# different process(maybe in different host).
+# a loop service yaml definition can be found at: src/env/service/loo-
+# p.yaml.
+#
+# the service contains a core interface: loop. this interface is used
+# to complement a loop for several tasks(which are sent to this servi
+# -ce as REST request body) execution.
+#
+# the service contains another two REST interfaces: stress, reach.
+# which are called at add_stress and bottlenecks_checker in this yaml.
+# 'stress' is used to simulate a stress process on a host.(in fact, it
+# just a simple interface without stress function).
+# 'reach' interface return true/false if the host reach bottleneck due
+# to the stress.
+######################################################################
+
+---
+schema:
+  steps:
+    -
+      id: 1
+      name: add_stress
+      service:
+        name: loop
+        interface: stress
+      args:
+        concurrent_num: 5
+    -
+      id: 2
+      name: bottleneck_checker
+      service:
+        name: loop
+        interface: reach
+
+    -
+      id: 3
+      name: greet1
+      service:
+        name: greet
+        interface: answer
+      args:
+        ping: ping_from_Leo
+
+  flows:
+    -
+      name: main
+      orders:
+        -
+          type: loop
+          name: stress-loop
+          body:
+            -
+              type: normal
+              step: 1
+          check:
+            -
+              type: normal
+              step: 2
+          change:
+            add_stress:
+              concurrent_num: +=5
+        -
+          type: normal
+          step: 3

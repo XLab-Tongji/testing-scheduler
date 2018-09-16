@@ -1,0 +1,32 @@
+---
+loop:
+  ip: 192.168.199.105
+  port: 6000
+  apis:
+    -
+      name: loop
+      method: GET
+      baseuri: loop
+      params:
+        - name: name
+          description: user name
+      template:
+        uri: ((baseuri))
+    -
+      name: stress
+      method: GET
+      baseuri: stress
+      params:
+        - name: concurrent_num
+          description: stress concurrent number
+      template:
+        uri: ((baseuri))?concurrent_num=((concurrent_num))
+    -
+      name: reach
+      method: GET
+      baseuri: reach
+      params:
+        - name: reach
+          description: reach
+      template:
+        uri: ((baseuri))
