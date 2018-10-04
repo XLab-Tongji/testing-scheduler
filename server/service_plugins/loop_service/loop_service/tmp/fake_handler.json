@@ -1,0 +1,35 @@
+{
+ "h2": {
+  "active": true, 
+  "condition": true, 
+  "name": "loop_finish_617", 
+  "actions": [
+   {
+    "action": "complete_task", 
+    "expandInlineJSON": true, 
+    "complete_task": {
+     "taskRefName": "loop_finish_(stress-loop_164)", 
+     "output": {}, 
+     "workflowId": "91479709-abe9-4172-a25b-942027d1dc74"
+    }
+   }
+  ], 
+  "event": "conductor:loop_495:loop_end"
+ }, 
+ "h1": {
+  "active": true, 
+  "condition": true, 
+  "name": "restart_482", 
+  "actions": [
+   {
+    "action": "start_workflow", 
+    "start_workflow": {
+     "input": {}, 
+     "version": 1, 
+     "name": "workflow-16155872101"
+    }
+   }
+  ], 
+  "event": "conductor:loop_495:loop_next"
+ }
+}

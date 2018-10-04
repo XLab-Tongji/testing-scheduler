@@ -1,7 +1,7 @@
 ---
 loop:
-  ip: 192.168.199.105
-  port: 6000
+  ip: t-scheduler-server
+  port: 5313
   apis:
     -
       name: loop
@@ -14,13 +14,15 @@ loop:
         uri: ((baseuri))
     -
       name: stress
-      method: GET
+      method: POST
       baseuri: stress
       params:
         - name: concurrent_num
           description: stress concurrent number
       template:
-        uri: ((baseuri))?concurrent_num=((concurrent_num))
+        uri: ((baseuri))
+        body:
+          concurrent_num: ((concurrent_num))
     -
       name: reach
       method: GET

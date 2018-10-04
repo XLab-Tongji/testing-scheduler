@@ -137,7 +137,7 @@ def parseOrderList(orderList, stepIndexDict, typeDict):
 		replaceOrder = collections.OrderedDict()
 		orderType = typeDict[orderItem['type']]
 		replaceOrder['type'] = orderType
-		if orderType == 'normal':		
+		if orderType == 'normal':
 			stepId = stepIndexDict[orderItem['step']]
 			replaceOrder['step'] = stepId
 		elif orderType == 'switch':
@@ -167,8 +167,8 @@ def parseOrderList(orderList, stepIndexDict, typeDict):
 					replaceBranchItem['step'] = stepIndexDict[branchOrderValue]
 					replaceOrder['parallel'][pKey] = [replaceBranchItem]
 				else:
-					replaceOrder['parallel'][pKey] = branchOrderValue	
-				pIndex += 1			
+					replaceOrder['parallel'][pKey] = branchOrderValue
+				pIndex += 1
 		replaceList.append(replaceOrder)
 	return replaceList
 
@@ -187,7 +187,7 @@ def transParamString(val):
 def getWebTestcase(originTcDict):
 	print "getWebTestcase----------------------------------"
 	webTcDict = {
-		"stepList": [], 
+		"stepList": [],
 		"mainOrdersList": [],
 		"subflowList": []
 	}
@@ -206,7 +206,7 @@ def getWebTestcase(originTcDict):
 		replaceStep['action'] = stepItem['service']['interface']
 		replaceStep['params'] = []
 		if 'args' in stepItem:
-			for (key, value) in stepItem['args'].items(): 
+			for (key, value) in stepItem['args'].items():
 				replaceParam = {}
 				replaceParam['key'] = key
 				replaceParam['value'] = value
@@ -291,4 +291,4 @@ def parseLog(flag, **msg):
 	return {'result': flag, 'message': msg}
 
 if __name__ == "__main__":
-	cmdParse() 
+	cmdParse()

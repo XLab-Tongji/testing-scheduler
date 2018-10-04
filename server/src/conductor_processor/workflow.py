@@ -224,7 +224,7 @@ class ParallelJoinTask(BaseWorkflowTask):
 
 class LoopTask(BaseWorkflowTask):
 	seqNumber = 0
-	LOOP_SERVICE_URL = "http://192.168.199.105:6000/loop"
+	LOOP_SERVICE_URL = "http://t-scheduler-server:5313/loop"
 	def __init__(self, order, stepObjArr, flowParser):
 		InstSeqNumber = LoopTask.seqNumber
 

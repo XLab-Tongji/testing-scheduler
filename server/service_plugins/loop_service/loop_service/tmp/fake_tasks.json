@@ -1,0 +1,65 @@
+[
+ {
+  "name": "add_stress", 
+  "timeoutSeconds": 1000, 
+  "retryLogic": "FIXED", 
+  "responseTimeoutSeconds": 3600, 
+  "retryDelaySeconds": 2000, 
+  "retryCount": 3, 
+  "timeoutPolicy": "TIME_OUT_WF"
+ }, 
+ {
+  "name": "bottleneck_checker", 
+  "timeoutSeconds": 1000, 
+  "retryLogic": "FIXED", 
+  "responseTimeoutSeconds": 3600, 
+  "retryDelaySeconds": 2000, 
+  "retryCount": 3, 
+  "timeoutPolicy": "TIME_OUT_WF"
+ }, 
+ {
+  "name": "store_task", 
+  "timeoutSeconds": 1000, 
+  "retryLogic": "FIXED", 
+  "responseTimeoutSeconds": 3600, 
+  "retryDelaySeconds": 2000, 
+  "retryCount": 3, 
+  "timeoutPolicy": "TIME_OUT_WF"
+ }, 
+ {
+  "name": "loop_decision", 
+  "timeoutSeconds": 1000, 
+  "retryLogic": "FIXED", 
+  "responseTimeoutSeconds": 3600, 
+  "retryDelaySeconds": 2000, 
+  "retryCount": 3, 
+  "timeoutPolicy": "TIME_OUT_WF"
+ }, 
+ {
+  "name": "return_data_task", 
+  "timeoutSeconds": 1000, 
+  "retryLogic": "FIXED", 
+  "responseTimeoutSeconds": 3600, 
+  "retryDelaySeconds": 2000, 
+  "retryCount": 3, 
+  "timeoutPolicy": "TIME_OUT_WF"
+ }, 
+ {
+  "name": "loop_end", 
+  "timeoutSeconds": 1000, 
+  "retryLogic": "FIXED", 
+  "responseTimeoutSeconds": 3600, 
+  "retryDelaySeconds": 2000, 
+  "retryCount": 3, 
+  "timeoutPolicy": "TIME_OUT_WF"
+ }, 
+ {
+  "name": "restart_wf", 
+  "timeoutSeconds": 1000, 
+  "retryLogic": "FIXED", 
+  "responseTimeoutSeconds": 3600, 
+  "retryDelaySeconds": 2000, 
+  "retryCount": 3, 
+  "timeoutPolicy": "TIME_OUT_WF"
+ }
+]
