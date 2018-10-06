@@ -10,10 +10,26 @@ import sys
 import time
 import datetime
 import threading
-sys.path.append("..")
+BASE_DIR = os.path.dirname(__file__)
+sys.path.append(os.path.join(BASE_DIR, '..'))
 from loop_service import LoopService
 app = Flask(__name__)
 CORS(app)
+
+@app.route('/taskid', methods=['POST'])
+def getTaskId():
+    requestData = request.data
+    wfId = requestData['wfId']
+    BASE_URL = "http://conductor_conductor-server_1:8080/api"
+    wfUrl = BASE_URL + "/workflow/" + wfId
+
+    res = requests.get(wfUrl)
+    print "finishId --------------------------"
+    app.logger.debug(res.json())
+    app.logger.debug(res.content)
+    #taskId = res.json()['tasks'][1]['taskId']
+    return res.json()
+
 
 @app.route('/loop', methods=['POST'])
 def loop():
@@ -85,11 +101,11 @@ def restart():
     app.logger.debug("get wfId:%s"%wfId)
     app.logger.debug("get wfInput:%s"%wfInput)
     app.logger.debug("get loopChange:%s"%loopChange)
-    
+
     newInput = getNewInput(wfInput, loopChange)
     app.logger.debug("new input:%s"%newInput)
 
-    BASE_URL = "http://10.60.38.181:5201/api"
+    BASE_URL = "http://conductor_conductor-server_1:8080/api"
     headers = {
         "content-type": "application/json"
     }
@@ -104,6 +120,46 @@ def restart():
     app.logger.debug("post res: %s"%res.content)
     return "restart!url: %s,  res:%s"%(wfUrl, res.content)
     return "ok"
+
+@app.route('/loop_finish', methods=['POST'])
+def loopFinish():
+    data = request.data
+    dataDict = json.loads(data)
+    wfId = dataDict['wfId']
+    #taskId = dataDict['taskId']
+    app.logger.debug("taskId: ---------------")
+    app.logger.debug(wfId)
+    #app.logger.debug(taskId)
+    BASE_URL = "http://conductor_conductor-server_1:8080/api"
+    wfUrl = BASE_URL + "/workflow/" + wfId
+
+    res = requests.get(wfUrl)
+    print "finishId --------------------------"
+    print res.json()
+    print res.content
+    taskId = res.json()['tasks'][1]['taskId']
+    app.logger.debug("loop_finish:" + taskId)
+    print taskId
+
+    BASE_URL = "http://conductor_conductor-server_1:8080/api"
+    headers = {
+        "content-type": "application/json"
+    }
+
+    wfUrl = BASE_URL + "/tasks/"
+
+    finishParams = {
+        "workflowInstanceId": wfId,
+        "taskId": taskId,
+        "callbackAfterSeconds": 0,
+        "status": "COMPLETED",
+        "outputData": {
+            }
+    }
+
+    res = requests.post(wfUrl, json.dumps(finishParams, indent=True), headers=headers)
+    return 'ok'
+
 
 def getNewInput(oldDict, changeDict):
     print "func \n"
@@ -136,4 +192,4 @@ def calculate(oldValue, changeValue):
     return newValue
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=6000, debug=True)
+    app.run(host="0.0.0.0", port=5313, debug=True)

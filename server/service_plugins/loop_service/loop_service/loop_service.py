@@ -13,12 +13,13 @@ TEMP_FILES = {
 	"event_handler": 			"template_event_handler.json",
 	"event_handler_actions": 	"template_event_handler_actions.json"
 }
-SERVER_ADDR = "http://192.168.199.105:6000"
+SERVER_ADDR = "http://t-scheduler-server:5313"
 
 
 class LoopService(object):
 	def __init__(self, args):
 		self._clientArgs = args
+		print args
 		self._parseClientArgs()
 
 		self._workflowName = ""
@@ -60,6 +61,9 @@ class LoopService(object):
 			taskRefName = task['taskReferenceName']
 			if taskRefName not in self._loopChanges.keys():
 				continue
+			print "----------------------task"
+			print task
+			print "\n\n"
 			httpBody = task['inputParameters']['http_request']['body']
 			taskChangeParams = self._loopChanges[taskRefName]
 			for taskParam in httpBody.keys():
@@ -89,10 +93,46 @@ class LoopService(object):
 
 		getDataTask = self._getReturnDataTask()
 
-		decisionTask['decisionCases']['true'] = [getDataTask, self._getEventTask("loop_end")]
-		#decisionTask['decisionCases']['false'] = [self._getEventTask("loop_next")]
+		#decisionTask['decisionCases']['true'] = [getDataTask, self._getEventTask("loop_end")]
+		decisionTask['decisionCases']['true'] = [getDataTask, self._getFinishTask()]
 		decisionTask['decisionCases']['false'] = [self._getRecallTask()]
 		taskList.append(decisionTask)
+
+        def _getFinishTask(self):
+                taskName = "finish_return_wf"
+                self._addNewTaskDef(taskName)
+		# taskId = self._getFinishTaskId()
+                recallTask = deepcopy(self._template['wf_http_task'])
+                recallTask['name'] = taskName
+                recallTask['taskReferenceName'] = taskName
+                httpRequest = recallTask['inputParameters']['http_request']
+                httpRequest['uri'] = SERVER_ADDR + "/loop_finish"
+                httpRequest['method'] = "POST"
+                httpRequest['body'] = {
+                        "wfId" : self._clientWorkflowId
+                }
+
+                return recallTask
+
+        def _getFinishTaskId(self):
+                taskRefName = self._clientFinishTaskRefName
+
+                BASE_URL = "http://conductor_conductor-server_1:8080/api"
+                headers = {
+                    "content-type": "application/json"
+                }
+
+                wfUrl = BASE_URL + "/workflow/" + self._clientWorkflowId
+
+                res = requests.get(wfUrl)
+                print "finishId --------------------------  " + wfUrl
+                print res
+                print res.content
+                print "res.content"
+                print res.json()
+                print res.json()['tasks']
+                #return wfUrl
+                return res.json()['tasks'][1]['taskId']
 
 	def _getRecallTask(self):
 		taskName = "restart_wf"
@@ -129,7 +169,7 @@ class LoopService(object):
 		### register handlers into conductor server
 
 	def _getRestartHandler(self, eventName):
-		anotherWFName = "workflow-16155872101"
+		anotherWFName = "workflow_tc_logic_00(4415897769)"
 		rHandler = deepcopy(self._template['event_handler'])
 		rHandler['name'] = "restart" + self._getRandomString("_", 3)
 		print "getRestartHandler:", self._workflowName
@@ -204,7 +244,7 @@ class LoopService(object):
 			f.write(json.dumps({"h1": h1, "h2": h2}, indent=True))
 
 		###
-		BASE_URL = "http://10.60.38.181:5201/api"
+		BASE_URL = "http://conductor_conductor-server_1:8080/api"
 		headers = {
 			"content-type": "application/json"
 		}
@@ -215,7 +255,7 @@ class LoopService(object):
 		res = requests.post(workflowDefUrl, json.dumps(self._workflowDef, indent=True), headers=headers)
 
 		handlerUrl = BASE_URL + "/event/"
-		requests.post(handlerUrl, json.dumps(h2, indent=True), headers=headers)
+		requests.post(handlerUrl, json.dumps(h1, indent=True), headers=headers)
 
 		startWorkflowUrl = BASE_URL + "/workflow/" + self._workflowName
 		workflowInput = {

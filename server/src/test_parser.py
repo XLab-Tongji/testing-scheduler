@@ -223,7 +223,7 @@ def getWebTestcase(originTcDict):
 			originMainflow = flowItem
 			originFlows.pop(flowIndex)
 			break
-	typeDict = {'normal': 1, 'switch': 2, 'parallel': 3}
+	typeDict = {'normal': 1, 'switch': 2, 'parallel': 3, 'loop': 4}
 	webTcDict['mainOrdersList'] = getOrderList(originMainflow['orders'], stepIndexDict, typeDict)
 
 	# transform subflows

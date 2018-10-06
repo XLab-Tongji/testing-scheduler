@@ -1,26 +1,26 @@
 {
  "tasks": [
   {
-   "taskReferenceName": "add_stress_772", 
+   "taskReferenceName": "add_stress_220", 
    "type": "HTTP", 
    "name": "add_stress", 
    "inputParameters": {
     "http_request": {
      "body": {
-      "concurrent_num": "${workflow.input.change.add_stress_772.concurrent_num}"
+      "concurrent_num": "${workflow.input.change.add_stress_220.concurrent_num}"
      }, 
-     "uri": "http://192.168.199.105:6000/stress", 
+     "uri": "http://10.60.38.181:5202/stress", 
      "method": "POST"
     }
    }
   }, 
   {
-   "taskReferenceName": "bottleneck_checker_631", 
+   "taskReferenceName": "bottleneck_checker_332", 
    "type": "HTTP", 
    "name": "bottleneck_checker", 
    "inputParameters": {
     "http_request": {
-     "uri": "http://192.168.199.105:6000/reach", 
+     "uri": "http://10.60.38.181:5202/reach", 
      "method": "GET"
     }
    }
@@ -34,11 +34,11 @@
     "http_request": {
      "body": {
       "task_output": {
-       "add_stress": "${add_stress_772.output.response.body}", 
-       "bottleneck_checker": "${bottleneck_checker_631.output.response.body}"
+       "add_stress": "${add_stress_220.output.response.body}", 
+       "bottleneck_checker": "${bottleneck_checker_332.output.response.body}"
       }
      }, 
-     "uri": "http://192.168.199.105:6000/storeData", 
+     "uri": "http://10.60.38.181:5202/storeData", 
      "method": "POST"
     }
    }
@@ -55,21 +55,25 @@
       "name": "return_data_task", 
       "inputParameters": {
        "http_request": {
-        "uri": "http://192.168.199.105:6000/getData", 
+        "uri": "http://10.60.38.181:5202/getData", 
         "method": "GET"
        }
       }
      }, 
      {
+      "taskReferenceName": "finish_return_wf", 
       "description": "workflow-1-task-1", 
-      "taskReferenceName": "loop_end", 
-      "sink": "conductor", 
+      "type": "HTTP", 
+      "name": "finish_return_wf", 
       "inputParameters": {
-       "event_input": "fake_input", 
-       "number": 12
-      }, 
-      "type": "EVENT", 
-      "name": "loop_end"
+       "http_request": {
+        "body": {
+         "wfId": "bf298514-3e47-4c7c-a73b-ca113138efaf"
+        }, 
+        "uri": "http://10.60.38.181:5202/loop_finish", 
+        "method": "POST"
+       }
+      }
      }
     ], 
     "false": [
@@ -84,12 +88,12 @@
          "wfId": "${workflow.workflowId}", 
          "wfInput": "${workflow.input.change}", 
          "loopChange": {
-          "add_stress_772": {
+          "add_stress_220": {
            "concurrent_num": "+=5"
           }
          }
         }, 
-        "uri": "http://192.168.199.105:6000/restart", 
+        "uri": "http://10.60.38.181:5202/restart", 
         "method": "POST"
        }
       }
@@ -97,14 +101,14 @@
     ]
    }, 
    "inputParameters": {
-    "decisionVal": "${bottleneck_checker_631.output.response.body.result}"
+    "decisionVal": "${bottleneck_checker_332.output.response.body.result}"
    }, 
    "caseValueParam": "decisionVal", 
    "type": "DECISION", 
    "description": "task for making the decision"
   }
  ], 
- "name": "loop_495", 
+ "name": "loop_424", 
  "outputParameters": {
   "return_data_task": "${get_loop_data.output.response.body}"
  }, 

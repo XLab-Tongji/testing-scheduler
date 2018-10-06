@@ -45,7 +45,7 @@
   "timeoutPolicy": "TIME_OUT_WF"
  }, 
  {
-  "name": "loop_end", 
+  "name": "finish_return_wf", 
   "timeoutSeconds": 1000, 
   "retryLogic": "FIXED", 
   "responseTimeoutSeconds": 3600, 
