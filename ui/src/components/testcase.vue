@@ -49,7 +49,7 @@
                             <td class="smallbox" style="with:250px;"><input type="text" v-model="newCase" @keydown.enter="additem" ></td>
                         </tr>
                     </tfoot>
-                  </table>                             
+                  </table>
                 </div>
             </div>
         </div>
@@ -83,9 +83,10 @@
                               <th class="text-center">testcase</th>
                               <th class="text-center">status</th>
                               <th class="text-center">operation</th>
+                              <th class="text-center">output</th>
                             </tr>
                           </thead>
-                          <tbody>                   
+                          <tbody>
                             <tr v-for="testcase in runTestcases">
                               <td>{{ testcase.id }}</td>
                               <td>{{ testcase.testcase }}</td>
@@ -96,13 +97,20 @@
                                   <button class="btn btn-primary btn-outline btn-xs fadeIn" v-on:click="runNextCase($event.target)" v-show="testcase.status == 'failed'">run next one</button>
                                 </div>
                               </td>
+                              <td>
+                                <span v-show="testcase.workflowId">
+                                  <router-link :to="{path: 'output', query: {wfId: workflowId}}">
+                                    <span style="">Check the test result</span>
+                                  </router-link>
+                                </span>
+                              </td>
                             </tr>
                           </tbody>
                         </table>
                       </div>
                     </div>
                 </div>
-                <hr class="hr-line-solid"> 
+                <hr class="hr-line-solid">
                 <div class="row" style="margin-top: 60px;">
                   <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson' v-on:wfComplete="wfComplete = $event"></wfresult>
                 </div>
@@ -258,14 +266,14 @@ export default {
         return;
       }
       for(var i=0; i < self.selected.length; i++) {
-        var testcaseItem = {'id': i, 'testcase': '', 'status': "waiting"};
+        var testcaseItem = {'id': i, 'testcase': '', 'status': "waiting", 'workflowId': ''};
         testcaseItem['testcase'] = self.selected[i];
         self.runTestcases.push(testcaseItem);
       }
       self.curRunningId = 0;
       showMessage("info", msgTitle, "start to run <strong>testcases</strong>");
       self.runOneTestcase();
-         
+
     },
     runOneTestcase: function() {
       var self = this;
@@ -290,6 +298,7 @@ export default {
           success: function(data) {
               if(data['code'] == 200) {
                   self.workflowId = data['result']['workflowId'];
+                  self.runTestcases[self.curRunningId]['workflowId'] = self.workflowId;
                   $.ajax({
                       url: self.global.SERVER_ADDR + "story-content",
                       method: "GET",
@@ -313,7 +322,7 @@ export default {
                 self.runTestcases[i]['status'] = "failed";
                 self.wfloading = false;
                 showMessage(data['code'], msgTitle, "Failed to run <strong>" + self.runTestcases[i]['testcase'] + "</strong>", data['error']);
-              } 
+              }
           },
           error: function(obj, status, msg) {
             var i = self.curRunningId;

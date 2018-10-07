@@ -59,6 +59,9 @@ def stress():
             time_f.write("%s  STRESS num: %s\n"%(nowTime, concurrentNum))
     with open("stress_counter.txt", "w") as f2:
             f2.write(str(concurrentNum))
+    if int(concurrentNum) == 5:
+        with open("step_details.txt", "w") as f3:
+            f3.write("")
     return jsonify(result="stressed! concurrentNum=" + str(concurrentNum)), 200
 
 @app.route('/reach')
@@ -89,7 +92,7 @@ def getStoreData():
         result = step_f.read()
         result = "[%s]"%result[:-2]
         result = json.loads(result)
-    return json.dumps("{result:%s}"%result)
+    return json.dumps({"result": result})
 
 @app.route('/restart', methods=["POST"])
 def restart():

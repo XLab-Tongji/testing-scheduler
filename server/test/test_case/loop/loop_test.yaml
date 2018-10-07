@@ -41,10 +41,10 @@ schema:
 
     -
       id: 3
-      name: greet1
+      name: result
       service:
-        name: greet
-        interface: answer
+        name: loop
+        interface: result
       args:
         ping: ping_from_Leo
 

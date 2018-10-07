@@ -32,3 +32,10 @@ loop:
           description: reach
       template:
         uri: ((baseuri))
+
+    -
+      name: result
+      method: GET
+      baseuri: getData
+      template:
+        uri: ((baseuri))

@@ -47,12 +47,12 @@
                       <td class="smallbox" style="with:250px;"><input type="text" v-model="newSuite" @keydown.enter="addItem" ></td>
                     </tr>
                 </tfoot>
-              </table>                
+              </table>
             </div>
         </div>
       </div>
 
-    </div> 
+    </div>
     <hr />
 
     <div class="row">
@@ -80,9 +80,10 @@
                               <th class="text-center">testcase</th>
                               <th class="text-center">status</th>
                               <th class="text-center">operation</th>
+                              <th class="text-center">output</th>
                             </tr>
                           </thead>
-                          <tbody>                   
+                          <tbody>
                             <tr v-for="testcase in casesInSuite">
                               <td>{{ testcase.id }}</td>
                               <td>{{ testcase.testcase }}</td>
@@ -93,13 +94,20 @@
                                 <button class="btn btn-primary btn-outline btn-xs fadeIn" v-on:click="runNextCase($event.target)" v-show="testcase.status == 'failed'">run next one</button>
                               </div>
                               </td>
+                              <td>
+                                <span v-show="testcase.workflowId">
+                                  <router-link :to="{path: 'output', query: {wfId: workflowId}}">
+                                    <span style="">Check the test result</span>
+                                  </router-link>
+                                </span>
+                              </td>
                             </tr>
                           </tbody>
                         </table>
                       </div>
                   </div>
                 </div>
-                <hr class="hr-line-solid"> 
+                <hr class="hr-line-solid">
                 <div class="row" style="margin-top: 60px;">
                   <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson' v-on:wfComplete="wfComplete = $event"></wfresult>
                 </div>
@@ -271,19 +279,20 @@ export default {
             }
             for(var i=0; i < caseList.length; i++) {
               caseList[i]['status'] = "waiting";
+              caseList[i]['workflowId'] = "";
             }
             self.casesInSuite = caseList;
             showMessage(data['code'], msgTitle, "Start to run <strong>" + self.running.suiteName + "</strong>");
             self.runTestcase();
           } else {
             showMessage(data['code'], msgTitle, "Failed to run <strong>" + self.running.suiteName + "</strong>", data['error']);
-          }        
+          }
         },
         error: function(obj, status, msg) {
           showMessage(status, msgTitle, "Failed to run <strong>" + self.running.suiteName + "</strong>", msg);
         }
       });
-   
+
     },
     runTestcase: function() {
         var self = this;
@@ -309,6 +318,7 @@ export default {
           success: function(data) {
               if(data['code'] == 200) {
                 self.workflowId = data['result']['workflowId'];
+                self.casesInSuite[self.curRunningId]['workflowId'] = self.workflowId;
                 $.ajax({
                     url: self.global.SERVER_ADDR + "story-content",
                     method: "GET",

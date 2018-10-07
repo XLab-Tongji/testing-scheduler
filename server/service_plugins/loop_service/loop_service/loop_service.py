@@ -211,7 +211,6 @@ class LoopService(object):
 		taskOutput = request['body']['task_output']
 		for loopTask in self._loopTasks:
 			taskOutput[loopTask['name']] = "${%s.output.response.body}"%loopTask['taskReferenceName']
-
 		return storeWFTask
 
 	def _getReturnDataTask(self):
