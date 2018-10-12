@@ -1,6 +1,5 @@
 <template>
-	<div class="row">
-
+    <div class="row">
          <div class="form-group">
             <label class="col-lg-3 control-label">Params</label>
             <div class="col-lg-2">
@@ -23,9 +22,9 @@
                             <td><input type="text" class="form-control text-center" style="border: 0px" v-model="param['name']"></td>
                             <td><input type="text" class="form-control text-center" style="border: 0px" v-bind:title="param['description']" v-model="param['description']"></td>
                             <td>
-                            	<button type="button" class="btn btn-white" v-on:click="deleteParam(param['name'])">
-                            		<i class="fa fa-trash"></i>
-                            	</button>
+                                <button type="button" class="btn btn-white" v-on:click="deleteParam(param['name'])">
+                                    <i class="fa fa-trash"></i>
+                                </button>
                             </td>
                         </tr>
                     </tbody>
@@ -37,12 +36,12 @@
 </template>
 <script>
 export default {
-	props: ["params"],
-	data: function() {
-		return {
-			paramArr: this.params
-		}
-	},
+    props: ["params"],
+    data: function() {
+        return {
+            paramArr: this.params
+        }
+    },
     watch: {
         paramArr: function(){
             this.$emit("params", this.paramArr);

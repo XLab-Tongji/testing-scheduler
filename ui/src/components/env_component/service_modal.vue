@@ -1,5 +1,5 @@
 <template>
-	<div class="modal inmodal fade" id="myModal">
+    <div class="modal inmodal fade" id="myModal">
         <div class="modal-dialog modal-lg">
             <div class="modal-content animated">
                 <div class="modal-header">
@@ -14,10 +14,10 @@
                             <div id="service-address">
                                 <button class="btn btn-default">Basic</button>
                                 <div class="form-group">
-                                	<label class="col-sm-3 control-label">name</label>
-                                	<div class="col-sm-7">
-                                		<input  type="text" class="form-control service-title" v-model="type.service" placeholder="please input service name.">
-                                	</div>
+                                    <label class="col-sm-3 control-label">name</label>
+                                    <div class="col-sm-7">
+                                        <input  type="text" class="form-control service-title" v-model="type.service" placeholder="please input service name.">
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">ip</label>
@@ -38,8 +38,7 @@
                                     <div class="panel-group" id="accordion">
                                         <service-api v-for="api in apis" panel-parent="#accordion" v-bind="api" v-on:name="api.name = $event" v-on:method="api.method = $event" v-on:baseuri="api.baseuri = $event" v-on:params="api.params = $event" v-on:template="api.template = $event" v-on:delete="removeApi"></service-api>
                                     </div>
-
-                                	<button type="button" class="btn btn-primary pull-right" v-on:click="addNewApi()">New</button>
+                                    <button type="button" class="btn btn-primary pull-right" v-on:click="addNewApi()">New</button>
                                 </div>
                             </div>
                         </form>
@@ -56,9 +55,8 @@
 <script>
 import service_api from "./service_api.vue";
 import showMessage from '../message/showMessage.js'
-
 export default {
-	props: ['type'],
+    props: ['type'],
     data: function() {
         return {
             typeTag: this.type.tag,
@@ -110,7 +108,6 @@ export default {
                 showMessage("warning", "SERVICE", "service name is not filled!");
                 return;
             }
-
             if(this.type.edit == true) {
                 this.saveEdition();
             } else {
@@ -126,11 +123,11 @@ export default {
                 url: this.global.SERVER_ADDR + "env/editService",
                 method: "post",
                 data: {
-                    "oldName": 	self.type.originName,
-                    "newName": 	self.type.service,
-                    "ip": 		self.ip,
-                    "port": 	self.port,
-                    "apis": 	JSON.stringify(self.apis),
+                    "oldName":     self.type.originName,
+                    "newName":     self.type.service,
+                    "ip":         self.ip,
+                    "port":     self.port,
+                    "apis":     JSON.stringify(self.apis),
                 },
                 success: function(data) {
                     if(data['code'] == 200) {
@@ -158,7 +155,7 @@ export default {
                 method: "post",
                 data: {
                     "name": self.type.service,
-                    "ip": 	self.ip,
+                    "ip":     self.ip,
                     "port": self.port,
                     "apis": JSON.stringify(self.apis)
                 },
@@ -190,7 +187,7 @@ export default {
         }
     },
     components: {
-    	'service-api': service_api
+        'service-api': service_api
     }
 }
 </script>

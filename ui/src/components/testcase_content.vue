@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper wrapper-content animated fadeIn">
     <div class="row" style="margin-bottom: 20px;">
-      <div class="col-md-8">
+      <div class="col-md-12">
         <ol class="breadcrumb" style="padding-left: 20px; font-size: 17px;">
           <li>
             <router-link to="/" >root</router-link>
@@ -15,8 +15,6 @@
         </ol>
       </div>
     </div>
-
-
     <div id="page-content" class="row">
       <div class="col-lg-12">
         <div class="ibox">
@@ -51,17 +49,15 @@
             </div>
             <div class="ibox-content" style="max-height: 600px; overflow-y: auto; padding: 0; border: 1px solid #e7e7e7;">
                 <div style='text-align:center;'>
-                  <textarea v-show='!isEditable' v-model="content" id="tc_content" style="max-width:2400px; width: 100%;height: 100%;min-height: 500px;font-size:16px;border:none; vertical-align: middle; padding: 30px 0 20px 40px;">
+                  <textarea v-show='!isEditable' v-model="content" id="tc_content" style="white-space:nowrap; overflow:scroll;max-width:2400px; width: 100%;height: 100%;min-height: 500px;font-size:16px;border:none; vertical-align: middle; padding: 30px 0 20px 40px;">
                   </textarea>
                 </div><editor v-show='isEditable' v-bind:saveSignal='saveSignal' v-bind = 'editorContent' v-on:saveResponse='processSaveResponse'></editor>
             </div>
         </div>
       </div>
-
     </div>
-
     <hr />
-    <div class="row">
+    <div class="row" v-show="runYet">
       <div class="col-lg-12">
           <div class="ibox">
               <div class="ibox-title">
@@ -76,28 +72,17 @@
                   </div>
               </div>
               <div class="ibox-content" style="padding-top: 60px;">
-                  <div v-show="workflowId" class="row" style="margin-bottom: 20px;">
-                    <div class="col-md-12">
-                      <router-link :to="{path: 'output', query: {wfId: workflowId}}">
-                        <span style="font-size: 18px;">Check the test result</span>
-                      </router-link>
-                    </div>
-                  </div>
                   <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson'></wfresult>
               </div>
           </div>
       </div>
-
     </div>
-
   </div>
 </template>
 <script>
-import {addClass, removeClass, isContainClass} from '../assets/js/my-util.js'
 import editor from './editor/editor.vue'
 import wfresult from './workflow_graph/wfresult.vue'
 import showMessage from './message/showMessage.js'
-
 export default {
     name: 'testcase_content',
     data () {
@@ -113,7 +98,9 @@ export default {
           workflowId: '',
           wfloading: false,
           wfJson: '',
-          saveSignal: false
+          wfComplete: false,
+          saveSignal: false,
+          runYet: false,
       }
     },
     created: function() {
@@ -136,6 +123,9 @@ export default {
       runTestcase: function(){
         var self = this;
         var msgTitle = "RUN -- TESTCASE";
+        if(!self.runYet) {
+          self.runYet = true;
+        }
         $.ajax({
             url: this.global.SERVER_ADDR + "execute/testcase",
             method: "POST",

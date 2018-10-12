@@ -1,11 +1,15 @@
-############################################################
-# date: 2018/7/20
-# author: x-lab.Leo
-
-# description: test switch and step-2 used step-1's output
-############################################################
+##############################################################################
+# Copyright (c) 2018 HUAWEI TECHNOLOGIES CO.,LTD and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
 
 ---
+# description: test switch and step-2 used step-1's output
+
 schema:
   steps:
     -

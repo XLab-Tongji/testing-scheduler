@@ -4,9 +4,7 @@
         <div class="form-group">
             <label class="col-md-2 control-label" style="font-size: 22px;">flowName</label>
             <div class="col-md-6">
-                <input v-if="flowName != 'main'" type="text" class="form-control" v-model="flowName" v-on:input='$emit("editFlowName", $event.target.value)' 
-                placeholder="please input flow name." />
-
+                <input v-if="flowName != 'main'" type="text" class="form-control" v-model="flowName" v-on:input='$emit("editFlowName", $event.target.value)' placeholder="please input flow name." />
                 <p style="font-size: 22px;" v-else>{{flowName}}</p>
             </div>
         </div>
@@ -34,7 +32,6 @@
                         </span>
                     </div>
                     <br>
-
                     <!-- Normal -->
                     <div id="normal-panel" v-show='orderSelected == 1'>
                         <div class="col-lg-11" id="normalform">
@@ -50,7 +47,7 @@
                                         </div>
                                     </div>
                                     <div class="ibox-content">
-                                       <!-- <div class="form-group">                              
+                                       <!-- <div class="form-group">
                                           <div class="col-lg-6 row"><label>name</label><input id="NName" type="name" placeholder="name" class="form-control"></div>
                                        </div> -->
                                        <div class="form-group">
@@ -75,7 +72,6 @@
                                 <div class="ibox border-ibox float-e-margins">
                                     <div class="ibox-title">
                                         <h5>Switch</h5>
-                                            
                                         <div class="ibox-tools">
                                             <button class="btn btn-success " type="button" id="new-case" v-on:click='addNewCase'>&nbsp;&nbsp;<span class="bold">New Case</span></button>
                                             <a class="collapse-link" >
@@ -86,30 +82,30 @@
                                     <div class="ibox-content">
                                         <div class="row">
                                             <div class="row">
-                                                <div class="form-group">  
-                                                    <label class="headmsg control-label">Value:</label>  
+                                                <div class="form-group">
+                                                    <label class="headmsg control-label">Value:</label>
                                                     <div class="col-md-5"><input type="text" class="case form-control" v-model='switchValue'></div>
                                                 </div>
                                             </div>
-                                            <div class="row">  
-                                                <label class="headmsg control-label">Cases:</label>  
+                                            <div class="row">
+                                                <label class="headmsg control-label">Cases:</label>
                                                 <div class='col-md-12 row'>
                                                     <div class='col-md-offset-1' v-for='switchCase in switchCases' style='border-left-style: solid; border-left-color: gray; margin-bottom: 30px;'>
                                                         <div class="row">
-                                                            <div class="form-group">  
-                                                                <label class="headmsg control-label">CaseValue:</label>  
+                                                            <div class="form-group">
+                                                                <label class="headmsg control-label">CaseValue:</label>
                                                                 <div class="col-md-5"><input type="text" class="case form-control" v-model='switchCase.value'></div>
                                                             </div>
                                                         </div>
                                                         <div class="row">
                                                             <label class="headmsg control-label">Case:</label>
-                                                            <div class="col-md-3">                           
+                                                            <div class="col-md-3">
                                                                 <select class="myselect chooseStep form-control" v-model='switchCase.orderType'>
                                                                     <option></option>
                                                                     <option v-for='orderType in ["step", "flow"]' v-bind:value='orderType'>{{ orderType }}</option>
                                                                 </select>
                                                             </div>
-                                                            <div class="col-md-4">                           
+                                                            <div class="col-md-4">
                                                                 <select class="myselect chooseStep form-control" v-model='switchCase.orderValue'>
                                                                     <option></option>
                                                                     <option v-if='switchCase.orderType == "step"' v-for='stepRef in stepsRefs' v-bind:value='stepRef'>{{ stepRef }}</option>
@@ -118,11 +114,9 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
                                                 </div>
                                             </div>
                                         </div>
-                                        
                                     </div>
                                 </div>
                             </div>
@@ -151,13 +145,13 @@
                                                     <div class='col-md-offset-1'>
                                                         <div v-for='branch in parallelBranches' class="row" style='border-left-style: solid; border-left-color: gray; margin-bottom: 20px; padding-top: 7px; padding-bottom: 7px;'>
                                                             <label class="headmsg control-label">Branch:</label>
-                                                            <div class="col-md-3">                           
+                                                            <div class="col-md-3">
                                                                 <select class="myselect chooseStep form-control" v-model='branch.orderType'>
                                                                     <option></option>
                                                                     <option v-for='orderType in ["step", "flow"]' v-bind:value='orderType'>{{ orderType }}</option>
                                                                 </select>
                                                             </div>
-                                                            <div class="col-md-4">                           
+                                                            <div class="col-md-4">
                                                                 <select class="myselect chooseStep form-control" v-model='branch.orderValue'>
                                                                     <option></option>
                                                                     <option v-if='branch.orderType == "step"' v-for='stepRef in stepsRefs' v-bind:value='stepRef'>{{ stepRef }}</option>
@@ -166,9 +160,8 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div> 
-                                            </div> 
-                                            
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -178,7 +171,6 @@
                 </div>
             </div>
         </div>
-
         <div class="ibox">
             <div class="ibox-title">
                 <h5 class="text-success">OrderList</h5>
@@ -216,9 +208,7 @@
                                 <label class="control-label col-md-offset-1"> -- <b>{{ sCase.value }}</b> : </label>
                                 <label class='coltrol-label' style='margin-left: 20px;'>{{ sCase.orderValue }} [{{ sCase.orderType }}]</label>
                             </div>
-                            
                         </div>
-                        
                         <div v-if='order.type == 3' class="row">
                             <div><label class="control-label"> </label></div>
                             <div v-for='branch in order.branches' class="row">
@@ -232,34 +222,33 @@
         </div>
     </div>
 </div>
-
 </template>
 <script>
 export default {
-	name: 'flow',
-	props: ['stepsRefs', 'flowsRefs', 'flowName', 'orderList'],
+    name: 'flow',
+    props: ['stepsRefs', 'flowsRefs', 'flowName', 'orderList'],
     model: {
         prop: 'flowName',
         event: 'editFlowName'
     },
-	data: function() {
-		return {
+    data: function() {
+        return {
             normalStep: '',
             switchValue: '',
-			switchCases: [{'value': '', 'orderType': '', 'orderValue': ''}],
+            switchCases: [{'value': '', 'orderType': '', 'orderValue': ''}],
             parallelBranches: [{'orderType': '', 'orderValue': ''}],
             orderSelected: 1
-		}
-	},
-	mounted: function(){
-		// this.selectPluginUpdate();
-	},
+        }
+    },
+    mounted: function(){
+        // this.selectPluginUpdate();
+    },
     updated: function(){
         // this.selectPluginUpdate();
     },
-	methods: {
-		addOrder: function(){
-			var select = this.orderSelected;
+    methods: {
+        addOrder: function(){
+            var select = this.orderSelected;
             if(select == 1){
                 if(this.normalStep == ""){
                     alert("Not completed!!!");
@@ -270,7 +259,7 @@ export default {
                 this.normalStep = '';
             }
             if(select == 2){
-            	var caseList = [];
+                var caseList = [];
                 for(var i=0; i<this.switchCases.length; ++i){
                     var caseValue = this.switchCases[i].value;
                     if(caseValue == ""){
@@ -289,15 +278,13 @@ export default {
                     }
                     caseList.push({value: caseValue, orderType: caseOrderType, orderValue: caseOrderValue});
                 }
-
                 temp = {type:2, value: this.switchValue, cases:caseList};
                 this.orderList.push(temp);
                 this.switchValue = '';
-               	this.switchCases = [{value: '', orderType: '', orderValue: ''}];
+                   this.switchCases = [{value: '', orderType: '', orderValue: ''}];
             }
             if(select == 3){
                 var branchList = [];
-
                 var allStep = $('#parallel .chooseStep');
                 for(var i=0; i<this.parallelBranches.length; ++i){
                     var branchOrderType = this.parallelBranches[i].orderType;
@@ -312,20 +299,18 @@ export default {
                     }
                     branchList.push({orderType: branchOrderType, orderValue: branchOrderValue});
                 }
-
                 temp = {type:3,branches:branchList};
                 this.orderList.push(temp);
-
                 this.parallelBranches = [{orderType: '', orderValue: ''}];
             }
             this.$emit("orderList", this.orderList);
-		},
-		removeOrder: function(index){
-			this.orderList.splice(index, 1);
-		},
-		addNewCase: function() {
-			this.switchCases.push({value: '', orderType: '', orderValue: ''});
-		},
+        },
+        removeOrder: function(index){
+            this.orderList.splice(index, 1);
+        },
+        addNewCase: function() {
+            this.switchCases.push({value: '', orderType: '', orderValue: ''});
+        },
         addNewBranch: function() {
             this.parallelBranches.push({step: ''});
         },
@@ -339,7 +324,7 @@ export default {
             content.slideToggle(200);
             $(ele).toggleClass('fa-chevron-up').toggleClass('fa-chevron-down');
         }
-	},
+    },
     computed: {
         filtedFlowsRefs: function() {
             var subflowNameArr = [];

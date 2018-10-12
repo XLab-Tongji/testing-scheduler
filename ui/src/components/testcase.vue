@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper wrapper-content animated fadeIn">
     <div class="row" style="margin-bottom: 20px;">
-      <div class="col-md-8">
+      <div class="col-md-12">
         <ol class="breadcrumb" style="padding-left: 20px; font-size: 17px;">
           <li>
             <router-link to="/" >root</router-link>
@@ -13,7 +13,7 @@
       </div>
     </div>
     <div id="page-content" style="" class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
                     <h5 style="font-size:26px;margin-top: -3px;">Test Case</h5>
@@ -53,12 +53,9 @@
                 </div>
             </div>
         </div>
-
     </div>
-
     <hr />
-
-    <div class="row">
+    <div class="row" v-show="runYet">
       <div class="col-lg-12">
           <div class="ibox">
               <div class="ibox-title">
@@ -83,7 +80,6 @@
                               <th class="text-center">testcase</th>
                               <th class="text-center">status</th>
                               <th class="text-center">operation</th>
-                              <th class="text-center">output</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -96,13 +92,6 @@
                                   <button class="btn btn-primary btn-outline btn-xs fadeIn" v-on:click="runTestcase()" v-show="testcase.status == 'failed'">rerun</button>
                                   <button class="btn btn-primary btn-outline btn-xs fadeIn" v-on:click="runNextCase($event.target)" v-show="testcase.status == 'failed'">run next one</button>
                                 </div>
-                              </td>
-                              <td>
-                                <span v-show="testcase.workflowId">
-                                  <router-link :to="{path: 'output', query: {wfId: workflowId}}">
-                                    <span style="">Check the test result</span>
-                                  </router-link>
-                                </span>
                               </td>
                             </tr>
                           </tbody>
@@ -117,14 +106,10 @@
               </div>
           </div>
       </div>
-
     </div>
-
-
   </div>
 </template>
 <script>
-import {addClass, removeClass, isContainClass} from '../assets/js/my-util.js'
 import wfresult from './workflow_graph/wfresult.vue'
 import showMessage from './message/showMessage.js'
 export default {
@@ -141,7 +126,8 @@ export default {
       selected: [],
       curRunningId: 0,
       runTestcases: [],
-      wfComplete: false
+      wfComplete: false,
+      runYet: false
     }
   },
   created: function() {
@@ -173,7 +159,6 @@ export default {
       },
       set: function (value) {
         var selected = [];
-
         if (value) {
           this.testcases.forEach(function (testcase) {
             selected.push(testcase.testcase);
@@ -255,25 +240,26 @@ export default {
           }
         });
       }
-
     },
     runMultiTestcase: function() {
       var self = this;
       var msgTitle = "RUN -- TESTCASES";
+      if(!self.runYet) {
+        self.runYet = true;
+      }
       self.runTestcases = [];
       if(self.selected.length == 0) {
         showMessage("warning", msgTitle, "please select one!");
         return;
       }
       for(var i=0; i < self.selected.length; i++) {
-        var testcaseItem = {'id': i, 'testcase': '', 'status': "waiting", 'workflowId': ''};
+        var testcaseItem = {'id': i, 'testcase': '', 'status': "waiting"};
         testcaseItem['testcase'] = self.selected[i];
         self.runTestcases.push(testcaseItem);
       }
       self.curRunningId = 0;
       showMessage("info", msgTitle, "start to run <strong>testcases</strong>");
       self.runOneTestcase();
-
     },
     runOneTestcase: function() {
       var self = this;
@@ -298,7 +284,6 @@ export default {
           success: function(data) {
               if(data['code'] == 200) {
                   self.workflowId = data['result']['workflowId'];
-                  self.runTestcases[self.curRunningId]['workflowId'] = self.workflowId;
                   $.ajax({
                       url: self.global.SERVER_ADDR + "story-content",
                       method: "GET",

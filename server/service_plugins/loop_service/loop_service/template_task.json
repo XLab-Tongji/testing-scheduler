@@ -1,9 +1,0 @@
-{
-	"name": "task-1",
-	"retryCount": 3,
-	"timeoutSeconds": 1000,
-	"timeoutPolicy": "TIME_OUT_WF",
-	"retryLogic": "FIXED",
-	"retryDelaySeconds": 2000,
-	"responseTimeoutSeconds": 3600
-}

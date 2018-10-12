@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper wrapper-content animated fadeIn">
     <div class="row" style="margin-bottom: 20px;">
-      <div class="col-md-8">
+      <div class="col-md-12">
         <ol class="breadcrumb" style="padding-left: 20px; font-size: 17px;">
           <li>
             <router-link to="/" >root</router-link>
@@ -10,7 +10,7 @@
       </div>
     </div>
     <div id="page-content" class="row">
-      <div class="col-lg-8">
+      <div class="col-lg-12">
         <div class="ibox">
             <div class="ibox-title">
                 <h5 style="font-size:26px;margin-top: -3px;">Test Suite</h5>
@@ -38,7 +38,6 @@
                     <tr v-for="testsuite in testsuites">
                       <td><input style="width:20px" type="checkbox" v-model="selected" :value="testsuite.testsuite"> </td>
                       <td class="smallbox" style="with:250px;"><router-link :to="{ path: '/testcase', query: { name: testsuite.testsuite }}" >{{testsuite.testsuite}}</router-link></td>
-
                     </tr>
                 </tbody>
                 <tfoot id="create-box" style="display: none">
@@ -51,11 +50,9 @@
             </div>
         </div>
       </div>
-
     </div>
     <hr />
-
-    <div class="row">
+    <div class="row" v-show="runYet">
       <div class="col-lg-12">
           <div class="ibox">
               <div class="ibox-title">
@@ -80,7 +77,6 @@
                               <th class="text-center">testcase</th>
                               <th class="text-center">status</th>
                               <th class="text-center">operation</th>
-                              <th class="text-center">output</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -93,13 +89,6 @@
                                 <button class="btn btn-primary btn-outline btn-xs fadeIn" v-on:click="runTestcase()" v-show="testcase.status == 'failed'">rerun</button>
                                 <button class="btn btn-primary btn-outline btn-xs fadeIn" v-on:click="runNextCase($event.target)" v-show="testcase.status == 'failed'">run next one</button>
                               </div>
-                              </td>
-                              <td>
-                                <span v-show="testcase.workflowId">
-                                  <router-link :to="{path: 'output', query: {wfId: workflowId}}">
-                                    <span style="">Check the test result</span>
-                                  </router-link>
-                                </span>
                               </td>
                             </tr>
                           </tbody>
@@ -114,9 +103,7 @@
               </div>
           </div>
       </div>
-
     </div>
-
   </div>
 </template>
 <script>
@@ -139,7 +126,8 @@ export default {
         caseName: ""
       },
       curRunningId: 0,
-      wfComplete: false
+      wfComplete: false,
+      runYet: false
     }
   },
   created: function() {
@@ -169,7 +157,6 @@ export default {
       },
       set: function (value) {
         var selected = [];
-
         if (value) {
           this.testsuites.forEach(function (story) {
             selected.push(story.testsuite);
@@ -211,9 +198,7 @@ export default {
             showMessage(status, msgTitle, "Failed to create <strong>" + suiteName + "</strong>!", msg);
           }
         })
-
       }
-
       var cbox = document.getElementById("create-box");
       cbox.style.display = "none";
       this.newSuite = '';
@@ -255,6 +240,9 @@ export default {
     runTestsuites: function() {
       var self = this;
       var msgTitle = "RUN -- TESTSUITE";
+      if(!self.runYet) {
+        self.runYet = true;
+      }
       if(self.selected.length == 0) {
         showMessage("warning", msgTitle, "please select one!");
         return;
@@ -262,7 +250,6 @@ export default {
         showMessage("warning", msgTitle, "sorry, one suite at a time!");
         return;
       }
-
       self.running.suiteName = self.selected[0];
       $.ajax({
         url: this.global.SERVER_ADDR + "testsuite/content",
@@ -279,7 +266,6 @@ export default {
             }
             for(var i=0; i < caseList.length; i++) {
               caseList[i]['status'] = "waiting";
-              caseList[i]['workflowId'] = "";
             }
             self.casesInSuite = caseList;
             showMessage(data['code'], msgTitle, "Start to run <strong>" + self.running.suiteName + "</strong>");
@@ -292,7 +278,6 @@ export default {
           showMessage(status, msgTitle, "Failed to run <strong>" + self.running.suiteName + "</strong>", msg);
         }
       });
-
     },
     runTestcase: function() {
         var self = this;
@@ -318,7 +303,6 @@ export default {
           success: function(data) {
               if(data['code'] == 200) {
                 self.workflowId = data['result']['workflowId'];
-                self.casesInSuite[self.curRunningId]['workflowId'] = self.workflowId;
                 $.ajax({
                     url: self.global.SERVER_ADDR + "story-content",
                     method: "GET",
@@ -351,7 +335,6 @@ export default {
             showMessage(status, msgTitle, "Failed to run <strong>" + self.running.caseName + "</strong>", msg);
           }
         });
-
     },
     statusClass: function(status) {
       if(status == "waiting") {
@@ -387,5 +370,4 @@ export default {
     wfresult
   }
 }
-
 </script>

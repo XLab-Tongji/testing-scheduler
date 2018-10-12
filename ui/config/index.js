@@ -10,44 +10,28 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    // proxyTable: {
-    //     '/wf-graph': {
-    //         target: 'http://conductor_conductor-ui_1:5000/',
-    //         changeOrigin: true,
-    //         pathRewrite: {'^/wf-graph':''}
-    //     },
-    //     '/api': {
-    //         target: 'http://conductor_conductor-ui_1:5000/',
-    //         changeOrigin: true
-    //     },
-    //     '/wf-server': {
-    //         target: 'http://conductor_conductor-server_1:8080/',
-    //         changeOrigin: true,
-    //         pathRewrite: {'^/wf-server':''}
-    //     },
-    //     '/parser': {
-    //         target: 'http://t-scheduler-server:5310/',
-    //         pathRewrite: {'^/parser':''}
-    //     }
-    // },
     proxyTable: {
         '/wf-graph': {
-            target: 'http://10.60.38.181:5200/',
+            target: 'http://conductor_conductor-ui_1:5000/',
             changeOrigin: true,
             pathRewrite: {'^/wf-graph':''}
         },
         '/api': {
-            target: 'http://10.60.38.181:5200/',
+            target: 'http://conductor_conductor-ui_1:5000/',
             changeOrigin: true
         },
         '/wf-server': {
-            target: 'http://10.60.38.181:5201/',
+            target: 'http://conductor_conductor-server_1:8080/',
             changeOrigin: true,
-            pathRewrite: {'^/wf-server':''}
+            pathRewrite: {'^/workflow':''}
         },
         '/parser': {
-            target: 'http://10.60.38.181:5310/',
+            target: 'http://t-scheduler-server:5310/',
             pathRewrite: {'^/parser':''}
+        },
+        '/grafana-ui': {
+            target: 'http://grafana:5202/',
+            pathRewrite: {'^/grafana-ui':''}
         }
     },
 

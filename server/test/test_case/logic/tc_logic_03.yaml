@@ -1,16 +1,20 @@
-########################################################
-# date: 2018/7/20
-# author: x-lab.Leo
+##############################################################################
+# Copyright (c) 2018 HUAWEI TECHNOLOGIES CO.,LTD and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
 
+---
 # description: test useless sub workflow
 # In this testcase, there is a subflow whose name
 # is 'flow-1' which will not be executed because no
 # other flow refers to it.
 # This testcase is used to test that besides main flow,
 # whether subflow can be parsed without exception.
-########################################################
 
----
 schema:
   steps:
     -
@@ -53,7 +57,7 @@ schema:
         interface: greet
       action: start
       args:
-        name: leo_@    
+        name: leo_@
 
   flows:
     -
@@ -67,10 +71,10 @@ schema:
           value: ((1.result))
           cases:
             A:
-              - 
+              -
                 type: normal
                 step: 2
-            B:  
+            B:
               -
                 type: normal
                 step: 3

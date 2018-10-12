@@ -1,14 +1,18 @@
-######################################################
-# date: 2018/7/20
-# author: x-lab.Leo
+##############################################################################
+# Copyright (c) 2018 HUAWEI TECHNOLOGIES CO.,LTD and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
 
+---
 # description: test switch value used step-1's output.
 # to referring the step's output, using ((x.y)).
 # x is the id of the step,
 # y is the output key of the step.
-######################################################
 
----
 schema:
   steps:
     -

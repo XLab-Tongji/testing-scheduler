@@ -1,13 +1,13 @@
 <template>
 <div class="wrapper wrapper-content">
-	<div class="row">
+    <div class="row">
         <div class="col-lg-offset-2 col-lg-8">
             <div class="ibox">
                 <div class="ibox-content">
                     <h1>CONTEXT <i class="fa fa-question-circle"></i></h1>
                     <div class="row">
                         <div class="col-md-offset-1 col-md-10">
-                            <textarea v-model="context" id="context-content" style="font-size: 16px; padding: 4px; width: 100%; min-height: 300px; max-height: 300px;">
+                            <textarea v-model="context" id="context-content" style="white-space:nowrap; overflow:scroll; font-size: 16px; padding: 4px; width: 100%; min-height: 300px; max-height: 300px;">
                             </textarea>
                             <button type="button" class="btn btn-primary pull-right" v-on:click="saveContext()">Save</button>
                         </div>
@@ -16,7 +16,6 @@
             </div>
         </div>
     </div>
-
     <div class="row">
         <div class="col-lg-offset-2 col-lg-8">
             <div class="ibox">
@@ -46,7 +45,6 @@
                             <button class="btn btn-lg btn-success" style="float:right;" v-on:click="addNewService()">  Add  </button>
                         </div>
                     </div>
-
                     <!-- modal of one service -->
                     <div class="row">
                         <service-modal v-bind:type="type" v-on:service-creation="plusAService" v-on:service-edition="editAServiceName" v-on:creation-fail="creationFailHandler"></service-modal>
@@ -57,14 +55,12 @@
     </div>
 </div>
 </template>
-
 <script>
 import Vue from 'vue'
 import service_modal from "./env_component/service_modal.vue"
 import showMessage from './message/showMessage.js'
-
 export default {
-	name: 'environment',
+    name: 'environment',
     data: function() {
         return {
             serviceList: [],
@@ -77,7 +73,7 @@ export default {
         }
     },
     components: {
-    	'service-modal': service_modal
+        'service-modal': service_modal
     },
     created: function() {
         var self = this;
@@ -163,7 +159,6 @@ export default {
                     } else {
                         showMessage(data['code'], msgTitle, errorInfo, data['error']);
                     }
-                    
                 },
                 error: function(obj, status, msg) {
                     showMessage("error", msgTitle, errorInfo, msg);

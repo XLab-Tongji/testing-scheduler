@@ -27,7 +27,6 @@
                                 <li v-for="subflow in subflowList"><a data-toggle="tab" v-bind:data-target="'#' + subflow.tabId">{{ subflow.name }}</a></li>
                             </ul>
                         </div>
-
                         <div class="col-md-10">
                             <div class="tab-content">
                                 <div id="flow-main" class="tab-pane active fade in">
@@ -44,13 +43,10 @@
             </div>
         </div>
     </div>
-
 </div>
-
 </template>
 <script>
 import '../../assets/css/editor.css'
-
 import step from './step.vue'
 import flow from './flow.vue'
 import showMessage from '../message/showMessage.js'
@@ -106,7 +102,6 @@ export default {
             }
             return stepNameArr;
         }
-        
     },
     watch: {
         saveSignal: function(newVal) {
