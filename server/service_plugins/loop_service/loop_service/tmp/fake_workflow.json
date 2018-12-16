@@ -1,0 +1,119 @@
+{
+ "tasks": [
+  {
+   "taskReferenceName": "add_stress_220", 
+   "type": "HTTP", 
+   "name": "add_stress", 
+   "inputParameters": {
+    "http_request": {
+     "body": {
+      "concurrent_num": "${workflow.input.change.add_stress_220.concurrent_num}"
+     }, 
+     "uri": "http://10.60.38.181:5202/stress", 
+     "method": "POST"
+    }
+   }
+  }, 
+  {
+   "taskReferenceName": "bottleneck_checker_332", 
+   "type": "HTTP", 
+   "name": "bottleneck_checker", 
+   "inputParameters": {
+    "http_request": {
+     "uri": "http://10.60.38.181:5202/reach", 
+     "method": "GET"
+    }
+   }
+  }, 
+  {
+   "taskReferenceName": "store_loop_data", 
+   "description": "workflow-1-task-1", 
+   "type": "HTTP", 
+   "name": "store_task", 
+   "inputParameters": {
+    "http_request": {
+     "body": {
+      "task_output": {
+       "add_stress": "${add_stress_220.output.response.body}", 
+       "bottleneck_checker": "${bottleneck_checker_332.output.response.body}"
+      }
+     }, 
+     "uri": "http://10.60.38.181:5202/storeData", 
+     "method": "POST"
+    }
+   }
+  }, 
+  {
+   "name": "loop_decision", 
+   "taskReferenceName": "loop_decision", 
+   "decisionCases": {
+    "true": [
+     {
+      "taskReferenceName": "get_loop_data", 
+      "description": "workflow-1-task-1", 
+      "type": "HTTP", 
+      "name": "return_data_task", 
+      "inputParameters": {
+       "http_request": {
+        "uri": "http://10.60.38.181:5202/getData", 
+        "method": "GET"
+       }
+      }
+     }, 
+     {
+      "taskReferenceName": "finish_return_wf", 
+      "description": "workflow-1-task-1", 
+      "type": "HTTP", 
+      "name": "finish_return_wf", 
+      "inputParameters": {
+       "http_request": {
+        "body": {
+         "wfId": "bf298514-3e47-4c7c-a73b-ca113138efaf"
+        }, 
+        "uri": "http://10.60.38.181:5202/loop_finish", 
+        "method": "POST"
+       }
+      }
+     }
+    ], 
+    "false": [
+     {
+      "taskReferenceName": "restart_wf", 
+      "description": "workflow-1-task-1", 
+      "type": "HTTP", 
+      "name": "restart_wf", 
+      "inputParameters": {
+       "http_request": {
+        "body": {
+         "wfId": "${workflow.workflowId}", 
+         "wfInput": "${workflow.input.change}", 
+         "loopChange": {
+          "add_stress_220": {
+           "concurrent_num": "+=5"
+          }
+         }
+        }, 
+        "uri": "http://10.60.38.181:5202/restart", 
+        "method": "POST"
+       }
+      }
+     }
+    ]
+   }, 
+   "inputParameters": {
+    "decisionVal": "${bottleneck_checker_332.output.response.body.result}"
+   }, 
+   "caseValueParam": "decisionVal", 
+   "type": "DECISION", 
+   "description": "task for making the decision"
+  }
+ ], 
+ "name": "loop_424", 
+ "outputParameters": {
+  "return_data_task": "${get_loop_data.output.response.body}"
+ }, 
+ "version": 1, 
+ "inputParameters": [], 
+ "schemaVersion": 2, 
+ "description": "loop function workflow"
+}

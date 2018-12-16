@@ -1,0 +1,12 @@
+{
+	"name": "",
+	"taskReferenceName": "",
+	"description": "workflow-1-task-1",
+	"type": "HTTP",
+	"inputParameters": {
+		"http_request": {
+			"uri": "http://10.60.38.181:5202/greet",
+			"method": "GET"
+		}
+	}
+}

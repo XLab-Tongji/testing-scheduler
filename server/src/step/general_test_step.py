@@ -57,7 +57,7 @@ class GeneralTestStep(TestStep):
 
 	def _uriResReplace(self, match):
 		matchTrim = match.group()[2:-2]
-		return self._args_temp[matchTrim]
+		return str(self._args_temp[matchTrim])
 
 	def _paramTransform(self, argsTemplate, argsDict):
 		for (k, v) in argsTemplate.items():

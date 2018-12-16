@@ -20,7 +20,7 @@ class WorkflowFile(object):
 		d['schemaVersion'] = self._schemaVersion
 		d['tasks'] = self._tasks
 		d['outputParameters'] = self._outputParameters
-		
+
 		return d
 
 	def generateMetaData(self, flowList, stepObjArr):
@@ -71,12 +71,17 @@ class FlowParser(object):
 				genTask = SwitchTask(order, stepObjArr, self)
 			elif order['type'] == "parallel":
 				genTask = ParallelTask(order, stepObjArr, self)
+			elif order['type'] == "loop":
+				genTask = LoopTask(order, stepObjArr, self)
 			tasks.append(genTask.getDict())
 
 			if order['type'] == "parallel":
 				joinTask = genTask.getJoinTask()
 				tasks.append(joinTask.getDict())
-			
+			elif order['type'] == "loop":
+				loopFinishTask = genTask.getLoopFinishTask()
+				tasks.append(loopFinishTask.getDict())
+
 			taskMetaList = genTask.getTaskMetaList()
 			if taskMetaList != None:
 				taskMetaAllList.extend(taskMetaList)
@@ -150,7 +155,7 @@ class NormalTask(BaseWorkflowTask):
 
 	def getStepId(self):
 		return self._stepId
-	
+
 class SwitchTask(BaseWorkflowTask):
 	seqNumber = 0
 	def __init__(self, order, stepObjArr, flowParser):
@@ -215,6 +220,78 @@ class ParallelJoinTask(BaseWorkflowTask):
 		super(ParallelJoinTask, self).__init__("paralleljoin_" + str(seqNumber))
 		self._type = "JOIN"
 		self._args['joinOn'] = joinOnList
+
+
+class LoopTask(BaseWorkflowTask):
+	seqNumber = 0
+	LOOP_SERVICE_URL = "http://t-scheduler-server:5313/loop"
+	def __init__(self, order, stepObjArr, flowParser):
+		InstSeqNumber = LoopTask.seqNumber
+
+		super(LoopTask, self).__init__("loop_" + str(InstSeqNumber))
+		if 'name' in order:
+			self._name = order['name']
+
+		self._taskReferenceName = self._name + "_" + getRandString(3)
+		LoopTask.seqNumber = LoopTask.seqNumber + 1
+		self._childTaskMetaList = []
+
+		self._type = "HTTP"
+		self._args['inputParameters'] = {"http_request": {}}
+		httpRequest = self._args['inputParameters']['http_request']
+		httpRequest['uri'] = LoopTask.LOOP_SERVICE_URL
+		httpRequest['method'] = "POST"
+		httpRequest['body'] = {}
+		requestBody = httpRequest['body']
+
+		##parse loopTasks
+		loopTasks = order['body']
+		taskList, taskMetaList = flowParser.parse(loopTasks, stepObjArr)
+		for task in taskList:
+			task['taskReferenceName'] = task['name'] + "_" + getRandString(3)
+		requestBody['loopTasks'] = taskList
+		if taskMetaList != None:
+			self._childTaskMetaList.extend(taskMetaList)
+		##parse checkTask
+		checkTask = order['check']
+		cTaskList, cTaskMetaList = flowParser.parse(checkTask, stepObjArr)
+		for task in cTaskList:
+			task['taskReferenceName'] = task['name'] + "_" + getRandString(3)
+
+		requestBody['loopCheckTask'] = cTaskList[0]
+		if cTaskMetaList != None:
+			self._childTaskMetaList.extend(cTaskMetaList)
+		##append workflowId, taskRefName
+		requestBody['workflowId'] = "${workflow.workflowId}"
+		requestBody['taskRefName'] = self._taskReferenceName
+		##parse loopChange
+		loopChanges = order['change']
+		for (taskName, changeDetail) in loopChanges.items():
+			for task in taskList:
+				if task['name'] == taskName:
+					taskRefName = task['taskReferenceName']
+					loopChanges[taskRefName] = loopChanges.pop(taskName)
+		requestBody['loopChange'] = loopChanges
+
+		# loop finish task
+		self._finishTaskObj = LoopFinishTask(self._taskReferenceName)
+		requestBody['finishTaskRefName'] = self._finishTaskObj.getReferenceName()
+
+	def getTaskMetaList(self):
+		selfTaskMetaList = super(LoopTask, self).getTaskMetaList()
+		selfTaskMetaList.extend(self._childTaskMetaList)
+		selfTaskMetaList.extend(self._finishTaskObj.getTaskMetaList())
+		return selfTaskMetaList
+
+	def getLoopFinishTask(self):
+		return self._finishTaskObj
+
+
+class LoopFinishTask(BaseWorkflowTask):
+	def __init__(self, loopTaskRefName):
+		super(LoopFinishTask, self).__init__("loop_finish_(%s)"%loopTaskRefName)
+		self._taskReferenceName = self._name
+		self._type = "SIMPLE"
 
 def getRandString(length):
 	return "".join(random.choice(str("0123456789")) for i in range(length))

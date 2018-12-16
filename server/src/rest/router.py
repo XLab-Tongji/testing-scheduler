@@ -78,8 +78,8 @@ def getAllSuite():
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
- 
-  return jsonify({"code": 200, "result": res}) 
+
+  return jsonify({"code": 200, "result": res})
 
 @app.route("/testsuite/content")
 def getSuiteContent():
@@ -100,7 +100,7 @@ def getSuiteContent():
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
-  
+
   return jsonify({"code": 200, "result": res})
 
 @app.route("/testcase/content")
@@ -116,13 +116,16 @@ def getTCContent():
       with open(casePath, "r") as f:
         fileContent = f.read()
       res = fileContent
-      editorRes = test_parser.getWebTestcase(yaml.load(res))
+      try:
+        editorRes = test_parser.getWebTestcase(yaml.load(res))
+      except BaseException, e:
+        editorRes = {"mainOrdersList": [], "stepList": [], "subflowList": []}
     else:
       return jsonify({"code": 300, "error": "no such file!"})
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
-  
+
   return jsonify({"code": 200, "result": {"content": res, "editorContent": editorRes}})
 
 @app.route("/testsuite/new", methods=['POST'])
@@ -139,7 +142,7 @@ def addNewSuite():
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
- 
+
   return jsonify({"code": 200, "result": "ok"})
 
 @app.route("/testsuite/delete", methods=['POST'])
@@ -157,9 +160,9 @@ def deleteSuite():
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
- 
+
   return jsonify({"code": 300, "error": "no such testsuite!"})
- 
+
 def del_file(path):
   for i in os.listdir(path):
     path_file = os.path.join(path,i)
@@ -188,7 +191,7 @@ def createTestcase():
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
-  
+
   return jsonify({"code": 200, "result": "ok"})
 
 
@@ -210,7 +213,7 @@ def deleteTestcase():
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
-  
+
 
 @app.route("/testcase/save", methods=["POST"])
 def saveTCContent():
@@ -234,7 +237,7 @@ def saveTCContent():
   except BaseException, e:
     app.logger.error(traceback.format_exc())
     return jsonify({"code": 500, "error": "Server error"})
-  
+
   return jsonify({"code": 200, "result": "save success"})
 
 ###############
@@ -436,7 +439,7 @@ def getContext():
   return jsonify({"code": 200, "result": {"context": res}})
 
 @app.route('/env/editContext', methods=['POST'])
-def editContext():  
+def editContext():
   try:
     context = request.values.get("context")
     test = yaml.load(context)

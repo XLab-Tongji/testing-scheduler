@@ -57,7 +57,7 @@
             </div>
         </div>
       </div>
-      
+
     </div>
 
     <hr />
@@ -76,6 +76,13 @@
                   </div>
               </div>
               <div class="ibox-content" style="padding-top: 60px;">
+                  <div v-show="workflowId" class="row" style="margin-bottom: 20px;">
+                    <div class="col-md-12">
+                      <router-link :to="{path: 'output', query: {wfId: workflowId}}">
+                        <span style="font-size: 18px;">Check the test result</span>
+                      </router-link>
+                    </div>
+                  </div>
                   <wfresult v-bind:workflowId="workflowId" v-bind:wfloading='wfloading' v-bind:wfJson='wfJson'></wfresult>
               </div>
           </div>

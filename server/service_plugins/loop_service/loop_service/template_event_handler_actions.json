@@ -1,0 +1,21 @@
+{
+	"start_workflow": {
+		"action": "start_workflow",
+		"start_workflow": {
+			"name": "",
+			"version": 1,
+			"input": {}
+		}
+	},
+	"complete_task": {
+		"action": "complete_task",
+		"complete_task": {
+			"workflowId": "",
+			"taskRefName": "",
+			"output": {
+
+			}
+		},
+		"expandInlineJSON": true
+	}
+}

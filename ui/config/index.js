@@ -10,23 +10,43 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
+    // proxyTable: {
+    //     '/wf-graph': {
+    //         target: 'http://conductor_conductor-ui_1:5000/',
+    //         changeOrigin: true,
+    //         pathRewrite: {'^/wf-graph':''}
+    //     },
+    //     '/api': {
+    //         target: 'http://conductor_conductor-ui_1:5000/',
+    //         changeOrigin: true
+    //     },
+    //     '/wf-server': {
+    //         target: 'http://conductor_conductor-server_1:8080/',
+    //         changeOrigin: true,
+    //         pathRewrite: {'^/wf-server':''}
+    //     },
+    //     '/parser': {
+    //         target: 'http://t-scheduler-server:5310/',
+    //         pathRewrite: {'^/parser':''}
+    //     }
+    // },
     proxyTable: {
         '/wf-graph': {
-            target: 'http://conductor_conductor-ui_1:5000/',
+            target: 'http://10.60.38.181:5200/',
             changeOrigin: true,
             pathRewrite: {'^/wf-graph':''}
         },
         '/api': {
-            target: 'http://conductor_conductor-ui_1:5000/',
+            target: 'http://10.60.38.181:5200/',
             changeOrigin: true
         },
         '/wf-server': {
-            target: 'http://conductor_conductor-server_1:8080/',
+            target: 'http://10.60.38.181:5201/',
             changeOrigin: true,
-            pathRewrite: {'^/workflow':''}
+            pathRewrite: {'^/wf-server':''}
         },
         '/parser': {
-            target: 'http://t-scheduler-server:5310/',
+            target: 'http://10.60.38.181:5310/',
             pathRewrite: {'^/parser':''}
         }
     },
