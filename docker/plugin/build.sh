@@ -13,6 +13,16 @@ docker cp  $plugin_container:$docker_tmppath $tmppath/
 docker rm -f $plugin_container
 #docker rmi $plugin_image
 
+#repair COPY error
+cd $tmppath/conductor/docker/server
+sed -i "14s/app\/libs/app\/libs\//g" Dockerfile
+cd ..
+
+#repair npm warn
+cd ui
+sed -i "37s/install/install --no-optional --no-shrinkwrap --no-package-lock/g" Dockerfile
+cd ..
+
 #build the images of conductor.
-cd $tmppath/conductor/docker
+#cd $tmppath/conductor/docker
 docker-compose build
