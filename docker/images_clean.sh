@@ -1,4 +1,4 @@
-udo docker rmi x-lab/test-scheduler:server \
+sudo docker rmi x-lab/test-scheduler:server \
                 x-lab/test-scheduler:ui \
                 x-lab/conductor:builder \
                 conductor:ui \
