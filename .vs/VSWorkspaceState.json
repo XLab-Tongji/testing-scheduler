@@ -1,0 +1,18 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\server",
+    "\\server\\service_plugins",
+    "\\server\\service_plugins\\loop_service",
+    "\\server\\service_plugins\\loop_service\\loop_service",
+    "\\server\\src",
+    "\\server\\src\\env",
+    "\\server\\src\\env\\service",
+    "\\server\\test",
+    "\\server\\test\\test_case",
+    "\\ui",
+    "\\ui\\static"
+  ],
+  "SelectedNode": "\\server\\src\\env\\service\\greet.yaml",
+  "PreviewInSolutionExplorer": false
+}
