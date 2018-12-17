@@ -1,0 +1,49 @@
+stress:
+  apis:
+  - method: POST
+    name: workload
+    params:
+    - description: scenario specified
+	  name: scenarioId
+    - description: clients simulated
+	  name: clients
+	- description: clients hatched / s
+	  name: hatchRate
+	- description: total runtime (s)
+	  name: runTime
+	- description: website URL
+	  name: host 
+    baseuri: workload
+    template:
+      uri: ((baseuri))
+      body:
+		clients: ((clients))
+		hatchRate: ((hatchRate))
+		host: ((host))
+		runTime: ((runTime))
+		scenarioId: ((scenarioId))
+
+  - method: GET
+    name: result
+    params:
+    - description: from time
+      name: from
+    - description: to time
+      name: to
+	baseuri: result
+    template:
+      uri: ((baseuri))?from=((from))&to=((to))
+
+  - method: GET
+    name: stream
+    params:
+    - description: from time
+      name: from
+    - description: to time
+      name: to
+	baseuri: result/stream
+    template:
+      uri: ((baseuri))?from=((from))&to=((to))
+        
+  ip: 10.60.38.181
+  port: 14088

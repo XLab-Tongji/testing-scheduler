@@ -1,0 +1,28 @@
+################################################
+# date: 2018/7/20
+# author: x-lab.QXC
+
+# description: a simple testcase for stress service.
+# this testcase is used for sending the stress_API:workload.
+################################################
+
+---
+schema:
+  steps:
+  - id: 1
+    name: '1'
+    service:
+      name: stress
+      interface: workload
+    action: start
+    args:
+      clients: '10'
+      hatchRate: '10'
+      host: www.baidu.com
+      runTime: '10'
+      scenariold: '1'
+  flows:
+  - name: main
+    orders:
+    - type: normal
+      step: 1
