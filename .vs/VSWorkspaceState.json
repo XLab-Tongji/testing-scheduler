@@ -1,18 +1,16 @@
 {
   "ExpandedNodes": [
     "",
+    "\\docker",
+    "\\docker\\server",
     "\\server",
+    "\\server\\conductorclient",
     "\\server\\service_plugins",
-    "\\server\\service_plugins\\loop_service",
     "\\server\\service_plugins\\loop_service\\loop_service",
-    "\\server\\src",
-    "\\server\\src\\env",
-    "\\server\\src\\env\\service",
-    "\\server\\test",
-    "\\server\\test\\test_case",
-    "\\ui",
-    "\\ui\\static"
+    "\\server\\service_plugins\\loop_service\\loop_service\\flask",
+    "\\server\\service_plugins\\loop_service\\loop_service\\tmp",
+    "\\server\\src"
   ],
-  "SelectedNode": "\\server\\src\\env\\service\\greet.yaml",
+  "SelectedNode": "\\server\\src\\test_parser.py",
   "PreviewInSolutionExplorer": false
 }

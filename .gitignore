@@ -34,3 +34,6 @@
 #################################
 /docker/plugin/tmp_files/
 /docker/ui/dist/
+.vs/slnx.sqlite
+.vs/testing-scheduler/v15/.suo
+.vs/VSWorkspaceState.json
