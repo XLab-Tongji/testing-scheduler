@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import urllib
-
 import click
 import os
 import yaml
@@ -211,8 +209,6 @@ def getWebTestcase(originTcDict):
 			for (key, value) in stepItem['args'].items():
 				replaceParam = {}
 				replaceParam['key'] = key
-				if value.isspace():
-					value=urllib.parse.urlencode(value)
 				replaceParam['value'] = value
 				replaceStep['params'].append(replaceParam)
 		stepList.append(replaceStep)
