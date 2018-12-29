@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:10-alpine
 MAINTAINER x-lab/Leo
 WORKDIR /home/testing-scheduler/ui
 COPY ./ui .
