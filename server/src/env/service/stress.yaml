@@ -1,49 +1,103 @@
+---
 stress:
+  ip: 10.60.38.173
+  port: 18088
   apis:
-  - method: POST
-    name: workload
-    params:
-    - description: scenario specified
-	  name: scenarioId
-    - description: clients simulated
-	  name: clients
-	- description: clients hatched / s
-	  name: hatchRate
-	- description: total runtime (s)
-	  name: runTime
-	- description: website URL
-	  name: host 
-    baseuri: workload
-    template:
-      uri: ((baseuri))
-      body:
-		clients: ((clients))
-		hatchRate: ((hatchRate))
-		host: ((host))
-		runTime: ((runTime))
-		scenarioId: ((scenarioId))
+    -
+      name: workload
+      method: POST
+      baseuri: workload
+      params:
+        - name: scenarioId
+          description: scenario specified
+        - name: clients
+          description: clients simulated
+        - name: hatchRate
+          description: clients hatched / s
+        - name: runTime
+          description: total runtime (s)
+        - name: host
+          description: website URL
+        template:
+          uri: ((baseuri))
+          body:
+            scenarioId: ((scenarioId))
+            clients: ((clients))
+            hatchRate: ((hatchRate))
+            runTime: ((runTime))
+            host: ((host))
+      -
+        name: result
+        method: GET
+        baseuri: result
+        params:
+          - name: from
+            description: from time
+          - name: to
+            desrciption: to time
+        template:
+          uri: ((baseuri))?from=((from))/to=((to))
+      -
+        name: stream
+        method: GET
+        baseuri: result
+        params:
+          - name: from
+            description: from time
+          - name: to
+            description: to time
+        template:
+          uri: ((baseuri))?from=((from))/to=((to))
 
-  - method: GET
-    name: result
-    params:
-    - description: from time
-      name: from
-    - description: to time
-      name: to
-	baseuri: result
-    template:
-      uri: ((baseuri))?from=((from))&to=((to))
 
-  - method: GET
-    name: stream
-    params:
-    - description: from time
-      name: from
-    - description: to time
-      name: to
-	baseuri: result/stream
-    template:
-      uri: ((baseuri))?from=((from))&to=((to))
-        
-  ip: 10.60.38.181
-  port: 14088
+
+#stress:
+#  apis:
+#  - method: POST
+#    name: workload
+#    params:
+#    - description: scenario specified
+#	  name: scenarioId
+#    - description: clients simulated
+#	  name: clients
+#	- description: clients hatched / s
+#	  name: hatchRate
+#	- description: total runtime (s)
+#	  name: runTime
+#	- description: website URL
+#	  name: host
+#    baseuri: workload
+#    template:
+#      uri: ((baseuri))
+#      body:
+#		clients: ((clients))
+#		hatchRate: ((hatchRate))
+#		host: ((host))
+#		runTime: ((runTime))
+#		scenarioId: ((scenarioId))
+#
+#  - method: GET
+#    name: result
+#    params:
+#    - description: from time
+#      name: from
+#    - description: to time
+#      name: to
+#	baseuri: result
+#    template:
+#      uri: ((baseuri))?from=((from))&to=((to))
+#
+#  - method: GET
+#    name: stream
+#    params:
+#    - description: from time
+#      name: from
+#    - description: to time
+#      name: to
+#	baseuri: result/stream
+#    template:
+#      uri: ((baseuri))?from=((from))&to=((to))
+#
+#  ip: 10.60.38.181
+#  port: 14088
+#
