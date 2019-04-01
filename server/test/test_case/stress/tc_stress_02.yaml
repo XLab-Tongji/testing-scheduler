@@ -1,23 +1,17 @@
-################################################
-# date: 2018/7/20
-# author: x-lab.QXC
-
-# description: a simple testcase for stress service.
-# this testcase is used for sending the stress_API:result.
-################################################
-
----
 schema:
   steps:
   - id: 1
-    name: result
+    name: '2'
     service:
       name: stress
-      interface: result
+      interface: workload
     action: start
     args:
-      from: '2018-11-20 19:34:12'
-      to: '2018-11-21 19:34:12'
+      clients: '500'
+      hatchRate: '5'
+      host: 10.60.38.181.30001
+      runTime: '1'
+      scenarioId: '1'
   flows:
   - name: main
     orders:

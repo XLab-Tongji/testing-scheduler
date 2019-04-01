@@ -19,9 +19,8 @@ docker rm -f $plugin_container
 #cd ..
 
 #repair npm warn
-#cd ui
-#sed -i "37s/install/install --no-optional --no-shrinkwrap --no-package-lock/g" Dockerfile
-#cd ..
+cd $tmppath/conductor/docker/ui
+sed -i "" "37s/install/install --no-optional --no-shrinkwrap --no-package-lock/g" Dockerfile
 
 #build the images of conductor.
 cd $tmppath/conductor/docker

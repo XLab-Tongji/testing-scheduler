@@ -18,36 +18,36 @@ stress:
           description: total runtime (s)
         - name: host
           description: website URL
-        template:
-          uri: ((baseuri))
-          body:
-            scenarioId: ((scenarioId))
-            clients: ((clients))
-            hatchRate: ((hatchRate))
-            runTime: ((runTime))
-            host: ((host))
-      -
-        name: result
-        method: GET
-        baseuri: result
-        params:
-          - name: from
-            description: from time
-          - name: to
-            desrciption: to time
-        template:
-          uri: ((baseuri))?from=((from))/to=((to))
-      -
-        name: stream
-        method: GET
-        baseuri: result
-        params:
-          - name: from
-            description: from time
-          - name: to
-            description: to time
-        template:
-          uri: ((baseuri))?from=((from))/to=((to))
+      template:
+        uri: ((baseuri))
+        body:
+          scenarioId: ((scenarioId))
+          clients: ((clients))
+          hatchRate: ((hatchRate))
+          runTime: ((runTime))
+          host: ((host))
+    -
+      name: result
+      method: GET
+      baseuri: result
+      params:
+        - name: from
+          description: from time
+        - name: to
+          desrciption: to time
+      template:
+        uri: ((baseuri))
+    -
+      name: stream
+      method: GET
+      baseuri: result
+      params:
+        - name: from
+          description: from time
+        - name: to
+          description: to time
+      template:
+        uri: ((baseuri))
 
 
 

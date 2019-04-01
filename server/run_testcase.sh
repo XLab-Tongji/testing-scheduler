@@ -5,3 +5,4 @@ basepath=$(cd'dirname $0'; pwd)
 sudo python $basepath/src/test_parser.py --filepath=$basepath/test/test_case/logic/tc_logic_01.yaml
 
 
+

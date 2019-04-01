@@ -6,7 +6,6 @@
 # this testcase is used for sending the stress_API:workload.
 ################################################
 
----
 schema:
   steps:
   - id: 1
@@ -16,11 +15,11 @@ schema:
       interface: workload
     action: start
     args:
-      clients: '10'
-      hatchRate: '10'
-      host: www.baidu.com
-      runTime: '10'
-      scenariold: '1'
+      clients: '500'
+      hatchRate: '5'
+      host: 10.60.38.181.30001
+      runTime: '1'
+      scenarioId: '2'
   flows:
   - name: main
     orders:
