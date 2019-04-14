@@ -9,16 +9,16 @@
 schema:
   steps:
   - id: 1
-    name: 'daily-stress'
+    name: 'daily-stress_1'
     service:
       name: stress
       interface: workload
     action: start
     args:
-      clients: '100'
+      clients: '33'
       hatchRate: '5'
       host: http://10.60.38.181:30001
-      runTime: '1'
+      runTime: '60'
       scenarioId: '2'
   flows:
   - name: main

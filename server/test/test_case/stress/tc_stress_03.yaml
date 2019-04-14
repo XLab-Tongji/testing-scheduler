@@ -15,7 +15,7 @@ schema:
       interface: workload
     action: start
     args:
-      clients: '33'
+      clients: '34'
       hatchRate: '5'
       host: http://10.60.38.181:30001
       runTime: '60'
