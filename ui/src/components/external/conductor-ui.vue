@@ -1,6 +1,6 @@
 <template>
 <div>
-  <iframe src='http://0.0.0.0:5000' id="conductor-ui"></iframe>
+  <iframe src='http://10.60.38.173:5000' id="conductor-ui"></iframe>
 </div>
 </template>
 
