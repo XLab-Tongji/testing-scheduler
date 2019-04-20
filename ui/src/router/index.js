@@ -5,12 +5,10 @@ import testcase from '@/components/testcase'
 import testcase_content from '@/components/testcase_content'
 import environment from '@/components/environment'
 import wfoutput from '@/components/workflow_graph/wfoutput'
+import conductorUI from '@/components/external/conductor-ui'
 Vue.use(Router)
 const Result = {
   template: "<div>please visit <a target='blank' href='http://lab205.jios.org:30002/dashboard/db/cluster?orgId=1'>grafana page.</a></div>"
-}
-const Report = {
-  template: "<div></div>"
 }
 export default new Router({
   routes: [
@@ -35,7 +33,7 @@ export default new Router({
     },
     {
       path: '/report',
-      component: Report
+      component: conductorUI
     },
     {
       path: '/environment',

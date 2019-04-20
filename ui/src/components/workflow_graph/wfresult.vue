@@ -1,4 +1,4 @@
-<template>
+i<template>
 <div style="min-height: 600px; overflow-x: auto; overflow-y: auto;">
     <div id="file-section1" class="col-md-4">
       <div id="workflow-content-div">
