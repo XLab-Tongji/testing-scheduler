@@ -1,0 +1,19 @@
+schema:
+  steps:
+  - id: 1
+    name: stress
+    service:
+      name: stress
+      interface: workload
+    action: start
+    args:
+      clients: '1000'
+      hatchRate: '200'
+      host: http://10.60.38.181:31001
+      runTime: '30'
+      scenarioId: '4'
+  flows:
+  - name: main
+    orders:
+    - type: normal
+      step: 1
