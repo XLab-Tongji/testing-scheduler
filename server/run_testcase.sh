@@ -1,5 +1,4 @@
 # get the absolute path of this shell file.
-basepath=$(cd'dirname $0'; pwd)
 
 #run the testcase_target with command line
 #sudo python $basepath/src/test_parser.py --filepath=$basepath/test/test_case/stress/tc_stress_01.yaml
@@ -8,4 +7,4 @@ basepath=$(cd'dirname $0'; pwd)
 
 #sudo python $basepath/src/test_parser.py --filepath=$basepath/test/test_case/stress/tc_stress_03.yaml
 
-sudo python /home/serveradmin/testing-scheduler/server/src/test_parser.py --filepath=/home/serveradmin/testing-scheduler/server/test/test_case/stress/stress.yaml
+sudo python /home/serveradmin/testing-scheduler/server/src/test_parser.py --filepath=/home/serveradmin/testing-scheduler/server/test/test_case/stress/$1
